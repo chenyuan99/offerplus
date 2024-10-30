@@ -38,10 +38,10 @@ ALLOWED_HOSTS = [
     "offersplus.xyz",
     "https://offersplus.xyz",
     "offerplus.io",
-    "https://offersplus.xyz"
+    "https://offerplus.io"
 ]
 
-CSRF_TRUSTED_ORIGINS = ["https://offersplus.xyz"]
+CSRF_TRUSTED_ORIGINS = ["https://offersplus.xyz","https://offerplus.io"]
 
 # Application definition
 
