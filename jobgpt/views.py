@@ -13,7 +13,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from .generator import generate_response
+from .generator import generate_response, generate_why_role, generate_why_company, generate_thank_you_letter
 
 
 # Create your views here.
@@ -22,7 +22,7 @@ def index(request):
 
 
 def resume_match(request):
-    return render(request, "jobgpt/resume-mtach.html")
+    return render(request, "jobgpt/resume-match.html")
 
 
 def get_prompt(request):
@@ -32,3 +32,11 @@ def get_prompt(request):
         )
     result = generate_response(request.POST.get("prompt"))
     return JsonResponse({"prompt": result})
+
+def get_why_company(request, company_name=None):
+    if not request.user.is_authenticated:
+        return JsonResponse(
+            {"why_company": "You must be logged in to use this feature."}
+        )
+    result = generate_why_company(company_name)
+    return JsonResponse({"why_company": result})
