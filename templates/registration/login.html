@@ -1,112 +1,50 @@
 <!doctype html>
-
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Yuan Chen">
     <title>Signin</title>
-    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <meta name="theme-color" content="#563d7c">
-
-
-    <style>
-        html,
-        body {
-            height: 100%;
-        }
-
-        body {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-align: center;
-            align-items: center;
-            padding-top: 40px;
-            padding-bottom: 40px;
-            background-color: #f5f5f5;
-        }
-
-        .form-signin {
-            width: 100%;
-            max-width: 330px;
-            padding: 15px;
-            margin: auto;
-        }
-
-        .form-signin .checkbox {
-            font-weight: 400;
-        }
-
-        .form-signin .form-control {
-            position: relative;
-            box-sizing: border-box;
-            height: auto;
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        .form-signin .form-control:focus {
-            z-index: 2;
-        }
-
-        .form-signin input[type="email"] {
-            margin-bottom: -1px;
-            border-bottom-right-radius: 0;
-            border-bottom-left-radius: 0;
-        }
-
-        .form-signin input[type="password"] {
-            margin-bottom: 10px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-        }
-
-        .bd-placeholder-img {
-            font-size: 1.125rem;
-            text-anchor: middle;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="text-center">
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
 
-
-<div class="form-signin w-100 m-auto">
-    <div class="container text-center">
-        <h2>Log In</h2>
-        <form method="post">
-            {% csrf_token %}
-
-
-            <div id="div_id_username" class="form-group"><label for="id_username" class=" requiredField">
-                Username<span class="asteriskField">*</span> </label>
-                <div><input type="text" name="username" autofocus autocapitalize="none" autocomplete="username"
-                            maxlength="150" class="textinput textInput form-control" required id="id_username"></div>
+<div class="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-center text-gray-900">Log In</h2>
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        <div class="space-y-4">
+            <div>
+                <label for="id_username" class="block text-sm font-medium text-gray-700">Username<span
+                        class="text-red-500">*</span></label>
+                <input type="text" name="username" id="id_username" required autofocus autocapitalize="none"
+                       autocomplete="username" maxlength="150"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
-            <div id="div_id_password" class="form-group"><label for="id_password" class=" requiredField">
-                Password<span class="asteriskField">*</span> </label>
-                <div><input type="password" name="password" autocomplete="current-password"
-                            class="textinput textInput form-control" required id="id_password"></div>
+            <div>
+                <label for="id_password" class="block text-sm font-medium text-gray-700">Password<span
+                        class="text-red-500">*</span></label>
+                <input type="password" name="password" id="id_password" required autocomplete="current-password"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
-
-            <div class="d-grid gap-2">
-                <button class="btn btn-outline-info" type="submit">Log In</button>
-                <button class="btn btn-outline-info" type="button">Sign Up with LinkedIn</button>
+        </div>
+        <div class="space-y-4">
+            <button type="submit"
+                    class="w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Log In
+            </button>
+            <button type="button"
+                    class="w-full px-4 py-2 text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Sign Up with LinkedIn
+            </button>
+            <div class="w-full">
+                <div class="g-signin2" data-onsuccess="onSignIn" data-width="100%" data-height="40"
+                     data-longtitle="true"></div>
             </div>
-            <p class="mt-5 mb-3 text-muted">&copy; 2024 @chenyuan99 </p>
-        </form>
-    </div>
-
+        </div>
+        <p class="mt-5 text-sm text-center text-gray-500">&copy; 2024 @chenyuan99</p>
+    </form>
 </div>
 
 
