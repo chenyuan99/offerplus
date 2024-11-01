@@ -1,27 +1,40 @@
 <img src="https://github.com/user-attachments/assets/1c93f0ea-c4fd-401e-a62e-a55564969422" width="150">
 
-# offer+
+# Offer+
 
-An Offer seeker powered by GPT
+An Offer seeker powered by GPT.
 
 ![example workflow](https://github.com/chenyuan99/offer-plus/actions/workflows/django.yml/badge.svg) [![](https://dcbadge.limes.pink/api/server/X24GHUwtHW?style=flat)](https://discord.gg/X24GHUwtHW?style=flat)
 
+## Table of Contents
+
+- [Project Description](#project-description)
+- [Team](#team)
+- [ATS Parsing](#ats-parsing)
+- [Data Vendors](#data-vendors)
+- [License](#license)
+- [Reference](#reference)
+- [Acknowledgement](#acknowledgement)
+
+## Project Description
+
+Offer+ is an AI-powered job offer seeker that helps users find job opportunities using GPT technology.
+
 ## Team
 
-Project Owner & Tech Lead: Yuan Chen
-
-Software Engineer: Jingyu Xiong
+- **Project Owner & Tech Lead**: Yuan Chen
+- **Software Engineer**: Jingyu Xiong
 
 ## ATS Parsing
 
-https://easyatschecker.streamlit.app/
+[Easy ATS Checker](https://easyatschecker.streamlit.app/)
 
 ## Data Vendors
 
 1. New Grad
 2. Internship
-3. icc.fyi
-4. USCIS
+3. [icc.fyi](https://icc.fyi)
+4. [USCIS](https://www.uscis.gov/)
 
 ## License
 
@@ -29,9 +42,8 @@ Open Code Only, No Commercial Use allowed.
 
 ## Reference
 
-https://www.bilibili.com/video/BV1BN411D73i/?spm_id_from=333.999.0.0&vd_source=cdc8383991bc95a3b4742f982fc72004
-
-River Mall: https://riversmall.com/
+- [Bilibili Video](https://www.bilibili.com/video/BV1BN411D73i/?spm_id_from=333.999.0.0&vd_source=cdc8383991bc95a3b4742f982fc72004)
+- [River Mall](https://riversmall.com/)
 
 ## Acknowledgement
 
