@@ -1,12 +1,76 @@
-{% extends "base.html" %}
-{% load static %}
-{% block content %}
-    <div class="container">
-        <script type='module'
-                src='https://bigdataanalyticspub-sb.uscis.dhs.gov/javascripts/api/tableau.embedding.3.latest.min.js'></script>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes"/>
+    <meta name="author" content="Yuan Chen">
+    <title>H1B Info</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body class="bg-gray-100">
+<nav class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+        <a class="text-xl font-bold text-[#861F41]" href="/">Offers+</a>
+        <button class="text-gray-500 focus:outline-none md:hidden" id="navbar-toggle">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+        <div class="hidden md:flex md:items-center" id="navbar-menu">
+            <ul class="flex flex-col md:flex-row md:space-x-4">
+                {% if user.is_authenticated %}
+                    <li><a class="text-gray-700 hover:text-gray-900" href="https://referralhub.offersplus.xyz/">referralHub</a>
+                    </li>
+                    <li><a class="text-gray-700 hover:text-gray-900" href="{% url 'jobgpt' %}">jobGPT</a></li>
+                    <li><a class="text-gray-700 hover:text-gray-900" href="{% url 'companies' %}">Company</a></li>
+                    <li><a class="text-gray-700 hover:text-gray-900"
+                           href="{% url 'profile' %}">{{ user.username|title }}</a></li>
+                    <li><a class="text-red-500 hover:text-red-700" href="{% url 'logout' %}">登出</a></li>
+                {% else %}
+                    <li><a class="text-gray-700 hover:text-gray-900" href="{% url 'login' %}">Log In</a></li>
+                    <li><a class="text-gray-700 hover:text-gray-900" href="{% url 'register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto my-10 p-6 bg-white rounded-lg shadow-md">
+    <script type='module'
+            src='https://bigdataanalyticspub-sb.uscis.dhs.gov/javascripts/api/tableau.embedding.3.latest.min.js'></script>
+    <div class="flex justify-center">
         <tableau-viz id='tableau-viz'
                      src='https://bigdataanalyticspub-sb.uscis.dhs.gov/views/H1BEmployerDataHub-Final/H1B-EmployerDataHub'
-                     hide-tabs toolbar='bottom' device='default'></tableau-viz>
-
+                     hide-tabs toolbar='bottom' device='default' class="w-full h-screen"></tableau-viz>
     </div>
-{% endblock %}
+</div>
+
+<footer class="container mx-auto py-5">
+    <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="text-center md:text-left mb-4 md:mb-0">
+                    <a href="https://www.producthunt.com/products/offers-plus?utm_source=badge-follow&utm_medium=badge&utm_souce=badge-offers&#0045;plus"
+                       target="_blank">
+                        <img src="https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=577338&theme=neutral"
+                             alt="Offers&#0032;Plus - AI&#0032;Job&#0032;Hunter | Product Hunt" class="w-64 h-14"/>
+                    </a>
+        </div>
+        <div class="text-center md:text-right">
+            <ul class="list-none">
+                <li>Created with ❤️ by RiseWorks</li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('navbar-toggle').addEventListener('click', function () {
+        document.getElementById('navbar-menu').classList.toggle('hidden');
+    });
+</script>
+</body>
+
+</html>
