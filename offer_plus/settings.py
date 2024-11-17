@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-# import django_heroku
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -103,16 +103,16 @@ WSGI_APPLICATION = "offer_plus.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "d3eil865medq6v",
-        "USER": "wwvlrhvdvjhwfx",
-        "PASSWORD": "c51d2b5e923703a128888c644814a06e8030c8e5162f615d74fa812fd18fa294",
-        "HOST": "ec2-3-234-131-8.compute-1.amazonaws.com",
-        "PORT": "5432",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "d3eil865medq6v",
+#         "USER": "wwvlrhvdvjhwfx",
+#         "PASSWORD": "c51d2b5e923703a128888c644814a06e8030c8e5162f615d74fa812fd18fa294",
+#         "HOST": "ec2-3-234-131-8.compute-1.amazonaws.com",
+#         "PORT": "5432",
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -159,7 +159,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-
+django_heroku.settings(locals())
 # logging
 
 # Create a LOGGING dictionary
