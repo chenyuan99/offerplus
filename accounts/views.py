@@ -28,7 +28,7 @@ def register(request):
             return redirect("index")
         else:
             for msg in form.error_messages:
-                logging.INFO(form.error_messages[msg])
+                logging.info(form.error_messages[msg])
             return render(
                 request=request,
                 template_name="accounts/register.html",
