@@ -15,6 +15,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 
+
 # Load environment variables
 load_dotenv()
 
@@ -44,7 +45,7 @@ ALLOWED_HOSTS = [
     "https://offerplus.io"
 ]
 
-CSRF_TRUSTED_ORIGINS = ["https://offersplus.xyz","https://offerplus.io"]
+CSRF_TRUSTED_ORIGINS = ["https://offersplus.xyz", "https://offerplus.io"]
 
 # Application definition
 
@@ -56,6 +57,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'webpack_loader',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
     "accounts",
     "tracks",
     "jobgpt",
@@ -73,7 +78,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
         'USER': 'postgres.gbsodywfisfmfkwspnaf',
-        'PASSWORD': os.getenv('DB_PASSWORD', 'Lovelife099!'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': 'aws-0-us-east-2.pooler.supabase.com',
         'PORT': '6543',
         'OPTIONS': {
@@ -85,6 +90,7 @@ DATABASES = {
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -190,4 +196,57 @@ LOGGING = {
             "propagate": False,
         },
     },
+}
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vite default dev server
+    "http://127.0.0.1:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# OpenAI settings
+OPENAI_API_KEY = "YOUR_API_KEY_HERE"  # Replace with your actual API key
+os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+
+# REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+# JWT settings
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+}
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',  # must end with a slash
+        'STATS_FILE': os.path.join(BASE_DIR, 'frontend/webpack-stats.json'),
+    }
 }

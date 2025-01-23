@@ -12,8 +12,18 @@
 # language governing permissions and limitations under the License.
 # Register your models here.
 from django.contrib import admin
+from .models import ApplicationRecord, Company
 
-from tracks.models import ApplicationRecord, Company
+@admin.register(ApplicationRecord)
+class ApplicationRecordAdmin(admin.ModelAdmin):
+    list_display = ('job_title', 'company_name', 'outcome', 'applicant', 'OA_date', 'VO_date', 'created')
+    list_filter = ('outcome', 'applicant', 'created')
+    search_fields = ('job_title', 'company_name', 'applicant__username')
+    ordering = ('-created',)
 
-admin.site.register(ApplicationRecord)
-admin.site.register(Company)
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'industry', 'created', 'updated')
+    search_fields = ('name', 'industry', 'description')
+    list_filter = ('created', 'updated')
+    ordering = ('-created',)

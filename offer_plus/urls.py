@@ -1,10 +1,29 @@
+"""offer_plus URL Configuration."""
+
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from django.views.generic.base import TemplateView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 
 urlpatterns = [
-    path("", include("tracks.urls")),
+    path("", TemplateView.as_view(template_name="index.html"), name="index"),
+    path("hardware", TemplateView.as_view(template_name="hardware.html"), name="hardware"),
+    path("h1b", TemplateView.as_view(template_name="h1b.html"), name="h1b"),
+    path("yuanc", TemplateView.as_view(template_name="yuanc.html"), name="yuanc"),
+    path("companies", TemplateView.as_view(template_name="companies.html"), name="companies"),
+    path("add-application/", TemplateView.as_view(template_name="add-application.html"), name="add-application"),
+    path("application/edit/<int:id>/", TemplateView.as_view(template_name="edit-application.html"), name="application-edit"),
     path("accounts/", include("accounts.urls")),
     path("admin/", admin.site.urls),
     path("jobgpt/", include("jobgpt.urls")),
-    path("company/", include("company.urls")),
+    path("", include("company.urls")),  # Include company URLs at root
+    path("", include("tracks.urls")),  # Include tracks URLs for applications API
+    path("", include("accounts.urls")),  # Include accounts URLs at root for auth endpoints
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
 ]

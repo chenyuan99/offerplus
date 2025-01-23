@@ -21,10 +21,12 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import FormView, TemplateView
-
+from rest_framework import viewsets, permissions
 from tracks.forms import ApplicationRecordForm
-# Create your views here.
 from tracks.models import ApplicationRecord, Company
+from .serializers import ApplicationRecordSerializer
+
+# Create your views here.
 
 
 def report_statistics(items: QuerySet[ApplicationRecord]):
@@ -157,3 +159,11 @@ def yuanc(request):
     companies = Company.objects.all()
     context = {"companies": companies}
     return render(request, "yuanc.html", context)
+
+
+class ApplicationRecordViewSet(viewsets.ModelViewSet):
+    serializer_class = ApplicationRecordSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return ApplicationRecord.objects.filter(applicant=self.request.user).order_by('-created')

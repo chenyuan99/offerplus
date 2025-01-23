@@ -41,4 +41,8 @@ xlrd==2.0.1
 xlwt==1.3.0
 yarl==1.17.2
 markdown
+djangorestframework-simplejwt==5.3.1
+# django-heroku
+django-webpack-loader
+django-cors-headers==4.3.1
 python-dotenv>=1.0.0
