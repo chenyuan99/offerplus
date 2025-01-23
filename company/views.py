@@ -4,12 +4,17 @@ import urllib.request
 from collections import defaultdict
 
 from django.contrib.auth.models import User
-# Add these imports at the top of your View file
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
+from rest_framework import viewsets, permissions
+from rest_framework.response import Response
+from rest_framework.decorators import action
+
+from tracks.models import ApplicationRecord
+from .models import Company, Job
+from .serializers import CompanySerializer, JobSerializer
 
 # Create your views here.
-from tracks.models import ApplicationRecord, Company
 
 
 def display_companies(request):
@@ -79,3 +84,34 @@ def display_newgrads(request):
         data = json.load(url)
         logging.info(data)
     return render(request, "company/grace-hopper.html")
+
+
+class CompanyViewSet(viewsets.ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class JobViewSet(viewsets.ModelViewSet):
+    queryset = Job.objects.all()
+    serializer_class = JobSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Job.objects.all()
+        company_id = self.request.query_params.get('company', None)
+        if company_id is not None:
+            queryset = queryset.filter(company_id=company_id)
+        return queryset
+
+    def perform_create(self, serializer):
+        company_id = self.request.data.get('company')
+        company = get_object_or_404(Company, id=company_id)
+        serializer.save(company=company)
+
+    @action(detail=True, methods=['post'])
+    def apply(self, request, pk=None):
+        job = self.get_object()
+        user = request.user
+        # Add application logic here
+        return Response({'status': 'application submitted'})

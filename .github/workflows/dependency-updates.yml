@@ -1,0 +1,50 @@
+name: Dependency Updates
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Run weekly on Monday
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Update Python Dependencies
+      run: |
+        pip install pip-tools
+        pip-compile --upgrade requirements.in
+      continue-on-error: true
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+    
+    - name: Update Node Dependencies
+      working-directory: frontend
+      run: |
+        npm outdated
+        npm update
+      continue-on-error: true
+    
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'chore(deps): update dependencies'
+        title: 'chore(deps): update dependencies'
+        branch: 'deps/update'
+        base: 'develop'
+        labels: 'dependencies'
+        body: |
+          This PR updates project dependencies to their latest versions.
+          
+          Please review the changes and test thoroughly before merging.
