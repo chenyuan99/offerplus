@@ -1,0 +1,216 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "OffersPlus Database Schema",
+  "description": "JSON Schema for the OffersPlus application database",
+  "type": "object",
+  "properties": {
+    "company": {
+      "type": "object",
+      "description": "Company model in the company app",
+      "required": ["name"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Company name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Company description"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri",
+          "description": "Company website URL"
+        },
+        "location": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Company location"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      }
+    },
+    "job": {
+      "type": "object",
+      "description": "Job model in the company app",
+      "required": ["title", "company", "description", "location", "employment_type", "status"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Job title"
+        },
+        "company": {
+          "type": "integer",
+          "description": "Foreign key to Company model"
+        },
+        "description": {
+          "type": "string",
+          "description": "Job description"
+        },
+        "requirements": {
+          "type": "string",
+          "description": "Job requirements"
+        },
+        "location": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Job location"
+        },
+        "salary_range": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Salary range"
+        },
+        "employment_type": {
+          "type": "string",
+          "enum": ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERNSHIP"],
+          "description": "Type of employment"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["OPEN", "CLOSED", "DRAFT"],
+          "description": "Job status"
+        },
+        "applicants": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "description": "User IDs who applied for this job"
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        },
+        "deadline": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Application deadline"
+        }
+      }
+    },
+    "application_record": {
+      "type": "object",
+      "description": "ApplicationRecord model in the tracks app",
+      "required": ["outcome", "company_name", "applicant"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "TO DO",
+            "IN PROGRESS",
+            "REFER",
+            "REJECT(Resume)",
+            "REJECT(VO)",
+            "REJECT(OA)",
+            "VO",
+            "OA"
+          ],
+          "description": "Application outcome"
+        },
+        "job_title": {
+          "type": "string",
+          "description": "Job title"
+        },
+        "company_name": {
+          "type": "string",
+          "description": "Company name"
+        },
+        "application_link": {
+          "type": "string",
+          "description": "Link to the job application"
+        },
+        "OA_date": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Online assessment date"
+        },
+        "VO_date": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Virtual onsite date"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        },
+        "applicant": {
+          "type": "string",
+          "description": "Username of the applicant"
+        }
+      }
+    },
+    "tracks_company": {
+      "type": "object",
+      "description": "Company model in the tracks app",
+      "required": ["name"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Primary key"
+        },
+        "name": {
+          "type": "string",
+          "description": "Company name"
+        },
+        "industry": {
+          "type": "string",
+          "description": "Company industry"
+        },
+        "logo": {
+          "type": "string",
+          "description": "Path to company logo image"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        },
+        "description": {
+          "type": "string",
+          "description": "Company description"
+        }
+      }
+    }
+  }
+}
