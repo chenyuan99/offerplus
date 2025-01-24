@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
@@ -74,6 +75,9 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres.gbsodywfisfmfkwspnaf',
         'PASSWORD': os.getenv('DB_PASSWORD'),
+        'TEST': {
+            'NAME': 'test_postgres',
+        },
         'HOST': 'aws-0-us-east-2.pooler.supabase.com',
         'PORT': '6543',
         'OPTIONS': {
@@ -81,6 +85,13 @@ DATABASES = {
         },
     }
 }
+
+# Use SQLite for testing
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
