@@ -19,6 +19,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Landing } from './components/Landing';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 // Protected Route wrapper component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -156,6 +157,7 @@ function App() {
         <AuthProvider>
           <AppContent />
           <Analytics />
+          <SpeedInsights />
         </AuthProvider>
       </HelmetProvider>
     </Router>
