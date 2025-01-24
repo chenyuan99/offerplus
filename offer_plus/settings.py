@@ -35,20 +35,23 @@ SECRET_KEY = (
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    ".localhost",
+    "localhost",
     "127.0.0.1",
-    "192.168.1.117",
-    "[::1]",
-    "offer-plus.herokuapp.com",
     "offersplus.xyz",
     "https://offersplus.xyz",
     "offerplus.io",
     "api.offerplus.io",
     "https://offerplus.io",
-    "https://api.offerplus.io"
+    "https://api.offerplus.io",
+    "offerplus.vercel.app",
+    "https://offerplus.vercel.app"
 ]
 
-CSRF_TRUSTED_ORIGINS = ["https://offersplus.xyz", "https://offerplus.io"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://offersplus.xyz", 
+    "https://offerplus.io",
+    "https://offerplus.vercel.app"
+]
 
 # Application definition
 
@@ -217,10 +220,32 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vite development server
     "http://localhost:3000",  # Alternative development port
     "https://offersplus.io",  # Production URL
-    "https://api.offerplus.io" # Production API URL
+    "https://api.offerplus.io", # Production API URL
+    "https://offerplus.vercel.app"  # Vercel deployment URL
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 # REST Framework settings
 REST_FRAMEWORK = {
