@@ -43,7 +43,8 @@ ALLOWED_HOSTS = [
     "offersplus.xyz",
     "https://offersplus.xyz",
     "offerplus.io",
-    "https://offerplus.io"
+    "https://offerplus.io",
+    "https://api.offerplus.io/"
 ]
 
 CSRF_TRUSTED_ORIGINS = ["https://offersplus.xyz", "https://offerplus.io"]
@@ -215,6 +216,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vite development server
     "http://localhost:3000",  # Alternative development port
     "https://offersplus.io",  # Production URL
+    "https://api.offerplus.io" # Production API URL
 ]
 
 CORS_ALLOW_CREDENTIALS = True
