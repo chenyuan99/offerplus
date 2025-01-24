@@ -18,6 +18,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Landing } from './components/Landing';
+import { Analytics } from '@vercel/analytics/react';
 
 // Protected Route wrapper component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -154,6 +155,7 @@ function App() {
       <HelmetProvider>
         <AuthProvider>
           <AppContent />
+          <Analytics />
         </AuthProvider>
       </HelmetProvider>
     </Router>
