@@ -1,0 +1,9 @@
+.aider*
+.env
+.idea
+.vscode
+.coverage
+venv
+
+# Local Netlify folder
+.netlify

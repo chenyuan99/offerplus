@@ -30,7 +30,7 @@ export function Dashboard() {
         setIsLoading(true);
         setError(null);
         await jobsDb.init();
-        const loadedApplications = await jobsDb.getAll();
+        const loadedApplications = await jobsDb.list();
         setApplications(loadedApplications);
       } catch (error: any) {
         console.error('Error loading applications:', error);
@@ -53,7 +53,7 @@ export function Dashboard() {
     try {
       setError(null);
       const id = await jobsDb.add(newApplication);
-      const applications = await jobsDb.getAll();
+      const applications = await jobsDb.list();
       setApplications(applications);
       setShowForm(false);
     } catch (error: any) {
@@ -70,7 +70,7 @@ export function Dashboard() {
     try {
       setError(null);
       await jobsDb.update(application);
-      const applications = await jobsDb.getAll();
+      const applications = await jobsDb.list();
       setApplications(applications);
       setSelectedApplication(null);
     } catch (error: any) {
@@ -87,7 +87,7 @@ export function Dashboard() {
     try {
       setError(null);
       await jobsDb.delete(id);
-      const applications = await jobsDb.getAll();
+      const applications = await jobsDb.list();
       setApplications(applications);
     } catch (error: any) {
       console.error('Error deleting application:', error);

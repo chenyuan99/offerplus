@@ -40,6 +40,19 @@ api.interceptors.response.use(
   }
 );
 
+export interface Application {
+  id?: number;
+  outcome: string;
+  job_title: string;
+  company_name: string;
+  application_link?: string;
+  OA_date?: string;
+  VO_date?: string;
+  created?: string;
+  updated?: string;
+  applicant?: string;
+}
+
 // Auth API endpoints
 export const authApi = {
   getUser: () => api.get('/api/auth/user/'),
@@ -53,10 +66,10 @@ export const authApi = {
 
 // Application API endpoints
 export const applicationsApi = {
-  list: () => api.get('/api/applications/'),
-  create: (data: any) => api.post('/api/applications/', data),
-  get: (id: number) => api.get(`/api/applications/${id}/`),
-  update: (id: number, data: any) => api.put(`/api/applications/${id}/`, data),
+  list: () => api.get<Application[]>('/api/applications/'),
+  create: (data: Application) => api.post<Application>('/api/applications/', data),
+  get: (id: number) => api.get<Application>(`/api/applications/${id}/`),
+  update: (id: number, data: Application) => api.put<Application>(`/api/applications/${id}/`, data),
   delete: (id: number) => api.delete(`/api/applications/${id}/`),
 };
 

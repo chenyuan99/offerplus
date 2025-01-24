@@ -1,76 +1,42 @@
-import { JobApplication } from '../types';
+import { ApplicationRecord } from '../types';
+import { applicationsApi } from '../services/api';
 
-export const mockJobs: Omit<JobApplication, 'id'>[] = [
-  {
-    role: 'Software Engineer',
-    company: 'Apple',
-    location: 'Cupertino, CA',
-    industry: 'Technology',
-    poc: 'Gollapalli Mounica',
-    agent: 'Innova Solutions',
-    process: 'Technical',
-    appliedDate: '2024-03-01',
-    status: 'In Progress',
-    notes: 'Assessment stage'
-  },
-  {
-    role: 'Software Engineer',
-    company: 'Chase',
-    location: 'New York',
-    industry: 'FinTech',
-    poc: 'Nelly Perez',
-    agent: 'Judge',
-    process: 'Phone Screen',
-    appliedDate: '2024-02-28',
-    status: 'In Progress',
-    notes: 'Initial phone screen scheduled'
-  },
-  {
-    role: 'Web Engineer',
-    company: 'Robinhood',
-    location: 'Remote',
-    industry: 'FinTech',
-    poc: '',
-    agent: '',
-    process: 'Resume',
-    appliedDate: '2024-02-25',
-    status: 'Applied',
-    notes: 'Application submitted'
-  },
-  {
-    role: 'Full Stack Engineer',
-    company: 'Retool',
-    location: 'San Francisco',
-    industry: 'SaaS',
-    poc: 'Marcel Thompson',
-    agent: 'Hirefly',
-    process: 'Phone Screen',
-    appliedDate: '2024-02-20',
-    status: 'In Progress',
-    notes: 'Rohan Nagensh (Hirefly) -> Marcel Thompson (Retool)'
-  },
-  {
-    role: 'Software Engineer',
-    company: 'Uber',
-    location: 'San Francisco',
-    industry: 'Technology',
-    poc: '',
-    agent: '',
-    process: 'Phone Screen',
-    appliedDate: '2024-02-15',
-    status: 'In Progress',
-    notes: 'Phone screen scheduled for next week'
-  },
-  {
-    role: 'Software Engineer',
-    company: 'Tesla',
-    location: 'Austin',
-    industry: 'Automotive/Technology',
-    poc: 'Troy Baines',
-    agent: 'N/A',
-    process: 'Resume',
-    appliedDate: '2024-02-10',
-    status: 'Rejected',
-    notes: 'Must be on site'
+export async function getApplications(): Promise<ApplicationRecord[]> {
+  try {
+    const response = await applicationsApi.getAll();
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching applications:', error);
+    return [];
   }
-];
+}
+
+export async function createApplication(data: Omit<ApplicationRecord, 'id' | 'created' | 'updated' | 'applicant'>): Promise<ApplicationRecord | null> {
+  try {
+    const response = await applicationsApi.create(data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating application:', error);
+    return null;
+  }
+}
+
+export async function updateApplication(id: number, data: Partial<ApplicationRecord>): Promise<ApplicationRecord | null> {
+  try {
+    const response = await applicationsApi.update(id, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating application:', error);
+    return null;
+  }
+}
+
+export async function deleteApplication(id: number): Promise<boolean> {
+  try {
+    await applicationsApi.delete(id);
+    return true;
+  } catch (error) {
+    console.error('Error deleting application:', error);
+    return false;
+  }
+}
