@@ -43,6 +43,7 @@ ALLOWED_HOSTS = [
     "offersplus.xyz",
     "https://offersplus.xyz",
     "offerplus.io",
+    "api.offerplus.io",
     "https://offerplus.io",
     "https://api.offerplus.io/"
 ]
