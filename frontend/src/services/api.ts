@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { authService } from './auth';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://offerplus.io';
+// const API_URL = import.meta.env.VITE_API_URL || 'https://offerplus.io';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -72,5 +73,49 @@ export const applicationsApi = {
   update: (id: number, data: Application) => api.put<Application>(`/api/applications/${id}/`, data),
   delete: (id: number) => api.delete(`/api/applications/${id}/`),
 };
+
+export interface UserProfile {
+  id: number;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  resume: string | null;
+  resume_name: string | null;
+  resume_updated_at: string | null;
+  resume_url: string | null;
+}
+
+class ApiService {
+  async getUserProfile(): Promise<UserProfile> {
+    const response = await api.get('/api/profile/');
+    return response.data;
+  }
+
+  async uploadResume(file: File): Promise<UserProfile> {
+    const formData = new FormData();
+    formData.append('resume', file);
+
+    const response = await api.patch('/api/profile/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    return response.data;
+  }
+
+  async deleteResume(): Promise<UserProfile> {
+    const response = await api.patch('/api/profile/', {
+      resume: null,
+      resume_name: null,
+    });
+
+    return response.data;
+  }
+}
+
+export const apiService = new ApiService();
 
 export default api;

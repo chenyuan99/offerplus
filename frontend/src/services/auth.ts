@@ -7,9 +7,21 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface RegisterCredentials {
+  username: string;
+  email: string;
+  password: string;
+}
+
 export interface AuthTokens {
   access: string;
   refresh: string;
+}
+
+export interface User {
+  id: number;
+  username: string;
+  email: string;
 }
 
 class AuthService {
@@ -20,6 +32,25 @@ class AuthService {
       localStorage.setItem('refresh_token', response.data.refresh);
     }
     return response.data;
+  }
+
+  async register(credentials: RegisterCredentials): Promise<void> {
+    await axios.post(`${API_URL}/api/auth/register/`, credentials);
+  }
+
+  async getCurrentUser(): Promise<User | null> {
+    try {
+      const token = this.getAccessToken();
+      if (!token) return null;
+
+      const response = await axios.get(`${API_URL}/api/auth/user/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      return null;
+    }
   }
 
   logout(): void {
@@ -75,7 +106,7 @@ axios.interceptors.response.use(
     const originalRequest = error.config;
 
     // If the error is 401 and we haven't retried yet
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {

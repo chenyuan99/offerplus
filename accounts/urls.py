@@ -8,6 +8,7 @@ urlpatterns = [
     path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/auth/user/', views.UserDetailView.as_view(), name='user_detail'),
+    path('api/profile/', views.UserProfileView.as_view(), name='user_profile'),
     
     # Existing URLs
     path("", include("django.contrib.auth.urls")),

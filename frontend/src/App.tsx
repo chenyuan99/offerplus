@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -8,11 +8,40 @@ import { Companies } from './pages/Companies';
 import { CompanyDetail } from './pages/CompanyDetail';
 import { JobGPT } from './pages/JobGPT';
 import { AddApplication } from './pages/AddApplication';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
-import { PrivateRoute } from './components/PrivateRoute';
-import { useAuth } from './contexts/AuthContext';
+import { Landing } from './components/Landing';
+
+// Protected Route wrapper component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/" />;
+  }
+
+  return <>{children}</>;
+};
+
+// Public Route wrapper component - redirects to dashboard if logged in
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (user) {
+    return <Navigate to="/dashboard" />;
+  }
+
+  return <>{children}</>;
+};
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,54 +56,70 @@ function AppContent() {
       <main className="flex-grow pt-16">
         <div className="container mx-auto px-4 py-8">
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            {/* Public routes */}
+            <Route path="/" element={
+              <PublicRoute>
+                <Landing />
+              </PublicRoute>
+            } />
+            <Route path="/login" element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            } />
+            <Route path="/register" element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            } />
+
+            {/* Protected routes */}
             <Route
-              path="/profile"
+              path="/dashboard"
               element={
-                <PrivateRoute>
-                  <Profile />
-                </PrivateRoute>
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
               }
             />
             <Route
-              path="/"
+              path="/profile"
               element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
               }
             />
             <Route
               path="/companies"
               element={
-                <PrivateRoute>
+                <ProtectedRoute>
                   <Companies />
-                </PrivateRoute>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/companies/:id"
               element={
-                <PrivateRoute>
+                <ProtectedRoute>
                   <CompanyDetail />
-                </PrivateRoute>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/jobgpt"
               element={
-                <PrivateRoute>
+                <ProtectedRoute>
                   <JobGPT />
-                </PrivateRoute>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/applications/add"
               element={
-                <PrivateRoute>
+                <ProtectedRoute>
                   <AddApplication />
-                </PrivateRoute>
+                </ProtectedRoute>
               }
             />
           </Routes>

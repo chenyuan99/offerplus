@@ -1,21 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authApi } from '../services/api';
-import { authService } from '../services/auth';
-
-interface User {
-  id: number;
-  username: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-}
+import { authService, User } from '../services/auth';
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
   login: (username: string, password: string) => Promise<void>;
-  register: (userData: { username: string; email: string; password: string; password2: string }) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -27,41 +18,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        if (authService.isAuthenticated()) {
+          const userData = await authService.getCurrentUser();
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        authService.logout();
+      } finally {
+        setLoading(false);
+      }
+    };
+
     checkAuth();
   }, []);
-
-  const checkAuth = async () => {
-    try {
-      if (authService.isAuthenticated()) {
-        const response = await authApi.getUser();
-        setUser(response.data);
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
-      authService.logout();
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const login = async (username: string, password: string) => {
     try {
       setError(null);
       await authService.login({ username, password });
-      await checkAuth();
-    } catch (error: any) {
-      setError(error.response?.data?.detail || 'Login failed');
+      const userData = await authService.getCurrentUser();
+      setUser(userData);
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error instanceof Error ? error.message : 'Failed to login');
       throw error;
     }
   };
 
-  const register = async (userData: { username: string; email: string; password: string; password2: string }) => {
+  const register = async (username: string, email: string, password: string) => {
     try {
       setError(null);
-      await authApi.register(userData);
-      await login(userData.username, userData.password);
-    } catch (error: any) {
-      setError(error.response?.data?.detail || 'Registration failed');
+      await authService.register({ username, email, password });
+      await login(username, password);
+    } catch (error) {
+      console.error('Registration error:', error);
+      setError(error instanceof Error ? error.message : 'Registration failed');
       throw error;
     }
   };

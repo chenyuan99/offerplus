@@ -67,11 +67,6 @@ INSTALLED_APPS = [
     "company",
 ]
 
-# Supabase Configuration
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
-SUPABASE_SERVICE_KEY = os.getenv('SUPABASE_SERVICE_KEY')
-
 # Database Configuration
 DATABASES = {
     'default': {
@@ -94,7 +89,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "accounts.middleware.SupabaseAuthMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -153,6 +147,14 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
 
+# Media files (Uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Maximum upload size (5MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB in bytes
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB in bytes
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -161,7 +163,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Authentication backends
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'accounts.backends.SupabaseAuthBackend',
 ]
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -198,52 +199,48 @@ LOGGING = {
     },
 }
 
-# CORS settings
+# CORS Configuration
+CORS_ALLOW_ALL_ORIGINS = True if DEBUG else False
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Vite default dev server
+    "http://localhost:5173",  # Vite dev server
+    "http://localhost:3000",
     "http://127.0.0.1:5173",
-    "https://offerplus.vercel.app"
+    "http://127.0.0.1:3000",
 ]
-
 CORS_ALLOW_CREDENTIALS = True
-
-# OpenAI settings
-OPENAI_API_KEY = "YOUR_API_KEY_HERE"  # Replace with your actual API key
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 # REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': [
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-    ],
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
 }
 
-# JWT settings
+# JWT Settings
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
+    'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
-    'UPDATE_LAST_LOGIN': False,
-
+    'UPDATE_LAST_LOGIN': True,
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': None,
-
     'AUTH_HEADER_TYPES': ('Bearer',),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
-
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
 }
+
+# OpenAI settings
+OPENAI_API_KEY = "YOUR_API_KEY_HERE"  # Replace with your actual API key
+os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
 WEBPACK_LOADER = {
     'DEFAULT': {

@@ -1,11 +1,26 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
+from .models import UserProfile
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name')
+        fields = ('id', 'username', 'email')
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    resume_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserProfile
+        fields = ('id', 'user', 'resume', 'resume_name', 'resume_updated_at', 'resume_url')
+        read_only_fields = ('resume_updated_at',)
+
+    def get_resume_url(self, obj):
+        if obj.resume:
+            return obj.resume.url
+        return None
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
