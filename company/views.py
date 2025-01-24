@@ -27,7 +27,7 @@ def display_companies(request):
 
 def display_company(request, company_name):
     if not request.user.is_authenticated:
-        return redirect("landing-page")
+        return redirect("login")
     logging.info(company_name)
     items = ApplicationRecord.objects.filter(
         company_name=company_name, applicant=request.user.username
