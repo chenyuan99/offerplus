@@ -29,6 +29,8 @@ jobs:
       env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
+        python manage.py makemigrations
+        python mange.py migrate
         python manage.py test
 
     - name: Upload coverage reports to Codecov
