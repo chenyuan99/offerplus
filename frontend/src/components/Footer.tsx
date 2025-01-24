@@ -10,8 +10,7 @@ export function Footer() {
           <div className="text-center md:text-left">
             <div className="space-y-4">
               <div className="text-sm text-gray-500">
-                <p>© 2024</p>
-                <p>Created with ❤️ by @chenyuan99</p>
+                <p>© 2025 RiseWorks</p>
               </div>
               <div>
                 <a 
