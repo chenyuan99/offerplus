@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { MessageCircle } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -10,7 +11,7 @@ export function Footer() {
           <div className="text-center md:text-left">
             <div className="space-y-4">
               <div className="text-sm text-gray-500">
-                <p>© 2025 RiseWorks</p>
+                <p>&copy; {new Date().getFullYear()} RiseWorks</p>
               </div>
               <div>
                 <a 
@@ -23,6 +24,17 @@ export function Footer() {
                     alt="Offers Plus - AI Job Hunter | Product Hunt"
                     className="h-14 w-auto mx-auto md:mx-0"
                   />
+                </a>
+              </div>
+              <div>
+                <a
+                  href="https://discord.gg/X24GHUwtHW"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-gray-500 hover:text-[#5865F2] justify-center md:justify-start"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  <span>Join our Discord</span>
                 </a>
               </div>
             </div>
@@ -63,6 +75,22 @@ export function Footer() {
               Resources
             </h5>
             <ul className="space-y-3">
+              <li>
+                <Link 
+                  to="/hardware"
+                  className="text-base text-gray-500 hover:text-gray-900"
+                >
+                  Hardware Community
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/h1b"
+                  className="text-base text-gray-500 hover:text-gray-900"
+                >
+                  H1B Data Hub
+                </Link>
+              </li>
               <li>
                 <a 
                   href="https://levels.fyi"

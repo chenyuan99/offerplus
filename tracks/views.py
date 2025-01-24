@@ -25,6 +25,7 @@ from rest_framework import viewsets, permissions
 from tracks.forms import ApplicationRecordForm
 from tracks.models import ApplicationRecord, Company
 from .serializers import ApplicationRecordSerializer
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -118,11 +119,14 @@ def edit_application(request, id):
             )
 
 
+@login_required
 def hardware(request):
-    return render(request, "hardware.html")
+    return redirect('/hardware')
 
+
+@login_required
 def display_h1b(request):
-    return render(request, "h1b.html")
+    return redirect('/h1b')
 
 
 # -------------------------add-----------------------------------

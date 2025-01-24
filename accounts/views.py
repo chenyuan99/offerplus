@@ -23,10 +23,6 @@ def logout_request(request):
     return redirect("index")
 
 
-def privacy(request):
-    return render(request, "accounts/privacy-policy.html")
-
-
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)

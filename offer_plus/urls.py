@@ -14,8 +14,6 @@ from django.views.static import serve
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="index.html"), name="index"),
-    path("hardware", TemplateView.as_view(template_name="hardware.html"), name="hardware"),
-    path("h1b", TemplateView.as_view(template_name="h1b.html"), name="h1b"),
     path("yuanc", TemplateView.as_view(template_name="yuanc.html"), name="yuanc"),
     path("companies", TemplateView.as_view(template_name="companies.html"), name="companies"),
     path("add-application/", TemplateView.as_view(template_name="add-application.html"), name="add-application"),
@@ -23,9 +21,10 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
     path("admin/", admin.site.urls),
     path("jobgpt/", include("jobgpt.urls")),
-    path("", include("company.urls")),  # Include company URLs at root
-    path("", include("tracks.urls")),  # Include tracks URLs for applications API
-    path("", include("accounts.urls")),  # Include accounts URLs at root for auth endpoints
+    path("", include("tracks.urls")),  
+    path("", include("company.urls")),  
+    path("", include("accounts.urls")),  
+    path("", include("jobgpt.urls")),  
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),

@@ -8,6 +8,10 @@ import { Companies } from './pages/Companies';
 import { CompanyDetail } from './pages/CompanyDetail';
 import { JobGPT } from './pages/JobGPT';
 import { AddApplication } from './pages/AddApplication';
+import { Privacy } from './pages/Privacy';
+import { Terms } from './pages/Terms';
+import { H1B } from './pages/H1B';
+import { Hardware } from './pages/Hardware';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -72,6 +76,8 @@ function AppContent() {
                 <Register />
               </PublicRoute>
             } />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
 
             {/* Protected routes */}
             <Route
@@ -119,6 +125,22 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <AddApplication />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/h1b"
+              element={
+                <ProtectedRoute>
+                  <H1B />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hardware"
+              element={
+                <ProtectedRoute>
+                  <Hardware />
                 </ProtectedRoute>
               }
             />
