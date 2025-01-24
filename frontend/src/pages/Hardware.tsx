@@ -1,16 +1,14 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 
-export const Hardware: React.FC = () => {
+export function Hardware() {
   return (
     <>
-      <SEO
-        title="Hardware Engineering Jobs | Offers+"
-        description="Find and explore hardware engineering jobs at top tech companies. Browse opportunities in ASIC, FPGA, embedded systems, and more."
-        keywords="hardware engineering, ASIC jobs, FPGA jobs, embedded systems, hardware design, tech jobs"
-        type="article"
-      />
+      <Helmet>
+        <title>Hardware Engineering Jobs | Offers+</title>
+        <meta name="description" content="Explore hardware engineering jobs, salaries, and career opportunities in top tech companies." />
+      </Helmet>
       <div className="min-h-screen bg-gray-50">
         <Helmet>
           <title>Hardware Community | Offers+</title>
@@ -55,4 +53,4 @@ export const Hardware: React.FC = () => {
       </div>
     </>
   );
-};
+}

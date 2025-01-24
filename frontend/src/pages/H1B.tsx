@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 
 declare global {
@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-export const H1B: React.FC = () => {
+export function H1B() {
   useEffect(() => {
     // Load Tableau script
     const script = document.createElement('script');
@@ -26,6 +26,10 @@ export const H1B: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <title>H1B Visa Information | Offers+</title>
+        <meta name="description" content="Find comprehensive information about H1B visas, application process, requirements, and more." />
+      </Helmet>
       <SEO
         title="H1B Jobs & Sponsorship | Offers+"
         description="Find tech companies that sponsor H1B visas. Explore job opportunities and get insights into the H1B sponsorship process in the tech industry."
@@ -68,4 +72,4 @@ export const H1B: React.FC = () => {
       </div>
     </>
   );
-};
+}

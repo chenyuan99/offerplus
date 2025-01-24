@@ -1,16 +1,14 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import SEO from '../components/SEO';
 
-export const Landing: React.FC = () => {
+export function Landing() {
   return (
     <>
-      <SEO
-        title="Offers+ | Track Your Tech Career Journey"
-        description="Offers+ helps you track job applications, find internships, and explore H1B opportunities in tech. Get insights into companies and make informed career decisions."
-        keywords="tech jobs, job tracking, internships, H1B jobs, career management, software engineering, tech companies"
-        type="website"
-      />
+      <Helmet>
+        <title>Offers+ | Your Tech Career Companion</title>
+        <meta name="description" content="Offers+ helps tech professionals manage their job applications, prepare for interviews, and make informed career decisions." />
+      </Helmet>
       <div className="bg-white">
         {/* Hero section */}
         <div className="relative isolate px-6 pt-14 lg:px-8">
@@ -130,4 +128,4 @@ export const Landing: React.FC = () => {
       </div>
     </>
   );
-};
+}
