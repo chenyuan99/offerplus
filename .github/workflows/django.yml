@@ -28,6 +28,7 @@ jobs:
     - name: Run Tests
       env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: |
         python manage.py makemigrations
         python manage.py migrate
