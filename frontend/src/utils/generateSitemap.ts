@@ -2,10 +2,9 @@ import fs from 'fs';
 import { globby } from 'globby';
 import prettier from 'prettier';
 
-const SITE_URL = process.env.REACT_APP_SITE_URL || 'https://offersplus.io';
+const SITE_URL = process.env.VITE_SITE_URL || 'https://offersplus.io';
 
 async function generateSitemap() {
-  const prettierConfig = await prettier.resolveConfig('./.prettierrc');
   const pages = await globby([
     'src/pages/**/*.tsx',
     '!src/pages/**/[*.tsx', // Exclude dynamic routes
@@ -23,6 +22,7 @@ async function generateSitemap() {
             .replace('.tsx', '')
             .replace('/index', '');
           const route = path === '/index' ? '' : path;
+
           return `
             <url>
               <loc>${`${SITE_URL}${route}`}</loc>
@@ -36,12 +36,20 @@ async function generateSitemap() {
     </urlset>
   `;
 
-  const formatted = prettier.format(sitemap, {
-    ...prettierConfig,
-    parser: 'html',
-  });
+  try {
+    const formatted = await prettier.format(sitemap, {
+      parser: 'html',
+    });
 
-  fs.writeFileSync('public/sitemap.xml', formatted);
+    // Write sitemap to the public directory
+    fs.writeFileSync('public/sitemap.xml', formatted);
+    console.log('✅ Sitemap generated successfully!');
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
+    // Write unformatted sitemap as fallback
+    fs.writeFileSync('public/sitemap.xml', sitemap);
+    console.log('⚠️ Sitemap generated without formatting');
+  }
 }
 
 generateSitemap();
