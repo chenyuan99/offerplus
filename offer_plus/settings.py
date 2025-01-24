@@ -45,7 +45,7 @@ ALLOWED_HOSTS = [
     "offerplus.io",
     "api.offerplus.io",
     "https://offerplus.io",
-    "https://api.offerplus.io/"
+    "https://api.offerplus.io"
 ]
 
 CSRF_TRUSTED_ORIGINS = ["https://offersplus.xyz", "https://offerplus.io"]
