@@ -211,13 +211,12 @@ LOGGING = {
 }
 
 # CORS Configuration
-CORS_ALLOW_ALL_ORIGINS = True if DEBUG else False
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Vite dev server
-    "http://localhost:3000",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:3000",
+    "http://localhost:5173",  # Vite development server
+    "http://localhost:3000",  # Alternative development port
+    "https://offersplus.io",  # Production URL
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 
 # REST Framework settings
@@ -250,8 +249,7 @@ SIMPLE_JWT = {
 }
 
 # OpenAI settings
-OPENAI_API_KEY = "YOUR_API_KEY_HERE"  # Replace with your actual API key
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 WEBPACK_LOADER = {
     'DEFAULT': {

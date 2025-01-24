@@ -1,12 +1,14 @@
-export type JobGPTMode = 'cover-letter' | 'resume' | 'recommendation';
+export type JobGPTMode = 'why_company' | 'behavioral' | 'general';
 
 export interface JobGPTResponse {
-  prompt: string;
+  response: string;
+  mode: JobGPTMode;
   error?: string;
 }
 
 export interface ResumeUploadResponse {
-  file_url?: string;
+  feedback: string;
+  message: string;
   error?: string;
 }
 

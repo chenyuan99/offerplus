@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
@@ -12,6 +13,7 @@ import { Privacy } from './pages/Privacy';
 import { Terms } from './pages/Terms';
 import { H1B } from './pages/H1B';
 import { Hardware } from './pages/Hardware';
+import { Internship as InternshipPage } from './pages/Internship';  
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -78,6 +80,8 @@ function AppContent() {
             } />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/h1b" element={<H1B />} />
+            <Route path="/hardware" element={<Hardware />} />
 
             {/* Protected routes */}
             <Route
@@ -129,18 +133,10 @@ function AppContent() {
               }
             />
             <Route
-              path="/h1b"
+              path="/internships"
               element={
                 <ProtectedRoute>
-                  <H1B />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/hardware"
-              element={
-                <ProtectedRoute>
-                  <Hardware />
+                  <InternshipPage />
                 </ProtectedRoute>
               }
             />
@@ -155,9 +151,11 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <HelmetProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </HelmetProvider>
     </Router>
   );
 }

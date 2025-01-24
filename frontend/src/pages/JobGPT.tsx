@@ -4,7 +4,7 @@ import { jobgptService } from '../services/jobgptService';
 import { JobGPTMode, JobGPTState } from '../types/jobgpt';
 
 const initialState: JobGPTState = {
-  mode: 'recommendation',
+  mode: 'why_company',  // Updated default mode
   isLoading: false,
   error: null,
   input: '',
@@ -33,7 +33,7 @@ export function JobGPT() {
 
     try {
       const response = await jobgptService.generatePrompt(state.input, state.mode);
-      setState({ ...state, isLoading: false, output: response.prompt });
+      setState({ ...state, isLoading: false, output: response.response });  // Updated to use response instead of prompt
     } catch (error: any) {
       setState({ ...state, isLoading: false, error: error.message });
     }
@@ -68,116 +68,76 @@ export function JobGPT() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">JobGPT</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">JobGPT Assistant</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
           JobGPT is an AI-powered job assistant that helps you create cover letters,
           improve your resume, and generate professional recommendations.
         </p>
       </div>
 
-      <div className="flex justify-center space-x-4 mb-8">
+      <div className="mb-6">
+        <div className="flex space-x-4 mb-4">
+          <button
+            className={`px-4 py-2 rounded ${state.mode === 'why_company' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => handleModeChange('why_company')}
+          >
+            Why Company
+          </button>
+          <button
+            className={`px-4 py-2 rounded ${state.mode === 'behavioral' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => handleModeChange('behavioral')}
+          >
+            Behavioral
+          </button>
+          <button
+            className={`px-4 py-2 rounded ${state.mode === 'general' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => handleModeChange('general')}
+          >
+            General
+          </button>
+        </div>
+        
+        <textarea
+          className="w-full h-32 p-2 border rounded mb-4"
+          placeholder={getPlaceholder(state.mode)}
+          value={state.input}
+          onChange={handleInputChange}
+        />
+        
         <button
-          onClick={() => handleModeChange('cover-letter')}
-          className={`flex items-center px-4 py-2 rounded-lg ${
-            state.mode === 'cover-letter'
-              ? 'bg-blue-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-50'
-          }`}
+          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+          onClick={handleSubmit}
+          disabled={state.isLoading}
         >
-          <FileText className="w-5 h-5 mr-2" />
-          Cover Letter
-        </button>
-        <button
-          onClick={() => handleModeChange('resume')}
-          className={`flex items-center px-4 py-2 rounded-lg ${
-            state.mode === 'resume'
-              ? 'bg-blue-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-50'
-          }`}
-        >
-          <Upload className="w-5 h-5 mr-2" />
-          Resume
-        </button>
-        <button
-          onClick={() => handleModeChange('recommendation')}
-          className={`flex items-center px-4 py-2 rounded-lg ${
-            state.mode === 'recommendation'
-              ? 'bg-blue-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-50'
-          }`}
-        >
-          <ThumbsUp className="w-5 h-5 mr-2" />
-          Recommendation
+          {state.isLoading ? 'Generating...' : 'Generate'}
         </button>
       </div>
 
       {state.error && (
-        <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {state.error}
         </div>
       )}
 
-      <div className="space-y-6">
-        {state.mode === 'resume' ? (
-          <div className="bg-white p-6 rounded-lg shadow">
-            <h2 className="text-xl font-semibold mb-4">Upload Resume</h2>
-            <div className="space-y-4">
-              <input
-                type="file"
-                accept=".pdf,.doc,.docx"
-                onChange={handleFileChange}
-                className="block w-full text-sm text-gray-500
-                  file:mr-4 file:py-2 file:px-4
-                  file:rounded-full file:border-0
-                  file:text-sm file:font-semibold
-                  file:bg-blue-50 file:text-blue-700
-                  hover:file:bg-blue-100"
-              />
-              <button
-                onClick={handleFileUpload}
-                disabled={state.isLoading || !selectedFile}
-                className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-              >
-                {state.isLoading ? 'Uploading...' : 'Upload Resume'}
-              </button>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-xl font-semibold mb-4">Input</h2>
-              <textarea
-                value={state.input}
-                onChange={handleInputChange}
-                placeholder={
-                  state.mode === 'cover-letter'
-                    ? 'Enter job description and your qualifications...'
-                    : 'Enter your experience and achievements...'
-                }
-                className="w-full h-40 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-              <button
-                onClick={handleSubmit}
-                disabled={state.isLoading}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-              >
-                {state.isLoading ? 'Generating...' : 'Generate'}
-              </button>
-            </div>
-
-            {state.output && (
-              <div className="bg-white p-6 rounded-lg shadow">
-                <h2 className="text-xl font-semibold mb-4">Generated Content</h2>
-                <textarea
-                  value={state.output}
-                  readOnly
-                  className="w-full h-40 p-3 bg-gray-50 border border-gray-300 rounded-lg"
-                />
-              </div>
-            )}
-          </>
-        )}
-      </div>
+      {state.output && (
+        <div className="bg-gray-100 p-4 rounded">
+          <h2 className="font-bold mb-2">Generated Response:</h2>
+          <p className="whitespace-pre-wrap">{state.output}</p>
+        </div>
+      )}
     </div>
   );
+}
+
+function getPlaceholder(mode: JobGPTMode): string {
+  switch (mode) {
+    case 'why_company':
+      return 'Enter the company name...';
+    case 'behavioral':
+      return 'Enter the behavioral question...';
+    case 'general':
+      return 'Enter your prompt...';
+    default:
+      return 'Enter your text here...';
+  }
 }

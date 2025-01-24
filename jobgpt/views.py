@@ -11,32 +11,173 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from django.http import JsonResponse
-from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .generator import (
+    generate_response,
+    generate_why_role,
+    generate_why_company,
+    generate_thank_you_letter,
+    get_behavioral_answer,
+    get_resume_feedback,
+    get_resume_match_score,
+)
 
-from .generator import generate_response, generate_why_role, generate_why_company, generate_thank_you_letter
-
-
-# Create your views here.
+@api_view(['GET'])
 def index(request):
-    return render(request, "jobgpt/jobgpt.html")
+    return JsonResponse({"message": "Welcome to JobGPT API"})
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def generate_prompt(request):
+    """
+    Generate a response based on the provided prompt and mode.
+    """
+    prompt = request.data.get('prompt')
+    mode = request.data.get('mode', 'why_company')
 
-def resume_match(request):
-    return render(request, "jobgpt/resume-match.html")
-
-
-def get_prompt(request):
-    if not request.user.is_authenticated:
-        return JsonResponse(
-            {"prompt": "You must be logged in to use this feature."}
+    if not prompt:
+        return Response(
+            {'error': 'Prompt is required'}, 
+            status=status.HTTP_400_BAD_REQUEST
         )
-    result = generate_response(request.POST.get("prompt"))
-    return JsonResponse({"prompt": result})
 
-def get_why_company(request, company_name=None):
-    if not request.user.is_authenticated:
-        return JsonResponse(
-            {"why_company": "You must be logged in to use this feature."}
+    try:
+        if mode == 'why_company':
+            response = generate_why_company(prompt)
+        elif mode == 'behavioral':
+            response = get_behavioral_answer(prompt)
+        elif mode == 'general':
+            response = generate_response(prompt)
+        else:
+            return Response(
+                {'error': 'Invalid mode specified'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response({
+            'response': response,
+            'mode': mode
+        })
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-    result = generate_why_company(company_name)
-    return JsonResponse({"why_company": result})
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def why_role(request):
+    """Generate why role response."""
+    company_name = request.data.get('company_name')
+    role_name = request.data.get('role_name')
+    
+    if not company_name or not role_name:
+        return Response(
+            {'error': 'Both company_name and role_name are required'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        response = generate_why_role(company_name, role_name)
+        return Response({'response': response})
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def why_company(request):
+    """Generate why company response."""
+    company_name = request.data.get('company_name')
+    
+    if not company_name:
+        return Response(
+            {'error': 'company_name is required'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        response = generate_why_company(company_name)
+        return Response({'response': response})
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def thank_you_letter(request):
+    """Generate thank you letter."""
+    interviewer_name = request.data.get('interviewer_name')
+    company_name = request.data.get('company_name')
+    
+    if not interviewer_name or not company_name:
+        return Response(
+            {'error': 'Both interviewer_name and company_name are required'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        response = generate_thank_you_letter(interviewer_name, company_name)
+        return Response({'response': response})
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upload_resume(request):
+    """Upload and analyze a resume."""
+    if 'document' not in request.FILES:
+        return Response(
+            {'error': 'No document provided'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        resume_file = request.FILES['document']
+        feedback = get_resume_feedback(resume_file)
+        
+        return Response({
+            'feedback': feedback,
+            'message': 'Resume uploaded and analyzed successfully'
+        })
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def match_resume(request):
+    """Match a resume against a job description."""
+    job_description = request.data.get('job_description')
+    resume_url = request.data.get('resume_url')
+
+    if not job_description or not resume_url:
+        return Response(
+            {'error': 'Both job description and resume URL are required'}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        match_score = get_resume_match_score(job_description, resume_url)
+        
+        return Response({
+            'match_score': match_score,
+            'message': 'Resume match analysis completed'
+        })
+    except Exception as e:
+        return Response(
+            {'error': str(e)}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
