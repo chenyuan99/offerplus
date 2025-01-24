@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { Profile } from './pages/Profile';
 import { Companies } from './pages/Companies';
 import { CompanyDetail } from './pages/CompanyDetail';
 import { JobGPT } from './pages/JobGPT';
@@ -26,6 +28,15 @@ function AppContent() {
         <div className="container mx-auto px-4 py-8">
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
             <Route
               path="/"
               element={
