@@ -5,35 +5,15 @@ from collections import defaultdict
 
 from django.contrib.auth.models import User
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action, api_view
 
-from tracks.models import ApplicationRecord
-from .models import Company, Job
-from .serializers import CompanySerializer, JobSerializer
+from tracks.models import ApplicationRecord, Company
+from .serializers import CompanySerializer
 
 # Create your views here.
-
-
-def display_companies(request):
-    items = Company.objects.all()
-    context = {
-        "items": items,
-    }
-    return render(request, "company/company.html", context)
-
-
-def display_company(request, company_name):
-    if not request.user.is_authenticated:
-        return redirect("login")
-    logging.info(company_name)
-    items = ApplicationRecord.objects.filter(
-        company_name=company_name, applicant=request.user.username
-    )
-    context = {"items": items, "company": company_name}
-    return render(request, "company/company-detail.html", context)
 
 
 def display_grace_hopper(request):
@@ -116,34 +96,3 @@ def api_internships(request):
             return Response(response_data)
     except Exception as e:
         return Response({"error": str(e)}, status=500)
-
-
-class CompanyViewSet(viewsets.ModelViewSet):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class JobViewSet(viewsets.ModelViewSet):
-    queryset = Job.objects.all()
-    serializer_class = JobSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def get_queryset(self):
-        queryset = Job.objects.all()
-        company_id = self.request.query_params.get('company', None)
-        if company_id is not None:
-            queryset = queryset.filter(company_id=company_id)
-        return queryset
-
-    def perform_create(self, serializer):
-        company_id = self.request.data.get('company')
-        company = get_object_or_404(Company, id=company_id)
-        serializer.save(company=company)
-
-    @action(detail=True, methods=['post'])
-    def apply(self, request, pk=None):
-        job = self.get_object()
-        user = request.user
-        # Add application logic here
-        return Response({'status': 'application submitted'})

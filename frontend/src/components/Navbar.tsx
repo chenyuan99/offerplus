@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, FileText, BarChart2, LogOut } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, FileText, BarChart2, LogOut, User, ChevronDown } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface NavbarProps {
@@ -14,6 +14,27 @@ export function Navbar({
 }: NavbarProps) {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <>
@@ -66,23 +87,66 @@ export function Navbar({
                   >
                     JobGPT
                   </Link>
-                  <button
-                    onClick={logout}
-                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                  >
-                    <span className="flex items-center">
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Logout
-                    </span>
-                  </button>
+                  {/* User Menu */}
+                  <div className="relative ml-3" ref={userMenuRef}>
+                    <button
+                      onClick={() => setShowUserMenu(!showUserMenu)}
+                      className="flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 focus:outline-none"
+                    >
+                      <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                        {user.username ? (
+                          <span className="text-sm font-medium text-gray-600">
+                            {user.username.charAt(0).toUpperCase()}
+                          </span>
+                        ) : (
+                          <User className="h-5 w-5 text-gray-500" />
+                        )}
+                      </div>
+                      <span className="hidden md:block">{user.username}</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    {showUserMenu && (
+                      <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                        <Link
+                          to="/profile"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <div className="flex items-center">
+                            <User className="h-4 w-4 mr-2" />
+                            Profile
+                          </div>
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        >
+                          <div className="flex items-center">
+                            <LogOut className="h-4 w-4 mr-2" />
+                            Logout
+                          </div>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </>
               ) : (
-                <Link
-                  to="/login"
-                  className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                >
-                  Login
-                </Link>
+                <div className="flex space-x-4">
+                  <Link
+                    to="/login"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="bg-[#861F41] text-white hover:bg-[#621531] px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Register
+                  </Link>
+                </div>
               )}
             </div>
 
@@ -90,8 +154,9 @@ export function Navbar({
             <div className="flex items-center sm:hidden">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
               >
+                <span className="sr-only">Open main menu</span>
                 {isMenuOpen ? (
                   <X className="block h-6 w-6" />
                 ) : (
@@ -105,84 +170,87 @@ export function Navbar({
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="sm:hidden fixed inset-0 z-30 bg-gray-600 bg-opacity-75">
-          <div className="fixed inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl">
-            <div className="absolute top-0 right-0 -mr-12 pt-2">
-              <button
-                onClick={() => setIsMenuOpen(false)}
-                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-              >
-                <X className="h-6 w-6 text-white" />
-              </button>
-            </div>
-            <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
-              <div className="flex-shrink-0 flex items-center px-4">
-                <span className="text-2xl font-bold text-[#861F41]">Offers+</span>
-              </div>
-              <nav className="mt-5 px-2 space-y-1">
-                {user ? (
-                  <>
-                    <Link
-                      to="/"
-                      className={`block px-3 py-2 rounded-md text-base font-medium ${
-                        location.pathname === '/' 
-                          ? 'bg-gray-100 text-gray-900' 
-                          : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <span className="flex items-center">
-                        <BarChart2 className="h-5 w-5 mr-3" />
-                        Dashboard
-                      </span>
-                    </Link>
-                    <Link
-                      to="/applications/add"
-                      className={`block px-3 py-2 rounded-md text-base font-medium ${
-                        location.pathname === '/applications/add' 
-                          ? 'bg-gray-100 text-gray-900' 
-                          : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <span className="flex items-center">
-                        <FileText className="h-5 w-5 mr-3" />
-                        Add Application
-                      </span>
-                    </Link>
-                    <Link
-                      to="/jobgpt"
-                      className={`block px-3 py-2 rounded-md text-base font-medium ${
-                        location.pathname === '/jobgpt' 
-                          ? 'bg-gray-100 text-gray-900' 
-                          : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
-                      }`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      JobGPT
-                    </Link>
-                    <button
-                      onClick={() => {
-                        logout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="w-full flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                    >
-                      <LogOut className="h-5 w-5 mr-3" />
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <Link
-                    to="/login"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                )}
-              </nav>
-            </div>
+        <div className="sm:hidden fixed inset-0 z-40 bg-white">
+          <div className="pt-16 pb-3 space-y-1">
+            {user ? (
+              <>
+                <Link
+                  to="/"
+                  className={`block px-3 py-2 text-base font-medium ${
+                    location.pathname === '/'
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="flex items-center">
+                    <BarChart2 className="h-5 w-5 mr-3" />
+                    Dashboard
+                  </span>
+                </Link>
+                <Link
+                  to="/applications/add"
+                  className={`block px-3 py-2 text-base font-medium ${
+                    location.pathname === '/applications/add'
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="flex items-center">
+                    <FileText className="h-5 w-5 mr-3" />
+                    Add Application
+                  </span>
+                </Link>
+                <Link
+                  to="/jobgpt"
+                  className={`block px-3 py-2 text-base font-medium ${
+                    location.pathname === '/jobgpt'
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  JobGPT
+                </Link>
+                <Link
+                  to="/profile"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="flex items-center">
+                    <User className="h-5 w-5 mr-3" />
+                    Profile
+                  </span>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                >
+                  <span className="flex items-center">
+                    <LogOut className="h-5 w-5 mr-3" />
+                    Logout
+                  </span>
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Register
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
