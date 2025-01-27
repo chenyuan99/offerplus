@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { JobList } from '../components/JobList';
 import { JobForm } from '../components/JobForm';
 import { ApplicationRecord } from '../types';
-import { Plus, Search, BarChart3, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Search, BarChart3, ChevronLeft, ChevronRight, Mail } from 'lucide-react';
 import { jobsDb } from '../lib/db';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CompanyLogo } from '../components/CompanyLogo';
+import { syncGmail } from '../services/gmail';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -19,6 +20,7 @@ export function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isSyncing, setIsSyncing] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -99,6 +101,22 @@ export function Dashboard() {
     }
   };
 
+  const handleGmailSync = async () => {
+    try {
+      setIsSyncing(true);
+      setError(null);
+      await syncGmail();
+      // Reload applications after sync
+      const loadedApplications = await jobsDb.list();
+      setApplications(loadedApplications);
+    } catch (error: any) {
+      console.error('Error syncing with Gmail:', error);
+      setError(error.message || 'Failed to sync with Gmail');
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -146,13 +164,23 @@ export function Dashboard() {
       
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-900">Job Applications</h1>
-        <button
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-        >
-          <Plus size={20} />
-          Add Application
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleGmailSync}
+            disabled={isSyncing}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Mail size={20} />
+            {isSyncing ? 'Syncing...' : 'Sync Gmail'}
+          </button>
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            <Plus size={20} />
+            Add Application
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-4 flex-wrap">

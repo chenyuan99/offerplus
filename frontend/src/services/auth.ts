@@ -60,16 +60,22 @@ class AuthService {
 
   async refreshToken(): Promise<string | null> {
     const refreshToken = localStorage.getItem('refresh_token');
-    if (!refreshToken) return null;
+    if (!refreshToken) {
+      console.warn('No refresh token found in localStorage');
+      return null;
+    }
 
     try {
+      console.log('Attempting to refresh token...');
       const response = await axios.post(`${API_URL}/api/auth/refresh/`, {
         refresh: refreshToken,
       });
       const newAccessToken = response.data.access;
       localStorage.setItem('access_token', newAccessToken);
+      console.log('Token refresh successful');
       return newAccessToken;
     } catch (error) {
+      console.error('Token refresh failed:', error);
       this.logout();
       return null;
     }
@@ -108,17 +114,20 @@ axios.interceptors.response.use(
     // If the error is 401 and we haven't retried yet
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+      console.log('Intercepted 401 error, attempting token refresh...');
 
       try {
         const newToken = await authService.refreshToken();
         if (newToken) {
-          // Update the authorization header
+          console.log('Token refresh successful, retrying original request');
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          // Retry the original request
           return axios(originalRequest);
+        } else {
+          console.warn('Token refresh returned null, rejecting request');
+          return Promise.reject(error);
         }
       } catch (refreshError) {
-        // If refresh fails, logout and redirect to login
+        console.error('Token refresh failed in interceptor:', refreshError);
         authService.logout();
         return Promise.reject(refreshError);
       }
