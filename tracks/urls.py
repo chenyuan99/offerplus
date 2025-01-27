@@ -1,23 +1,17 @@
-from django.template.defaulttags import url
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-
 from . import views
 
 router = DefaultRouter()
-router.register(r'api/applications', views.ApplicationRecordViewSet, basename='application')
+router.register(r'applications', views.ApplicationRecordViewSet, basename='application')
 
+app_name = "tracks"
 urlpatterns = [
-    path('', include(router.urls)),
     path("", views.index, name="index"),
-    path("hardware", views.hardware, name="hardware"),
-    path("h1b", views.display_h1b, name="h1b"),
-    path("yuanc", views.yuanc, name="yuanc"),
-    path("companies", views.companies, name="companies"),
-    path("add-application/", views.add_application, name="add-application"),
-    path(
-        "application/edit/<int:id>/",
-        views.edit_application,
-        name="application-edit",
-    ),
+    path("add/", views.add_application, name="add-application"),
+    path("edit/<int:id>/", views.edit_application, name="edit-application"),
+    path("companies/", views.companies, name="companies"),
+    path("sync-gmail/", views.sync_gmail, name="sync-gmail"),
+    path("api/", include(router.urls)),
+    path("api/sync-gmail/", views.sync_gmail_api, name="sync-gmail-api"),
 ]

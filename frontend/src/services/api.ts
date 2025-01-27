@@ -43,15 +43,19 @@ api.interceptors.response.use(
 
 export interface Application {
   id?: number;
-  outcome: string;
+  company: {
+    id: number;
+    name: string;
+    description?: string;
+    industry?: string;
+  };
   job_title: string;
-  company_name: string;
-  application_link?: string;
-  OA_date?: string;
-  VO_date?: string;
-  created?: string;
-  updated?: string;
-  applicant?: string;
+  status: 'APPLIED' | 'OA' | 'VO' | 'OFFER' | 'REJECTED';
+  source: string;
+  notes?: string;
+  email_id?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // Auth API endpoints

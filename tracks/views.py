@@ -11,23 +11,25 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
-
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import QuerySet
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import FormView, TemplateView
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 from tracks.forms import ApplicationRecordForm
 from tracks.models import ApplicationRecord, Company
 from .serializers import ApplicationRecordSerializer
+from .services.gmail_service import GmailService
+from .services.company_service import CompanyService
 from django.contrib.auth.decorators import login_required
-
-# Create your views here.
 
 
 def report_statistics(items: QuerySet[ApplicationRecord]):
@@ -36,138 +38,130 @@ def report_statistics(items: QuerySet[ApplicationRecord]):
     :param items: QuerySet of ApplicationRecord objects
     :return: a dictionary with the statistics of applications
     """
-    rejected = len(items.filter(outcome__contains="REJECT"))
-    oa = len(items.filter(outcome="OA"))
-    vo = len(items.filter(outcome="VO"))
-    offer = len(items.filter(outcome="OFFER"))
+    rejected = len(items.filter(status='REJECTED'))
+    oa = len(items.filter(status='OA'))
+    vo = len(items.filter(status='VO'))
+    offer = len(items.filter(status='OFFER'))
     statistics = {"oa": oa, "rejected": rejected, "vo": vo, "offer": offer}
     return statistics
 
 
+@login_required
 def index(request, *args, **kwargs):
-    if not request.user.is_authenticated:
-        return redirect('login')
-
-    items = ApplicationRecord.objects.filter(
-        applicant__username=request.user.username
-    )
-    # for item in items: print((item.applicant.username, request.user.username))
-    # myFilter = facultyFilter(request.GET, queryset=items)
-    # items = myFilter.qs
+    items = ApplicationRecord.objects.filter(user=request.user)
     statistics = report_statistics(items)
-    logging.info(statistics)
-    logging.info(request.GET.get('outcome'))
-    if request.GET.get('outcome') == "rejected":
-        items = items.filter(outcome__contains="REJECT")
-    elif request.GET.get('outcome') == "oa":
-        items = items.filter(outcome="OA")
-    elif request.GET.get('outcome') == "vo":
-        items = items.filter(outcome="VO")
-    elif request.GET.get('outcome') == "offer":
-        items = items.filter(outcome="OFFER")
-
-    # Paginate items
-
-    # Get page number from request,
-    # default to first page
-    default_page = 1
-    page = request.GET.get("page", default_page)
-    items_per_page = 10
-    paginator = Paginator(items, items_per_page)
+    paginator = Paginator(items, 10)
+    page = request.GET.get("page")
     try:
-        items_page = paginator.page(page)
+        items = paginator.page(page)
     except PageNotAnInteger:
-        items_page = paginator.page(default_page)
+        items = paginator.page(1)
     except EmptyPage:
-        items_page = paginator.page(paginator.num_pages)
-    context = {"items_page": items_page, "statistics": statistics}
-    return render(request, "index.html", context)
+        items = paginator.page(paginator.num_pages)
+    context = {"items": items, "statistics": statistics}
+    return render(request, "tracks/index.html", context)
 
 
-
-# Pre Post Form related view
 class ApplicationRecordView(LoginRequiredMixin, FormView):
     template_name = "tracks/application-record.html"
     form_class = ApplicationRecordForm
     success_url = reverse_lazy("tracks:success")
 
+    def form_valid(self, form):
+        application = form.save(commit=False)
+        application.user = self.request.user
+        application.save()
+        return super().form_valid(form)
 
-class ApplicationRecordSuccessView(LoginRequiredMixin, TemplateView):
+
+class ApplicationRecordSuccessView(TemplateView):
     template_name = "tracks/success.html"
 
 
+@login_required
 def edit_application(request, id):
-    post = get_object_or_404(ApplicationRecord, id=id)
-
-    if request.method == "GET":
-        context = {"form": ApplicationRecordForm(instance=post), "id": id}
-        return render(request, "tracks/application-record.html", context)
-
-    if request.method == "POST":
-        form = ApplicationRecordForm(request.POST, instance=post)
-        if form.is_valid():
-            form.applicant = request.user.username
-            form.save()
-            messages.success(
-                request, "The post has been updated successfully."
-            )
-            return redirect("index")
-        else:
-            messages.error(request, "Please correct the following errors:")
-            return render(
-                request, "tracks/application-record.html", {"form": form}
-            )
-
-
-@login_required
-def hardware(request):
-    return redirect('/hardware')
-
-
-@login_required
-def display_h1b(request):
-    return redirect('/h1b')
-
-
-# -------------------------add-----------------------------------
-def add_application(request, *args, **kwargs):
-    if not request.user.is_authenticated:
+    application = get_object_or_404(ApplicationRecord, id=id)
+    if application.user != request.user:
         raise PermissionDenied
-
-    logging.info(request.GET.get('company'))
-
+        
     if request.method == "POST":
-        form = ApplicationRecordForm(request.POST, hide_condition=True)
-
+        form = ApplicationRecordForm(request.POST, instance=application)
         if form.is_valid():
-            form.applicant = request.user.username
-            logging.info(form)
             form.save()
-            return redirect("index")
-
+            return redirect("tracks:index")
     else:
-        form = ApplicationRecordForm(hide_condition=True)
-        form.initial["applicant"] = request.user.username
-        form.initial["outcome"] = "TO DO"
-        if request.GET.get('company'): form.initial["company_name"] = request.GET.get('company')
-        return render(request, "add_new.html", {"form": form})
+        form = ApplicationRecordForm(instance=application)
+    return render(request, "tracks/edit-application.html", {"form": form})
 
 
+@login_required
+def add_application(request, *args, **kwargs):
+    if request.method == "POST":
+        form = ApplicationRecordForm(request.POST)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.user = request.user
+            application.save()
+            return redirect("tracks:index")
+    else:
+        form = ApplicationRecordForm()
+    return render(request, "tracks/add-application.html", {"form": form})
+
+
+@login_required
 def companies(request):
     companies = Company.objects.all()
     context = {"companies": companies}
     return render(request, "companies.html", context)
 
 
-def yuanc(request):
-    companies = Company.objects.all()
-    context = {"companies": companies}
-    return render(request, "yuanc.html", context)
+@login_required
+def sync_gmail(request):
+    if request.method == "POST":
+        email = request.POST.get("email") or request.user.email
+        if not email:
+            messages.error(request, "No email provided and no email found in user profile")
+            return JsonResponse({"status": "error", "message": "Email is required"})
+        
+        service = GmailService()
+        try:
+            result = service.sync_applications(email, request.user)
+            messages.success(request, f"Successfully synced {result['synced']} applications")
+            return JsonResponse({"status": "success", "data": result})
+        except Exception as e:
+            messages.error(request, str(e))
+            return JsonResponse({"status": "error", "message": str(e)})
+    return render(request, "tracks/sync_gmail.html")
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def sync_gmail_api(request):
+    email = request.data.get("email") or request.user.email
+    if not email:
+        return Response(
+            {"error": "No email provided and no email found in user profile"}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        service = GmailService()
+        result = service.sync_applications(email, request.user)
+        return Response({
+            "status": "success",
+            "message": "Successfully synced applications",
+            "data": result
+        })
+    except Exception as e:
+        return Response(
+            {"error": str(e)}, 
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 class ApplicationRecordViewSet(viewsets.ModelViewSet):
     serializer_class = ApplicationRecordSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
+    permission_classes = [IsAuthenticated]
+    
     def get_queryset(self):
-        return ApplicationRecord.objects.filter(applicant=self.request.user).order_by('-created')
+        return ApplicationRecord.objects.filter(user=self.request.user)

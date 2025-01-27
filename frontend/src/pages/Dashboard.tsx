@@ -1,123 +1,75 @@
 import React, { useState, useEffect } from 'react';
-import { JobList } from '../components/JobList';
-import { JobForm } from '../components/JobForm';
-import { ApplicationRecord } from '../types';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, Search, BarChart3, ChevronLeft, ChevronRight, Mail } from 'lucide-react';
-import { jobsDb } from '../lib/db';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { CompanyLogo } from '../components/CompanyLogo';
-import { syncGmail } from '../services/gmail';
+import { ApplicationRecord, ApplicationStatus } from '../types';
+import api from '../services/api';
 
 const ITEMS_PER_PAGE = 10;
 
 export function Dashboard() {
   const [applications, setApplications] = useState<ApplicationRecord[]>([]);
-  const [showForm, setShowForm] = useState(false);
-  const [search, setSearch] = useState('');
-  const [selectedApplication, setSelectedApplication] = useState<ApplicationRecord | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [isSyncing, setIsSyncing] = useState(false);
-  const navigate = useNavigate();
-  const { user } = useAuth();
+  const [showStats, setShowStats] = useState(false);
+  const [syncing, setSyncing] = useState(false);
 
-  const outcomeFilter = searchParams.get('outcome') || '';
+  const location = useLocation();
+  const navigate = useNavigate();
+  const statusFilter = new URLSearchParams(location.search).get('status') as ApplicationStatus | null;
 
   useEffect(() => {
-    const loadApplications = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        await jobsDb.init();
-        const loadedApplications = await jobsDb.list();
-        setApplications(loadedApplications);
-      } catch (error: any) {
-        console.error('Error loading applications:', error);
-        if (error?.response?.status === 401) {
-          navigate('/login');
-        } else {
-          setError('Failed to load applications. Please try again later.');
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    fetchApplications();
+  }, []);
 
-    if (user) {
-      loadApplications();
-    }
-  }, [user, navigate]);
-
-  const handleAddApplication = async (newApplication: Omit<ApplicationRecord, 'id' | 'created' | 'updated' | 'applicant'>) => {
+  const fetchApplications = async () => {
     try {
+      const response = await api.get('/api/applications/');
+      setApplications(response.data);
       setError(null);
-      const id = await jobsDb.add(newApplication);
-      const applications = await jobsDb.list();
-      setApplications(applications);
-      setShowForm(false);
-    } catch (error: any) {
-      console.error('Error adding application:', error);
-      if (error?.response?.status === 401) {
-        navigate('/login');
-      } else {
-        setError('Failed to add application. Please try again later.');
-      }
-    }
-  };
-
-  const handleUpdateApplication = async (application: ApplicationRecord) => {
-    try {
-      setError(null);
-      await jobsDb.update(application);
-      const applications = await jobsDb.list();
-      setApplications(applications);
-      setSelectedApplication(null);
-    } catch (error: any) {
-      console.error('Error updating application:', error);
-      if (error?.response?.status === 401) {
-        navigate('/login');
-      } else {
-        setError('Failed to update application. Please try again later.');
-      }
-    }
-  };
-
-  const handleDeleteApplication = async (id: number) => {
-    try {
-      setError(null);
-      await jobsDb.delete(id);
-      const applications = await jobsDb.list();
-      setApplications(applications);
-    } catch (error: any) {
-      console.error('Error deleting application:', error);
-      if (error?.response?.status === 401) {
-        navigate('/login');
-      } else {
-        setError('Failed to delete application. Please try again later.');
-      }
-    }
-  };
-
-  const handleGmailSync = async () => {
-    try {
-      setIsSyncing(true);
-      setError(null);
-      await syncGmail();
-      // Reload applications after sync
-      const loadedApplications = await jobsDb.list();
-      setApplications(loadedApplications);
-    } catch (error: any) {
-      console.error('Error syncing with Gmail:', error);
-      setError(error.message || 'Failed to sync with Gmail');
+    } catch (err) {
+      setError('Failed to fetch applications');
+      console.error('Error fetching applications:', err);
     } finally {
-      setIsSyncing(false);
+      setLoading(false);
     }
   };
 
-  if (isLoading) {
+  const syncGmail = async () => {
+    setSyncing(true);
+    try {
+      const response = await api.post('/api/sync-gmail/');
+      if (response.data.status === 'success') {
+        await fetchApplications();
+      } else {
+        setError(response.data.message || 'Failed to sync with Gmail');
+      }
+    } catch (err) {
+      setError('Failed to sync with Gmail');
+      console.error('Error syncing with Gmail:', err);
+    } finally {
+      setSyncing(false);
+    }
+  };
+
+  const calculateStats = () => {
+    const stats = applications.reduce((acc, app) => {
+      acc[app.status] = (acc[app.status] || 0) + 1;
+      return acc;
+    }, {} as Record<ApplicationStatus, number>);
+
+    return {
+      total: applications.length,
+      applied: stats['APPLIED'] || 0,
+      oa: stats['OA'] || 0,
+      vo: stats['VO'] || 0,
+      offer: stats['OFFER'] || 0,
+      rejected: stats['REJECTED'] || 0
+    };
+  };
+
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-gray-600">Loading...</div>
@@ -127,12 +79,12 @@ export function Dashboard() {
 
   const filteredApplications = applications.filter(app => {
     const matchesSearch = 
-      app.company_name.toLowerCase().includes(search.toLowerCase()) ||
+      app.company.name.toLowerCase().includes(search.toLowerCase()) ||
       app.job_title.toLowerCase().includes(search.toLowerCase());
     
-    const matchesOutcome = !outcomeFilter || app.outcome.toLowerCase() === outcomeFilter.toLowerCase();
+    const matchesStatus = !statusFilter || app.status === statusFilter;
     
-    return matchesSearch && matchesOutcome;
+    return matchesSearch && matchesStatus;
   });
 
   const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
@@ -141,151 +93,159 @@ export function Dashboard() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  const stats = {
-    total: applications.length,
-    rejected: applications.filter(app => app.outcome === 'REJECTED').length,
-    oa: applications.filter(app => app.outcome === 'OA').length,
-    vo: applications.filter(app => app.outcome === 'VO').length,
-    offer: applications.filter(app => app.outcome === 'OFFER').length
-  };
-
-  const handleOutcomeFilter = (outcome: string) => {
-    setSearchParams(outcome ? { outcome: outcome.toLowerCase() } : {});
-    setCurrentPage(1);
-  };
+  const stats = calculateStats();
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      {error && (
-        <div className="rounded-md bg-red-50 p-4">
-          <div className="text-sm text-red-700">{error}</div>
-        </div>
-      )}
-      
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">Job Applications</h1>
-        <div className="flex gap-2">
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex items-center gap-4">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search applications..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+          </div>
+          
           <button
-            onClick={handleGmailSync}
-            disabled={isSyncing}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => setShowStats(!showStats)}
+            className="p-2 text-gray-600 hover:text-gray-900"
+            title="Toggle Statistics"
           >
-            <Mail size={20} />
-            {isSyncing ? 'Syncing...' : 'Sync Gmail'}
+            <BarChart3 className="h-5 w-5" />
           </button>
+        </div>
+
+        <div className="flex gap-4">
           <button
-            onClick={() => setShowForm(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            onClick={syncGmail}
+            disabled={syncing}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            <Plus size={20} />
+            <Mail className="h-5 w-5" />
+            {syncing ? 'Syncing...' : 'Sync Gmail'}
+          </button>
+
+          <button
+            onClick={() => navigate('/add')}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+          >
+            <Plus className="h-5 w-5" />
             Add Application
           </button>
         </div>
       </div>
 
-      <div className="flex gap-4 flex-wrap">
-        <button
-          onClick={() => handleOutcomeFilter('')}
-          className={`px-4 py-2 rounded-lg ${!outcomeFilter ? 'bg-gray-200' : 'bg-white border border-gray-300'}`}
-        >
-          All ({stats.total})
-        </button>
-        <button
-          onClick={() => handleOutcomeFilter('REJECTED')}
-          className={`px-4 py-2 rounded-lg ${outcomeFilter === 'rejected' ? 'bg-red-200' : 'bg-white border border-gray-300'}`}
-        >
-          Rejected ({stats.rejected})
-        </button>
-        <button
-          onClick={() => handleOutcomeFilter('OA')}
-          className={`px-4 py-2 rounded-lg ${outcomeFilter === 'oa' ? 'bg-yellow-200' : 'bg-white border border-gray-300'}`}
-        >
-          OA ({stats.oa})
-        </button>
-        <button
-          onClick={() => handleOutcomeFilter('VO')}
-          className={`px-4 py-2 rounded-lg ${outcomeFilter === 'vo' ? 'bg-blue-200' : 'bg-white border border-gray-300'}`}
-        >
-          VO ({stats.vo})
-        </button>
-        <button
-          onClick={() => handleOutcomeFilter('OFFER')}
-          className={`px-4 py-2 rounded-lg ${outcomeFilter === 'offer' ? 'bg-green-200' : 'bg-white border border-gray-300'}`}
-        >
-          Offer ({stats.offer})
-        </button>
-      </div>
+      {error && (
+        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+        </div>
+      )}
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-        <input
-          type="text"
-          placeholder="Search applications..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        />
-      </div>
+      {showStats && (
+        <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+          <div className="p-4 bg-gray-100 rounded-lg">
+            <div className="text-sm text-gray-600">Total</div>
+            <div className="text-2xl font-semibold">{stats.total}</div>
+          </div>
+          <div className="p-4 bg-blue-100 rounded-lg">
+            <div className="text-sm text-blue-600">Applied</div>
+            <div className="text-2xl font-semibold">{stats.applied}</div>
+          </div>
+          <div className="p-4 bg-purple-100 rounded-lg">
+            <div className="text-sm text-purple-600">OA</div>
+            <div className="text-2xl font-semibold">{stats.oa}</div>
+          </div>
+          <div className="p-4 bg-indigo-100 rounded-lg">
+            <div className="text-sm text-indigo-600">VO</div>
+            <div className="text-2xl font-semibold">{stats.vo}</div>
+          </div>
+          <div className="p-4 bg-green-100 rounded-lg">
+            <div className="text-sm text-green-600">Offers</div>
+            <div className="text-2xl font-semibold">{stats.offer}</div>
+          </div>
+          <div className="p-4 bg-red-100 rounded-lg">
+            <div className="text-sm text-red-600">Rejected</div>
+            <div className="text-2xl font-semibold">{stats.rejected}</div>
+          </div>
+        </div>
+      )}
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white rounded-lg overflow-hidden">
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Outcome</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Title</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Link</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Company
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Position
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Source
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Applied
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
-            {paginatedApplications.map((application) => (
-              <tr key={application.id} className="hover:bg-gray-50">
+          <tbody className="bg-white divide-y divide-gray-200">
+            {paginatedApplications.map((app) => (
+              <tr key={app.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                    ${application.outcome === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                    application.outcome === 'OA' ? 'bg-yellow-100 text-yellow-800' :
-                    application.outcome === 'VO' ? 'bg-blue-100 text-blue-800' :
-                    application.outcome === 'OFFER' ? 'bg-green-100 text-green-800' :
-                    'bg-gray-100 text-gray-800'}`}>
-                    {application.outcome}
-                  </span>
-                </td>
-                <td className="px-6 py-4">{application.job_title}</td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center space-x-3">
-                    <CompanyLogo companyName={application.company_name} size={40} />
+                  <div className="flex items-center">
+                    {app.company.logo_url ? (
+                      <img
+                        className="h-8 w-8 rounded-full mr-3"
+                        src={app.company.logo_url}
+                        alt={app.company.name}
+                      />
+                    ) : (
+                      <div className="h-8 w-8 rounded-full bg-gray-200 mr-3 flex items-center justify-center">
+                        {app.company.name.charAt(0)}
+                      </div>
+                    )}
                     <div>
-                      <a href={`/company/${application.company_name}`} className="text-blue-600 hover:text-blue-900">
-                        {application.company_name}
-                      </a>
+                      <div className="font-medium text-gray-900">{app.company.name}</div>
+                      <div className="text-sm text-gray-500">{app.company.industry}</div>
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  {application.application_link && (
-                    <a
-                      href={application.application_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      View
-                    </a>
-                  )}
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{app.job_title}</div>
                 </td>
-                <td className="px-6 py-4 space-x-2">
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    ${app.status === 'OFFER' ? 'bg-green-100 text-green-800' : 
+                      app.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                      app.status === 'VO' ? 'bg-indigo-100 text-indigo-800' :
+                      app.status === 'OA' ? 'bg-purple-100 text-purple-800' :
+                      'bg-blue-100 text-blue-800'}`}
+                  >
+                    {app.status}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {app.source}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {new Date(app.created_at).toLocaleDateString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button
-                    onClick={() => setSelectedApplication(application)}
-                    className="text-blue-600 hover:text-blue-900"
+                    onClick={() => navigate(`/edit/${app.id}`)}
+                    className="text-indigo-600 hover:text-indigo-900"
                   >
                     Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteApplication(application.id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    Delete
                   </button>
                 </td>
               </tr>
@@ -295,47 +255,29 @@ export function Dashboard() {
       </div>
 
       {totalPages > 1 && (
-        <div className="flex justify-center items-center space-x-2">
+        <div className="mt-4 flex justify-between items-center">
           <button
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="p-2 rounded-lg border border-gray-300 disabled:opacity-50"
+            className="flex items-center gap-1 px-3 py-1 text-gray-600 disabled:text-gray-400"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft className="h-4 w-4" />
+            Previous
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-            <button
-              key={page}
-              onClick={() => setCurrentPage(page)}
-              className={`px-4 py-2 rounded-lg ${
-                currentPage === page
-                  ? 'bg-blue-600 text-white'
-                  : 'border border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              {page}
-            </button>
-          ))}
+          
+          <span className="text-sm text-gray-600">
+            Page {currentPage} of {totalPages}
+          </span>
+          
           <button
             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="p-2 rounded-lg border border-gray-300 disabled:opacity-50"
+            className="flex items-center gap-1 px-3 py-1 text-gray-600 disabled:text-gray-400"
           >
-            <ChevronRight size={20} />
+            Next
+            <ChevronRight className="h-4 w-4" />
           </button>
         </div>
-      )}
-
-      {(showForm || selectedApplication) && (
-        <JobForm 
-          onSubmit={selectedApplication ? handleUpdateApplication : handleAddApplication}
-          onClose={() => {
-            setShowForm(false);
-            setSelectedApplication(null);
-          }}
-          initialData={selectedApplication || undefined}
-          mode={selectedApplication ? 'edit' : 'create'}
-        />
       )}
     </div>
   );
