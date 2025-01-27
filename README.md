@@ -1,6 +1,6 @@
 <img src="https://github.com/user-attachments/assets/1c93f0ea-c4fd-401e-a62e-a55564969422" width="150">
 
-# Offer+
+# OfferPlus
 
 An Offer seeker powered by GPT.
 
