@@ -8,3 +8,5 @@ venv
 # Local Netlify folder
 .netlify
 node_modules
+
+credentials.json
