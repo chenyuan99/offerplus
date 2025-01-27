@@ -22,8 +22,8 @@ Offer+ is an AI-powered job offer seeker that helps users find job opportunities
 
 ## Team
 
-- **Project Owner & Tech Lead**: Yuan Chen
-- **Software Engineer**: Jingyu Xiong
+- **Maintainer**: Yuan Chen
+- **Developer**: Jingyu Xiong
 
 ## ATS Parsing
 
@@ -38,7 +38,7 @@ Offer+ is an AI-powered job offer seeker that helps users find job opportunities
 
 ## License
 
-Open Code Only, No Commercial Use allowed.
+Apache 2 License
 
 ## Reference
 
