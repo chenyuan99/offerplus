@@ -10,3 +10,4 @@ venv
 node_modules
 
 credentials.json
+db.sqlite3
