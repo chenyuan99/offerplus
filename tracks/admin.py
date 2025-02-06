@@ -22,10 +22,10 @@ class CompanyAdmin(admin.ModelAdmin):
 
 @admin.register(ApplicationRecord)
 class ApplicationRecordAdmin(admin.ModelAdmin):
-    list_display = ('company', 'position', 'status', 'applied_date', 'last_updated')
-    list_filter = ('status', 'applied_date', 'source')
-    search_fields = ('company__name', 'position', 'notes')
-    ordering = ('-applied_date',)
+    list_display = ('company_name', 'job_title', 'outcome', 'updated')
+    list_filter = ('outcome',)
+    search_fields = ('company__name', 'job_title', 'outcome', 'application_link')
+    ordering = ('-updated',)
 
 @admin.register(EmailThread)
 class EmailThreadAdmin(admin.ModelAdmin):
@@ -38,5 +38,5 @@ class EmailThreadAdmin(admin.ModelAdmin):
 class EmailMessageAdmin(admin.ModelAdmin):
     list_display = ('thread', 'sender', 'subject', 'sent_at')
     list_filter = ('sent_at',)
-    search_fields = ('subject', 'body', 'sender', 'recipient')
+    search_fields = ('subject', 'sender', 'recipient')
     ordering = ('sent_at',)

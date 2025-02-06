@@ -19,10 +19,12 @@ class ApplicationRecordForm(ModelForm):
     class Meta:
         model = ApplicationRecord
         fields = [
-            "company",
-            "position",
-            "status",
-            "notes",
+            "company_name",
+            "job_title",
+            "outcome",
+            "application_link",
+            "OA_date",
+            "VO_date",
         ]
 
     def __init__(self, *args, **kwargs):

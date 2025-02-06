@@ -77,32 +77,52 @@ class EmailMessage(models.Model):
     class Meta:
         ordering = ['sent_at']
 
-
 class ApplicationRecord(models.Model):
-    STATUS_CHOICES = [
-        ('APPLIED', 'Applied'),
-        ('OA', 'Online Assessment'),
-        ('PHONE', 'Phone Screen'),
-        ('VO', 'Virtual Onsite'),
-        ('OFFER', 'Offer'),
-        ('REJECTED', 'Rejected'),
-        ('ACCEPTED', 'Accepted'),
-        ('DECLINED', 'Declined'),
-    ]
-    
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    position = models.CharField(max_length=200)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='APPLIED')
-    applied_date = models.DateTimeField(auto_now_add=True)
-    last_updated = models.DateTimeField(auto_now=True)
-    notes = models.TextField(blank=True)
-    source = models.CharField(max_length=50, default='Manual')  # e.g., 'Manual', 'Gmail', 'LinkedIn'
-    email_id = models.CharField(max_length=100, null=True, blank=True)  # For Gmail integration
-    
-    def __str__(self):
-        return f"{self.company.name} - {self.position} ({self.status})"
-        
+    outcome = models.TextField(choices=MY_CHOICES)
+    job_title = models.TextField(blank=True)
+    company_name = models.TextField()
+    application_link = models.TextField(blank=True)
+    OA_date = models.DateTimeField(null=True, blank=True)
+    VO_date = models.DateTimeField(null=True, blank=True)
+    created = models.DateTimeField(default=timezone.now)
+    updated = models.DateTimeField(auto_now=True)
+    applicant = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        to_field="username",
+        default="cyuan8",
+        on_delete=models.CASCADE,
+    )
+
     class Meta:
-        ordering = ['-applied_date']
-        unique_together = ('user', 'company', 'position', 'applied_date')
+        ordering = ("-created",)
+
+    def __str__(self):
+        return " ".join([self.job_title, self.company_name, self.outcome])
+# class ApplicationRecord(models.Model):
+#     STATUS_CHOICES = [
+#         ('APPLIED', 'Applied'),
+#         ('OA', 'Online Assessment'),
+#         ('PHONE', 'Phone Screen'),
+#         ('VO', 'Virtual Onsite'),
+#         ('OFFER', 'Offer'),
+#         ('REJECTED', 'Rejected'),
+#         ('ACCEPTED', 'Accepted'),
+#         ('DECLINED', 'Declined'),
+#     ]
+#
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+#     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+#     position = models.CharField(max_length=200)
+#     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='APPLIED')
+#     applied_date = models.DateTimeField(auto_now_add=True)
+#     updated = models.DateTimeField(auto_now=True)
+#     notes = models.TextField(blank=True)
+#     source = models.CharField(max_length=50, default='Manual')  # e.g., 'Manual', 'Gmail', 'LinkedIn'
+#     email_id = models.CharField(max_length=100, null=True, blank=True)  # For Gmail integration
+#
+#     def __str__(self):
+#         return f"{self.company.name} - {self.position} ({self.status})"
+#
+#     class Meta:
+#         ordering = ['-applied_date']
+#         unique_together = ('user', 'company', 'position', 'applied_date')

@@ -54,7 +54,7 @@ def display_internships(request):
     # Provide filtered, paginated library items
     context["items_page"] = items_page
 
-    return render(request, "company/internships.html", context)
+    return context
 
 
 def display_newgrads(request):
