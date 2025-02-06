@@ -1,14 +1,15 @@
 import axios from 'axios';
-import { JobGPTResponse, ResumeUploadResponse, JobGPTMode } from '../types/jobgpt';
+import { JobGPTResponse, ResumeUploadResponse, JobGPTMode, DeepseekModel } from '../types/jobgpt';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export const jobgptService = {
-  generatePrompt: async (prompt: string, mode: JobGPTMode): Promise<JobGPTResponse> => {
+  generatePrompt: async (prompt: string, mode: JobGPTMode, model: DeepseekModel): Promise<JobGPTResponse> => {
     try {
       const response = await axios.post(`${API_URL}/api/jobgpt/prompt`, {
         prompt,
-        mode
+        mode,
+        model
       });
       return response.data;
     } catch (error: any) {
