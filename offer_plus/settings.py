@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'social_django',
     "accounts",
     "tracks",
     "jobgpt",
@@ -107,6 +108,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = "offer_plus.urls"
@@ -177,9 +179,18 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB in bytes
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Authentication backends
-AUTHENTICATION_BACKENDS = [
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
     'django.contrib.auth.backends.ModelBackend',
-]
+)
+
+SOCIAL_AUTH_GITHUB_KEY = os.getenv('GITHUB_CLIENT_ID')
+SOCIAL_AUTH_GITHUB_SECRET = os.getenv('GITHUB_CLIENT_SECRET')
+SOCIAL_AUTH_GITHUB_SCOPE = ['user:email']
+
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/settings/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'http://localhost:5173/profile'
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 

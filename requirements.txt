@@ -53,3 +53,4 @@ google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.4.6
 oauth2client==3.0.0
 bs4
+social-auth-app-django==5.4.0

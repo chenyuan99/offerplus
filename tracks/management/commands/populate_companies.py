@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from company.models import Company
+from tracks.models import Company
 from django.utils import timezone
 
 class Command(BaseCommand):
