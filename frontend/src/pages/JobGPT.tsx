@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import { FileText, Upload, ThumbsUp } from 'lucide-react';
 import { jobgptService } from '../services/jobgptService';
-import { JobGPTMode, JobGPTState } from '../types/jobgpt';
+import { JobGPTMode, JobGPTState, DeepseekModel } from '../types/jobgpt';
 
 const initialState: JobGPTState = {
-  mode: 'why_company',  // Updated default mode
+  mode: 'why_company',
+  model: 'deepseek-coder-6.7b',
   isLoading: false,
   error: null,
   input: '',
   output: '',
 };
+
+const MODELS: DeepseekModel[] = [
+  'deepseek-coder-6.7b',
+  'deepseek-coder-33b'
+];
 
 export function JobGPT() {
   const [state, setState] = useState<JobGPTState>(initialState);
@@ -17,6 +23,10 @@ export function JobGPT() {
 
   const handleModeChange = (mode: JobGPTMode) => {
     setState({ ...state, mode, input: '', output: '', error: null });
+  };
+
+  const handleModelChange = (model: DeepseekModel) => {
+    setState({ ...state, model });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -32,8 +42,8 @@ export function JobGPT() {
     setState({ ...state, isLoading: true, error: null });
 
     try {
-      const response = await jobgptService.generatePrompt(state.input, state.mode);
-      setState({ ...state, isLoading: false, output: response.response });  // Updated to use response instead of prompt
+      const response = await jobgptService.generatePrompt(state.input, state.mode, state.model);
+      setState({ ...state, isLoading: false, output: response.response });  
     } catch (error: any) {
       setState({ ...state, isLoading: false, error: error.message });
     }
@@ -95,6 +105,21 @@ export function JobGPT() {
           >
             General
           </button>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Model</label>
+          <select
+            className="w-full p-2 border rounded bg-white"
+            value={state.model}
+            onChange={(e) => handleModelChange(e.target.value as DeepseekModel)}
+          >
+            {MODELS.map(model => (
+              <option key={model} value={model}>
+                {model}
+              </option>
+            ))}
+          </select>
         </div>
         
         <textarea
