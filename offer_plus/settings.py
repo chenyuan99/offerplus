@@ -50,7 +50,8 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://offersplus.xyz", 
     "https://offerplus.io",
-    "https://offerplus.vercel.app"
+    "https://offerplus.vercel.app",
+    "https://api.offerplus.io"
 ]
 
 # Application definition
@@ -81,23 +82,18 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres.gbsodywfisfmfkwspnaf',
         'PASSWORD': os.getenv('DB_PASSWORD'),
-        'TEST': {
-            'NAME': 'test_postgres',
-        },
         'HOST': 'aws-0-us-east-2.pooler.supabase.com',
         'PORT': '6543',
         'OPTIONS': {
             'sslmode': 'require',
         },
+        'TEST': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+        },
     }
 }
 
-# Use SQLite for testing
-if 'test' in sys.argv:
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
-    }
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
