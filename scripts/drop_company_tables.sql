@@ -1,0 +1,3 @@
+DROP TABLE IF EXISTS company_job CASCADE;
+DROP TABLE IF EXISTS company_company CASCADE;
+DROP TABLE IF EXISTS company_job_applicants CASCADE;
