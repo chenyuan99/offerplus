@@ -1,19 +1,16 @@
 import openai
 from django.conf import settings
+from utils.langchain_utils import create_simple_chain
 
 openai.api_key = settings.OPENAI_API_KEY
 
 def generate_response(prompt: str) -> str:
     """Generate a general response using GPT-4."""
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a professional career coach helping prepare interview responses."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        return response.choices[0].message.content.strip()
+        # Use LangChain with tracing enabled
+        system_prompt = "You are a professional career coach helping prepare interview responses."
+        chain = create_simple_chain(system_prompt, prompt)
+        return chain.invoke({}).strip()
     except Exception as e:
         print(f"Error generating response: {str(e)}")
         raise
@@ -103,16 +100,14 @@ def get_resume_match_score(job_description: str, resume_url: str) -> dict:
     """
     
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an AI resume analyzer providing match scores and feedback."},
-                {"role": "user", "content": prompt}
-            ]
-        )
+        # Use LangChain with tracing enabled
+        system_prompt = "You are an AI resume analyzer providing match scores and feedback."
+        chain = create_simple_chain(system_prompt, prompt)
+        feedback = chain.invoke({}).strip()
+        
         return {
             'score': 75,  # Placeholder score
-            'feedback': response.choices[0].message.content.strip()
+            'feedback': feedback
         }
     except Exception as e:
         print(f"Error calculating resume match score: {str(e)}")

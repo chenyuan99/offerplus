@@ -54,3 +54,8 @@ google-auth-oauthlib==0.4.6
 oauth2client==3.0.0
 bs4
 social-auth-app-django==5.4.0
+# LangChain and tracing dependencies
+langchain>=0.1.0
+langchain-openai
+langsmith
+langchain-core

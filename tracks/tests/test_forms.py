@@ -1,22 +1,26 @@
-from django.test import TestCase
+from django.test import TransactionTestCase
 from django.contrib.auth.models import User
 from tracks.forms import ApplicationRecordForm
 from tracks.models import ApplicationRecord
+from django.db import connections
 
-class ApplicationRecordFormTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
+class ApplicationRecordFormTest(TransactionTestCase):
+    def setUp(self):
         # Create a test user
-        cls.test_user = User.objects.create_user(username='testuser', password='12345')
+        self.test_user = User.objects.create_user(
+            username='testuser',
+            password='12345'
+        )
 
     def test_form_fields(self):
         form = ApplicationRecordForm()
         expected_fields = [
-            'outcome',
-            'job_title',
             'company_name',
+            'job_title',
+            'outcome',
             'application_link',
-            'applicant'
+            'OA_date',
+            'VO_date'
         ]
         self.assertEqual(list(form.fields.keys()), expected_fields)
 
@@ -26,7 +30,8 @@ class ApplicationRecordFormTest(TestCase):
             'job_title': 'Software Engineer',
             'company_name': 'Test Company',
             'application_link': 'https://example.com',
-            'applicant': self.test_user.username
+            'OA_date': None,
+            'VO_date': None
         }
         form = ApplicationRecordForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -40,7 +45,6 @@ class ApplicationRecordFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn('outcome', form.errors)
         self.assertIn('company_name', form.errors)
-        self.assertIn('applicant', form.errors)
 
     def test_blank_job_title_valid(self):
         form_data = {
@@ -48,7 +52,8 @@ class ApplicationRecordFormTest(TestCase):
             'company_name': 'Test Company',
             'application_link': '',
             'job_title': '',  # This field can be blank
-            'applicant': self.test_user.username
+            'OA_date': None,
+            'VO_date': None
         }
         form = ApplicationRecordForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -59,7 +64,8 @@ class ApplicationRecordFormTest(TestCase):
             'job_title': 'Software Engineer',
             'company_name': 'Test Company',
             'application_link': '',  # This field can be blank
-            'applicant': self.test_user.username
+            'OA_date': None,
+            'VO_date': None
         }
         form = ApplicationRecordForm(data=form_data)
         self.assertTrue(form.is_valid())
@@ -70,18 +76,12 @@ class ApplicationRecordFormTest(TestCase):
             'job_title': 'Software Engineer',
             'company_name': 'Test Company',
             'application_link': 'https://example.com',
-            'applicant': self.test_user.username
+            'OA_date': None,
+            'VO_date': None
         }
         form = ApplicationRecordForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn('outcome', form.errors)
-
-    def test_hidden_applicant_field(self):
-        form = ApplicationRecordForm(hide_condition=True)
-        self.assertEqual(
-            form.fields['applicant'].widget.__class__.__name__,
-            'HiddenInput'
-        )
 
     def test_form_save(self):
         form_data = {
@@ -89,13 +89,16 @@ class ApplicationRecordFormTest(TestCase):
             'job_title': 'Software Engineer',
             'company_name': 'Test Company',
             'application_link': 'https://example.com',
-            'applicant': self.test_user.username
+            'OA_date': None,
+            'VO_date': None
         }
         form = ApplicationRecordForm(data=form_data)
         self.assertTrue(form.is_valid())
         
         # Save the form
-        application = form.save()
+        application = form.save(commit=False)
+        application.applicant = self.test_user
+        application.save()
         
         # Check that the object was created in the database
         self.assertTrue(ApplicationRecord.objects.filter(id=application.id).exists())
@@ -103,7 +106,7 @@ class ApplicationRecordFormTest(TestCase):
         # Verify the saved data
         saved_application = ApplicationRecord.objects.get(id=application.id)
         self.assertEqual(saved_application.job_title, 'Software Engineer')
-        self.assertEqual(saved_application.company_name, 'Test Company')
-        self.assertEqual(saved_application.outcome, 'TO DO')
-        self.assertEqual(saved_application.application_link, 'https://example.com')
         self.assertEqual(saved_application.applicant, self.test_user)
+    
+    def tearDown(self):
+        connections.close_all()

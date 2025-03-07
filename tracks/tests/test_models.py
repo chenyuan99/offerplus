@@ -10,14 +10,14 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from django.test import TestCase
+from django.test import TransactionTestCase
 from django.contrib.auth.models import User
 from django.utils import timezone
-
+from django.db import connections
 from tracks.models import Company, ApplicationRecord
 
 
-class ApplicationRecordModelTest(TestCase):
+class ApplicationRecordModelTest(TransactionTestCase):
     def setUp(self):
         # Create test user
         self.user = User.objects.create_user(
@@ -53,8 +53,11 @@ class ApplicationRecordModelTest(TestCase):
         self.assertEqual(final_count, 0)
         self.assertEqual(initial_count - 1, final_count)
 
+    def tearDown(self):
+        connections.close_all()
 
-class CompanyModelTest(TestCase):
+
+class CompanyModelTest(TransactionTestCase):
     def setUp(self):
         """Create a test company"""
         self.company = Company.objects.create(
@@ -76,24 +79,27 @@ class CompanyModelTest(TestCase):
         self.assertEqual(company.industry, '')
 
     def test_logo_upload_to(self):
-        """Test logo upload path"""
+        """Test logo URL field"""
         company = Company.objects.get(id=1)
-        self.assertTrue(hasattr(company, 'logo'))
+        self.assertTrue(hasattr(company, 'logo_url'))
 
     def test_created_auto_now(self):
-        """Test created field is auto-populated"""
+        """Test created_at field is auto-populated"""
         company = Company.objects.get(id=1)
-        self.assertIsNotNone(company.created)
+        self.assertIsNotNone(company.created_at)
 
     def test_updated_auto_now(self):
-        """Test updated field is auto-updated"""
+        """Test updated_at field is auto-updated"""
         company = Company.objects.get(id=1)
-        old_updated = company.updated
+        old_updated = company.updated_at
         company.name = 'Updated Company'
         company.save()
-        self.assertNotEqual(company.updated, old_updated)
+        self.assertNotEqual(company.updated_at, old_updated)
 
     def test_string_representation(self):
         """Test the string representation of Company"""
         company = Company.objects.get(id=1)
         self.assertEqual(str(company), 'Test Company')
+
+    def tearDown(self):
+        connections.close_all()

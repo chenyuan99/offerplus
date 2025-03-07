@@ -6,6 +6,7 @@ from ..models import Company
 from bs4 import BeautifulSoup
 import logging
 import json
+from utils.langchain_utils import create_simple_chain
 
 logger = logging.getLogger(__name__)
 
@@ -141,18 +142,14 @@ class CompanyService:
             }}
             """
 
-            openai.api_key = settings.OPENAI_API_KEY
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "You are a helpful assistant that extracts company information."},
-                    {"role": "user", "content": prompt}
-                ]
-            )
+            # Use LangChain with tracing enabled
+            system_prompt = "You are a helpful assistant that extracts company information."
+            chain = create_simple_chain(system_prompt, prompt)
+            response_content = chain.invoke({})
 
             # Parse the response
             try:
-                company_info = json.loads(response.choices[0].message.content)
+                company_info = json.loads(response_content)
                 
                 # Try to get the logo URL
                 logo_url = CompanyService._extract_logo_url(

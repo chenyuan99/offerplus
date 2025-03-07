@@ -86,6 +86,8 @@ DATABASES = {
         'PORT': '6543',
         'OPTIONS': {
             'sslmode': 'require',
+            'gssencmode': 'disable',  # Disable GSSAPI encryption
+            'target_session_attrs': 'read-write',
         },
         'TEST': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -285,6 +287,12 @@ SIMPLE_JWT = {
 
 # OpenAI settings
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+# LangChain settings
+LANGCHAIN_TRACING_V2 = os.getenv('LANGCHAIN_TRACING_V2', 'true').lower() == 'true'
+LANGCHAIN_ENDPOINT = os.getenv('LANGCHAIN_ENDPOINT', 'https://api.smith.langchain.com')
+LANGCHAIN_API_KEY = os.getenv('LANGCHAIN_API_KEY', '')
+LANGCHAIN_PROJECT = os.getenv('LANGCHAIN_PROJECT', 'offersplus')
 
 WEBPACK_LOADER = {
     'DEFAULT': {
