@@ -4,18 +4,18 @@ from utils.langchain_utils import create_simple_chain
 
 openai.api_key = settings.OPENAI_API_KEY
 
-def generate_response(prompt: str) -> str:
-    """Generate a general response using GPT-4."""
+def generate_response(prompt: str, model: str = "gpt-3.5-turbo") -> str:
+    """Generate a general response using the specified model."""
     try:
         # Use LangChain with tracing enabled
         system_prompt = "You are a professional career coach helping prepare interview responses."
-        chain = create_simple_chain(system_prompt, prompt)
+        chain = create_simple_chain(system_prompt, prompt, model=model)
         return chain.invoke({}).strip()
     except Exception as e:
         print(f"Error generating response: {str(e)}")
         raise
 
-def generate_why_company(company_name: str) -> str:
+def generate_why_company(company_name: str, model: str = "gpt-3.5-turbo") -> str:
     """Generate a response for why you want to work at a specific company."""
     prompt = f"""
     Generate a compelling response for the interview question: 
@@ -27,9 +27,9 @@ def generate_why_company(company_name: str) -> str:
     4. Growth opportunities
     Keep it professional, authentic, and around 200 words.
     """
-    return generate_response(prompt)
+    return generate_response(prompt, model=model)
 
-def generate_why_role(company_name: str, role_name: str) -> str:
+def generate_why_role(company_name: str, role_name: str, model: str = "gpt-3.5-turbo") -> str:
     """Generate a response for why you want a specific role at a company."""
     prompt = f"""
     Generate a compelling response for why you want the {role_name} role at {company_name}.
@@ -40,9 +40,9 @@ def generate_why_role(company_name: str, role_name: str) -> str:
     4. Alignment with company mission
     Keep it professional and around 200 words.
     """
-    return generate_response(prompt)
+    return generate_response(prompt, model=model)
 
-def generate_thank_you_letter(interviewer_name: str, company_name: str) -> str:
+def generate_thank_you_letter(interviewer_name: str, company_name: str, model: str = "gpt-3.5-turbo") -> str:
     """Generate a thank you letter after an interview."""
     prompt = f"""
     Write a professional thank you letter to:
@@ -56,9 +56,9 @@ def generate_thank_you_letter(interviewer_name: str, company_name: str) -> str:
     4. Next steps
     Keep it concise and professional.
     """
-    return generate_response(prompt)
+    return generate_response(prompt, model=model)
 
-def get_behavioral_answer(question: str) -> str:
+def get_behavioral_answer(question: str, model: str = "gpt-3.5-turbo") -> str:
     """Generate a response for behavioral interview questions using the STAR method."""
     prompt = f"""
     Generate a professional response to the behavioral interview question:
@@ -72,9 +72,9 @@ def get_behavioral_answer(question: str) -> str:
     
     Keep it concise, specific, and professional. Around 250 words.
     """
-    return generate_response(prompt)
+    return generate_response(prompt, model=model)
 
-def get_resume_feedback(resume_file) -> str:
+def get_resume_feedback(resume_file, model: str = "gpt-3.5-turbo") -> str:
     """Analyze a resume and provide feedback."""
     # TODO: Implement resume parsing and analysis
     try:

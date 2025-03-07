@@ -53,18 +53,25 @@ def get_openai_chat(model="gpt-3.5-turbo", temperature=0.7, **kwargs):
         **kwargs
     )
 
-def create_simple_chain(system_prompt, user_prompt_template):
+def create_simple_chain(system_prompt, user_prompt_template, model="gpt-3.5-turbo"):
     """
-    Create a simple LangChain chain with the given prompts.
+    Create a simple LangChain chain with the given prompts and model.
     
     Args:
         system_prompt (str): The system prompt to use
         user_prompt_template (str): The user prompt template
+        model (str): The model to use (OpenAI or Deepseek model identifier)
         
     Returns:
         Chain: A configured LangChain chain
     """
-    llm = get_openai_chat()
+    # For Deepseek models, we'll need to handle them differently in the future
+    # For now, if it's not an OpenAI model, default to gpt-3.5-turbo
+    if not model.startswith('gpt-'):
+        # This is a temporary fallback until Deepseek models are properly integrated
+        model = "gpt-3.5-turbo"
+    
+    llm = get_openai_chat(model=model)
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),

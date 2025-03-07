@@ -33,10 +33,11 @@ def index(request):
 @permission_classes([IsAuthenticated])
 def generate_prompt(request):
     """
-    Generate a response based on the provided prompt and mode.
+    Generate a response based on the provided prompt, mode, and model.
     """
     prompt = request.data.get('prompt')
     mode = request.data.get('mode', 'why_company')
+    model = request.data.get('model', 'deepseek-coder-6.7b')
 
     if not prompt:
         return Response(
@@ -45,12 +46,13 @@ def generate_prompt(request):
         )
 
     try:
+        # Pass the model parameter to the generator functions
         if mode == 'why_company':
-            response = generate_why_company(prompt)
+            response = generate_why_company(prompt, model=model)
         elif mode == 'behavioral':
-            response = get_behavioral_answer(prompt)
+            response = get_behavioral_answer(prompt, model=model)
         elif mode == 'general':
-            response = generate_response(prompt)
+            response = generate_response(prompt, model=model)
         else:
             return Response(
                 {'error': 'Invalid mode specified'}, 
@@ -59,7 +61,8 @@ def generate_prompt(request):
 
         return Response({
             'response': response,
-            'mode': mode
+            'mode': mode,
+            'model': model
         })
     except Exception as e:
         return Response(

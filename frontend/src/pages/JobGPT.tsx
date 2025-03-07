@@ -12,10 +12,23 @@ const initialState: JobGPTState = {
   output: '',
 };
 
-const MODELS: DeepseekModel[] = [
-  'deepseek-coder-6.7b',
-  'deepseek-coder-33b'
+// Define model options with display names and categories
+interface ModelOption {
+  value: DeepseekModel;
+  label: string;
+  category: 'Deepseek' | 'OpenAI';
+}
+
+const MODEL_OPTIONS: ModelOption[] = [
+  { value: 'deepseek-coder-6.7b', label: 'Deepseek Coder (6.7B)', category: 'Deepseek' },
+  { value: 'deepseek-coder-33b', label: 'Deepseek Coder (33B)', category: 'Deepseek' },
+  { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo', category: 'OpenAI' },
+  { value: 'gpt-4', label: 'GPT-4', category: 'OpenAI' },
+  { value: 'gpt-4-turbo', label: 'GPT-4 Turbo', category: 'OpenAI' }
 ];
+
+// Extract just the model values for use in other parts of the code
+const MODELS: DeepseekModel[] = MODEL_OPTIONS.map(option => option.value);
 
 export function JobGPT() {
   const [state, setState] = useState<JobGPTState>(initialState);
@@ -114,11 +127,20 @@ export function JobGPT() {
             value={state.model}
             onChange={(e) => handleModelChange(e.target.value as DeepseekModel)}
           >
-            {MODELS.map(model => (
-              <option key={model} value={model}>
-                {model}
-              </option>
-            ))}
+            <optgroup label="Deepseek Models">
+              {MODEL_OPTIONS.filter(option => option.category === 'Deepseek').map(model => (
+                <option key={model.value} value={model.value}>
+                  {model.label}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="OpenAI Models">
+              {MODEL_OPTIONS.filter(option => option.category === 'OpenAI').map(model => (
+                <option key={model.value} value={model.value}>
+                  {model.label}
+                </option>
+              ))}
+            </optgroup>
           </select>
         </div>
         
@@ -129,13 +151,23 @@ export function JobGPT() {
           onChange={handleInputChange}
         />
         
-        <button
-          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
-          onClick={handleSubmit}
-          disabled={state.isLoading}
-        >
-          {state.isLoading ? 'Generating...' : 'Generate'}
-        </button>
+        <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+          <button
+            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+            onClick={handleSubmit}
+            disabled={state.isLoading}
+          >
+            {state.isLoading ? 'Generating...' : 'Generate'}
+          </button>
+          {state.isLoading && (
+            <div className="flex items-center">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mr-2"></div>
+              <span className="text-sm text-gray-600">
+                Using {MODEL_OPTIONS.find(option => option.value === state.model)?.label || state.model}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {state.error && (
@@ -146,7 +178,16 @@ export function JobGPT() {
 
       {state.output && (
         <div className="bg-gray-100 p-4 rounded">
-          <h2 className="font-bold mb-2">Generated Response:</h2>
+          <div className="flex items-center mb-2">
+            <h2 className="font-bold mr-2">Generated Response:</h2>
+            <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">
+              {MODEL_OPTIONS.find(option => option.value === state.model)?.label || state.model}
+            </span>
+            <span className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">
+              {state.mode === 'why_company' ? 'Why Company' : 
+               state.mode === 'behavioral' ? 'Behavioral' : 'General'}
+            </span>
+          </div>
           <p className="whitespace-pre-wrap">{state.output}</p>
         </div>
       )}
