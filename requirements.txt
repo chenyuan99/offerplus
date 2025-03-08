@@ -60,3 +60,5 @@ langchain-openai
 langchain-deepseek
 langsmith
 langchain-core
+coverage
+django-webpack-loader

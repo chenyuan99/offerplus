@@ -50,7 +50,13 @@ jobs:
         python manage.py migrate
         # Force terminate any existing connections to the test database
         PGPASSWORD=postgres psql -h localhost -p 5432 -U postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'test_postgres';"
-        python manage.py test --noinput
+        # Install coverage dependencies
+        pip install coverage
+        # Run tests with coverage
+        coverage run --source='.' manage.py test --noinput
+        # Generate coverage reports
+        coverage xml
+        coverage report
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
