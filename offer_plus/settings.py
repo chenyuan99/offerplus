@@ -90,12 +90,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'postgres.gbsodywfisfmfkwspnaf',
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': 'aws-0-us-east-2.pooler.supabase.com',
-        'PORT': '6543',
+        # Use different credentials for CI environment
+        'USER': 'postgres' if os.environ.get('CI') else 'postgres.gbsodywfisfmfkwspnaf',
+        'PASSWORD': 'postgres' if os.environ.get('CI') else os.getenv('DB_PASSWORD'),
+        'HOST': 'localhost' if os.environ.get('CI') else 'aws-0-us-east-2.pooler.supabase.com',
+        'PORT': '5432' if os.environ.get('CI') else '6543',
         'OPTIONS': {
-            'sslmode': 'require',
+            'sslmode': 'prefer' if os.environ.get('CI') else 'require',
             'gssencmode': 'disable',  # Disable GSSAPI encryption
             'target_session_attrs': 'read-write',
         },
