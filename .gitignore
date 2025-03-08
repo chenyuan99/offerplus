@@ -11,3 +11,5 @@ node_modules
 
 credentials.json
 db.sqlite3
+/token.json
+/token.pickle

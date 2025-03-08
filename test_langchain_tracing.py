@@ -11,7 +11,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'offer_plus.settings')
 django.setup()
 
 from django.conf import settings
-from utils.langchain_utils import get_openai_chat, create_simple_chain
+from utils.langchain_utils import get_openai_chat, get_deepseek_chat, create_simple_chain
 from langchain_core.prompts import ChatPromptTemplate
 
 def test_simple_chat():
@@ -68,6 +68,46 @@ def test_company_info_extraction():
     print(company_info)
     print("\nCheck your LangSmith dashboard for the trace!")
 
+def test_deepseek_chat():
+    """Test a Deepseek chat completion with tracing."""
+    print("\nTesting Deepseek chat completion with tracing...")
+    
+    # Create a Deepseek chat model with tracing
+    chat = get_deepseek_chat(model="deepseek-coder-6.7b")
+    
+    # Create a simple prompt
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", "You are a coding assistant specializing in Python."),
+        ("user", "Write a simple Python function to check if a string is a palindrome.")
+    ])
+    
+    # Create a chain
+    chain = prompt | chat
+    
+    # Invoke the chain
+    result = chain.invoke({})
+    
+    print("\nResult from Deepseek chat:")
+    print(result.content)
+    print("\nCheck your LangSmith dashboard for the trace!")
+
+def test_deepseek_chain():
+    """Test a chain using the Deepseek model with an output parser."""
+    print("\nTesting Deepseek chain with output parser...")
+    
+    # Create a simple chain with the utility function and Deepseek model
+    system_prompt = "You are a coding assistant specializing in algorithms."
+    user_prompt = "Explain the time complexity of quicksort and provide a simple implementation in Python."
+    
+    chain = create_simple_chain(system_prompt, user_prompt, model="deepseek-coder-6.7b")
+    
+    # Invoke the chain
+    result = chain.invoke({})
+    
+    print("\nResult from Deepseek chain with parser:")
+    print(result)
+    print("\nCheck your LangSmith dashboard for the trace!")
+
 if __name__ == "__main__":
     print(f"LangChain Tracing Enabled: {settings.LANGCHAIN_TRACING_V2}")
     print(f"LangChain Project: {settings.LANGCHAIN_PROJECT}")
@@ -80,3 +120,15 @@ if __name__ == "__main__":
     test_simple_chat()
     test_chain_with_parser()
     test_company_info_extraction()
+    
+    # Run Deepseek tests
+    print("\n" + "-"*50)
+    print("Running Deepseek tests...")
+    print("-"*50)
+    
+    if not settings.DEEPSEEK_API_KEY:
+        print("Warning: DEEPSEEK_API_KEY is not set. Deepseek tests will not work properly.")
+        print("Please set the DEEPSEEK_API_KEY in your .env file.")
+    else:
+        test_deepseek_chat()
+        test_deepseek_chain()

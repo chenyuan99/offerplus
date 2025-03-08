@@ -8,6 +8,7 @@ from langchain.callbacks.tracers.langchain import LangChainTracer
 from langchain.callbacks.manager import CallbackManager
 from langchain_core.tracers import ConsoleCallbackHandler
 from langchain_openai import ChatOpenAI
+from langchain_deepseek import ChatDeepSeek
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
@@ -53,6 +54,31 @@ def get_openai_chat(model="gpt-3.5-turbo", temperature=0.7, **kwargs):
         **kwargs
     )
 
+def get_deepseek_chat(model="deepseek-coder-6.7b", temperature=0.7, **kwargs):
+    """ 
+    Get a configured ChatDeepSeek instance with tracing enabled.
+
+    Args:
+        model (str): The Deepseek model to use
+        temperature (float): Temperature setting for the model
+        **kwargs: Additional arguments to pass to ChatDeepSeek
+
+    Returns:
+        ChatDeepSeek: A configured ChatDeepSeek instance
+    """
+    callback_manager = get_callback_manager()
+    
+    os.environ['DEEPSEEK_API_KEY'] = settings.DEEPSEEK_API_KEY
+
+    return ChatDeepSeek(
+        model="deepseek-chat",
+        temperature=0,
+        max_tokens=None,
+        timeout=None,
+        max_retries=2,
+    )
+
+
 def create_simple_chain(system_prompt, user_prompt_template, model="gpt-3.5-turbo"):
     """
     Create a simple LangChain chain with the given prompts and model.
@@ -66,12 +92,16 @@ def create_simple_chain(system_prompt, user_prompt_template, model="gpt-3.5-turb
         Chain: A configured LangChain chain
     """
     # For Deepseek models, we'll need to handle them differently in the future
-    # For now, if it's not an OpenAI model, default to gpt-3.5-turbo
-    if not model.startswith('gpt-'):
-        # This is a temporary fallback until Deepseek models are properly integrated
-        model = "gpt-3.5-turbo"
-    
-    llm = get_openai_chat(model=model)
+    # For now, if it's not an OpenAI model, default to gpt-4o-mini
+
+    # TODO: Add Deepseek model support
+    if model.startswith('deepseek-'):
+        llm = get_deepseek_chat(model=model)
+    else:
+        if not model.startswith('gpt-'):
+            # This is a temporary fallback until Deepseek models are properly integrated
+            model = "gpt-4o-mini"
+        llm = get_openai_chat(model=model)
     
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),

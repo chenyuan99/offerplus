@@ -76,6 +76,13 @@ INSTALLED_APPS = [
 ]
 
 # Database Configuration
+# For tests, use a shorter database name with keepdb option
+if 'test' in sys.argv:
+    DATABASE_ROUTERS = []
+    DATABASE_SUPPORTS_TRANSACTIONS = True
+    # Use keepdb to avoid destroying the database after tests
+    TEST_KEEPDB = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -90,8 +97,12 @@ DATABASES = {
             'target_session_attrs': 'read-write',
         },
         'TEST': {
+            # Use SQLite for testing instead of PostgreSQL
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': ':memory:',
+            'NAME': os.path.join(BASE_DIR, 'test_db.sqlite3'),
+            'OPTIONS': {
+                'timeout': 120,  # Increase timeout to wait for locks to be released
+            },
         },
     }
 }
@@ -287,6 +298,9 @@ SIMPLE_JWT = {
 
 # OpenAI settings
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+# DeepSeek settings
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 
 # LangChain settings
 LANGCHAIN_TRACING_V2 = os.getenv('LANGCHAIN_TRACING_V2', 'true').lower() == 'true'
