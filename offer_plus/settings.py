@@ -76,12 +76,15 @@ INSTALLED_APPS = [
 ]
 
 # Database Configuration
-# For tests, use a shorter database name with keepdb option
+# Configure test database settings
 if 'test' in sys.argv:
     DATABASE_ROUTERS = []
     DATABASE_SUPPORTS_TRANSACTIONS = True
-    # Use keepdb to avoid destroying the database after tests
-    TEST_KEEPDB = True
+    
+    # Local development: use keepdb to avoid concurrency issues
+    # CI/CD: don't use keepdb to ensure clean test runs
+    if not os.environ.get('CI'):
+        TEST_KEEPDB = True
 
 DATABASES = {
     'default': {
@@ -97,12 +100,13 @@ DATABASES = {
             'target_session_attrs': 'read-write',
         },
         'TEST': {
-            # Use SQLite for testing instead of PostgreSQL
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'test_db.sqlite3'),
+            # In CI, use the same database engine as production
+            # In local development, use SQLite for testing
+            'ENGINE': 'django.db.backends.sqlite3' if not os.environ.get('CI') else None,
+            'NAME': os.path.join(BASE_DIR, 'test_db.sqlite3') if not os.environ.get('CI') else None,
             'OPTIONS': {
                 'timeout': 120,  # Increase timeout to wait for locks to be released
-            },
+            } if not os.environ.get('CI') else {},
         },
     }
 }

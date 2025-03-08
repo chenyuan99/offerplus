@@ -29,10 +29,11 @@ jobs:
       env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          CI: true
       run: |
         python manage.py makemigrations
         python manage.py migrate
-        python manage.py test
+        python manage.py test --noinput
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
