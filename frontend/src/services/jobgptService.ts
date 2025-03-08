@@ -30,7 +30,6 @@ export const jobgptService = {
       });
       return response.data;
     } catch (error: any) {
-      throw  error;
       throw new Error(error.response?.data?.error || 'Failed to upload resume');
     }
   },
