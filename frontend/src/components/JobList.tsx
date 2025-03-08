@@ -14,7 +14,16 @@ export function JobList({ jobs, onSelectJob }: JobListProps) {
         <div
           key={job.id}
           onClick={() => onSelectJob(job)}
-          className="bg-white p-4 rounded-lg shadow mb-3 hover:shadow-md transition-shadow cursor-pointer"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onSelectJob(job);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label={`Select job: ${job.role || 'Untitled Role'} at ${job.company}`}
+          className="bg-white p-4 rounded-lg shadow mb-3 hover:shadow-md transition-shadow cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <div className="flex justify-between items-start">
             <div>
