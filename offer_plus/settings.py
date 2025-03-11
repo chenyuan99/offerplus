@@ -37,20 +37,19 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "offersplus.xyz",
-    "https://offersplus.xyz",
     "offerplus.io",
     "api.offerplus.io",
     "https://offerplus.io",
+    "https://www.offerplus.io"
     "https://api.offerplus.io",
     "offerplus.vercel.app",
     "https://offerplus.vercel.app"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://offersplus.xyz", 
     "https://offerplus.io",
     "https://offerplus.vercel.app",
+    "https://www.offerplus.io",
     "https://api.offerplus.io"
 ]
 
@@ -68,7 +67,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'social_django',
+    # 'social_django',
     "accounts",
     "tracks",
     "jobgpt",
@@ -120,9 +119,9 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "accounts.middleware.SupabaseAuthMiddleware",  # Add Supabase auth middleware
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = "offer_plus.urls"
@@ -194,9 +193,37 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Authentication backends
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.github.GithubOAuth2',
+    'accounts.backends.SupabaseAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+# Django REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'EXCEPTION_HANDLER': 'accounts.utils.custom_exception_handler'
+}
+
+# JWT settings for Supabase integration
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'sub',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'JTI_CLAIM': 'jti',
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),  # Match Supabase token lifetime
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
+# Supabase Configuration
+SUPABASE_URL = os.getenv('SUPABASE_URL', 'CHANGEIT')
+SUPABASE_KEY = os.getenv('SUPABASE_KEY', 'CHANGEIT')
+SUPABASE_SERVICE_KEY = os.getenv('SUPABASE_SERVICE_KEY', 'CHANGEIT')
 
 SOCIAL_AUTH_GITHUB_KEY = os.getenv('GITHUB_CLIENT_ID')
 SOCIAL_AUTH_GITHUB_SECRET = os.getenv('GITHUB_CLIENT_SECRET')
@@ -311,7 +338,7 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 LANGCHAIN_TRACING_V2 = os.getenv('LANGCHAIN_TRACING_V2', 'true').lower() == 'true'
 LANGCHAIN_ENDPOINT = os.getenv('LANGCHAIN_ENDPOINT', 'https://api.smith.langchain.com')
 LANGCHAIN_API_KEY = os.getenv('LANGCHAIN_API_KEY', '')
-LANGCHAIN_PROJECT = os.getenv('LANGCHAIN_PROJECT', 'offersplus')
+LANGCHAIN_PROJECT = os.getenv('LANGCHAIN_PROJECT', 'offerplus')
 
 WEBPACK_LOADER = {
     'DEFAULT': {
