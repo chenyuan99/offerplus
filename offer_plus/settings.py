@@ -40,10 +40,10 @@ ALLOWED_HOSTS = [
     "offerplus.io",
     "api.offerplus.io",
     "https://offerplus.io",
-    "https://www.offerplus.io"
+    "https://www.offerplus.io",
     "https://api.offerplus.io",
     "offerplus.vercel.app",
-    "https://offerplus.vercel.app"
+    "https://offerplus.vercel.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -271,7 +271,8 @@ LOGGING = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vite development server
     "http://localhost:3000",  # Alternative development port
-    "https://offersplus.io",  # Production URL
+    "https://offerplus.io",   # Production URL
+    "https://www.offerplus.io", # Production URL with www
     "https://api.offerplus.io", # Production API URL
     "https://offerplus.vercel.app"  # Vercel deployment URL
 ]
