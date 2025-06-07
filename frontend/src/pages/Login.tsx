@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
 
 export function Login() {
-  const { login, error } = useAuth();
+  const { signIn, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setIsLoading(true);
+    
     try {
-      await login(email, password);
+      const { error: signInError } = await signIn(email, password);
+      if (signInError) {
+        setError(signInError.message);
+        setIsLoading(false);
+        return;
+      }
       navigate('/profile');
-    } catch (error) {
-      console.error('Login error:', error);
-    } finally {
+    } catch (err) {
+      setError('An unexpected error occurred');
+      console.error('Login error:', err);
       setIsLoading(false);
     }
   };
@@ -84,10 +92,10 @@ export function Login() {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || authLoading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
               >
-                {isLoading ? 'Signing in...' : 'Sign in'}
+                {isLoading || authLoading ? 'Signing in...' : 'Sign in'}
               </button>
             </div>
           </form>

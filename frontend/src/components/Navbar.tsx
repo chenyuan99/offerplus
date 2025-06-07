@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, FileText, BarChart2, LogOut, User, ChevronDown } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { Menu, X, FileText, BarChart2, LogOut, User as UserIcon, ChevronDown } from 'lucide-react';
+import { supabase, type User as SupabaseUser } from '../lib/supabase';
 
 interface NavbarProps {
   isMenuOpen: boolean;
@@ -12,11 +12,27 @@ export function Navbar({
   isMenuOpen, 
   setIsMenuOpen
 }: NavbarProps) {
-  const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+    });
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -32,7 +48,7 @@ export function Navbar({
   }, []);
 
   const handleLogout = async () => {
-    await logout();
+    await supabase.auth.signOut();
     navigate('/login');
   };
 
@@ -94,15 +110,15 @@ export function Navbar({
                       className="flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 focus:outline-none"
                     >
                       <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                        {user.username ? (
+                        {user?.email ? (
                           <span className="text-sm font-medium text-gray-600">
-                            {user.username.charAt(0).toUpperCase()}
+                            {user.email.charAt(0).toUpperCase()}
                           </span>
                         ) : (
-                          <User className="h-5 w-5 text-gray-500" />
+                          <UserIcon className="h-5 w-5 text-gray-500" />
                         )}
                       </div>
-                      <span className="hidden md:block">{user.username}</span>
+                      <span className="hidden md:block">{user.email}</span>
                       <ChevronDown className="h-4 w-4" />
                     </button>
 
@@ -115,18 +131,16 @@ export function Navbar({
                           onClick={() => setShowUserMenu(false)}
                         >
                           <div className="flex items-center">
-                            <User className="h-4 w-4 mr-2" />
-                            Profile
+                            <UserIcon className="h-4 w-4 mr-2" />
+                            {user.email}
                           </div>
                         </Link>
                         <button
                           onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                          className="flex items-center w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
                         >
-                          <div className="flex items-center">
-                            <LogOut className="h-4 w-4 mr-2" />
-                            Logout
-                          </div>
+                          <LogOut className="h-4 w-4 mr-2" />
+                          Sign out
                         </button>
                       </div>
                     )}
@@ -219,8 +233,8 @@ export function Navbar({
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <span className="flex items-center">
-                    <User className="h-5 w-5 mr-3" />
-                    Profile
+                    <UserIcon className="h-5 w-5 mr-3" />
+                    {user?.email || 'Profile'}
                   </span>
                 </Link>
                 <button

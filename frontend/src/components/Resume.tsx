@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService, UserProfile } from '../services/api';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 export const Resume: React.FC = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);

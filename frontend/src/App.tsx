@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Dashboard } from './pages/Dashboard';
-import { Login } from './pages/Login';
-import { Register } from './pages/Register';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import { Profile } from './pages/Profile';
 import { Companies } from './pages/Companies';
 import { CompanyDetail } from './pages/CompanyDetail';
@@ -13,39 +13,48 @@ import { Privacy } from './pages/Privacy';
 import { Terms } from './pages/Terms';
 import { H1B } from './pages/H1B';
 import { Hardware } from './pages/Hardware';
-import { Internship as InternshipPage } from './pages/Internship';  
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { Internship as InternshipPage } from './pages/Internship';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Landing } from './components/Landing';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
-
-// Protected Route wrapper component
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user) {
-    return <Navigate to="/" />;
-  }
-
-  return <>{children}</>;
-};
+import { supabase, type User as SupabaseUser } from './lib/supabase';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 // Public Route wrapper component - redirects to dashboard if logged in
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user || null);
+      setLoading(false);
+    });
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   if (user) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;
@@ -53,7 +62,6 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
 
 function AppContent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
@@ -72,12 +80,12 @@ function AppContent() {
             } />
             <Route path="/login" element={
               <PublicRoute>
-                <Login />
+                <LoginPage />
               </PublicRoute>
             } />
             <Route path="/register" element={
               <PublicRoute>
-                <Register />
+                <RegisterPage />
               </PublicRoute>
             } />
             <Route path="/privacy" element={<Privacy />} />
@@ -154,11 +162,11 @@ function App() {
   return (
     <Router>
       <HelmetProvider>
-        <AuthProvider>
+        {/* Auth state is now managed by Supabase directly */}
           <AppContent />
           <Analytics />
           <SpeedInsights />
-        </AuthProvider>
+        {/* End of auth wrapper */}
       </HelmetProvider>
     </Router>
   );

@@ -17,7 +17,9 @@
     "cypress:headless": "cypress run"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.48.0",
+    "@supabase/auth-ui-react": "^0.4.7",
+    "@supabase/auth-ui-shared": "^0.1.8",
+    "@supabase/supabase-js": "^2.50.0",
     "@vercel/analytics": "^1.4.1",
     "@vercel/speed-insights": "^1.1.0",
     "axios": "^1.6.7",
