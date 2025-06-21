@@ -1,8 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useState, useEffect } from 'react';
 import { uploadResume } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import { Resume } from '../components/Resume';
+import { supabase, type User } from '../lib/supabase';
+
+// Define the user metadata type
+interface UserMetadata {
+  first_name?: string;
+  last_name?: string;
+  username?: string;
+  [key: string]: string | undefined; // Allow for additional properties
+}
+
+// Extend the User type to include additional fields
+type ExtendedUser = User & {
+  user_metadata: UserMetadata;
+}
 
 interface Address {
   street1: string;
@@ -21,9 +34,25 @@ interface ResumeInfo {
 }
 
 export function Profile() {
-  const { user } = useAuth();
   const navigate = useNavigate();
-  const [isEditing, setIsEditing] = useState(false);
+  const [user, setUser] = useState<ExtendedUser | null>(null);
+  
+  // Get username from email if user_metadata.username is not available
+  const getUsername = (userEmail: string | undefined) => {
+    return userEmail ? userEmail.split('@')[0] : 'user';
+  };
+  
+  // Safely get user metadata with defaults
+  const getUserMetadata = () => {
+    if (!user) return { first_name: '', last_name: '', username: 'user' };
+    return {
+      first_name: user.user_metadata?.first_name || '',
+      last_name: user.user_metadata?.last_name || '',
+      username: user.user_metadata?.username || getUsername(user.email)
+    };
+  };
+  
+  const { first_name, last_name, username: userUsername } = getUserMetadata();
   const [address, setAddress] = useState<Address>({
     street1: '',
     street2: '',
@@ -36,28 +65,41 @@ export function Profile() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [resumeInfo, setResumeInfo] = useState<ResumeInfo | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Redirect to login if not authenticated
+  // Check for existing session
   useEffect(() => {
-    if (!user) {
-      navigate('/login');
-    }
-  }, [user, navigate]);
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate('/login');
+      } else {
+        setUser(session.user);
+        setLoading(false);
+      }
+    };
 
-  // If not authenticated, show loading or return null
-  if (!user) {
+    checkSession();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate('/login');
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [navigate]);
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-        <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-          <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <div className="max-w-md mx-auto">
-              <div className="divide-y divide-gray-200">
-                <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                  <p>Please log in to view your profile.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#861F41]"></div>
         </div>
       </div>
     );
@@ -124,13 +166,13 @@ export function Profile() {
               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500">Username</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user.username}
+                  {userUsername}
                 </dd>
               </div>
               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500">Email address</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                  {user.email}
+                  {user?.email}
                 </dd>
               </div>
             </dl>
@@ -160,7 +202,7 @@ export function Profile() {
                     <input
                       type="text"
                       id="firstName"
-                      value={user?.first_name || ''}
+                      value={first_name || 'First Name'}
                       disabled
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                     />
@@ -172,7 +214,7 @@ export function Profile() {
                     <input
                       type="text"
                       id="lastName"
-                      value={user?.last_name || ''}
+                      value={last_name || 'Last Name'}
                       disabled
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                     />
@@ -190,7 +232,7 @@ export function Profile() {
                     <input
                       type="text"
                       id="username"
-                      value={user?.username || ''}
+                      value={userUsername}
                       disabled
                       className="flex-1 block w-full rounded-none rounded-r-md border-gray-300 focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed sm:text-sm"
                     />
@@ -375,9 +417,8 @@ export function Profile() {
                   <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                     <h5 className="text-sm font-medium text-gray-700 mb-2">Current Resume</h5>
                     <div className="flex flex-col space-y-2">
-                      <p className="text-sm text-gray-600">
-                        {resumeInfo.fileName}
-                      </p>
+                      <p className="text-sm text-gray-500">@{user?.email?.split('@')[0] || 'user'}</p>
+                      <p className="text-sm text-gray-500">@{userUsername}</p>
                       <p className="text-sm text-gray-500">
                         {formatFileSize(resumeInfo.fileSize)}
                       </p>

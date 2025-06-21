@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigate, Link } from 'react-router-dom';
 
 export function Register() {
-  const { register, error } = useAuth();
+  const { signUp, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,12 +29,17 @@ export function Register() {
 
     setIsLoading(true);
     try {
-      await register(email, password);
-      navigate('/profile');
-    } catch (error) {
-      console.error('Registration error:', error);
-      setFormError(error instanceof Error ? error.message : 'Registration failed');
-    } finally {
+      const { error: signUpError } = await signUp(email, password);
+      if (signUpError) {
+        setFormError(signUpError.message);
+        setIsLoading(false);
+        return;
+      }
+      // Redirect to login page after successful registration
+      navigate('/login');
+    } catch (err) {
+      setFormError('An unexpected error occurred');
+      console.error('Registration error:', err);
       setIsLoading(false);
     }
   };
@@ -56,9 +61,9 @@ export function Register() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {(error || formError) && (
+            {formError && (
               <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <span className="block sm:inline">{error || formError}</span>
+                <span className="block sm:inline">{formError}</span>
               </div>
             )}
 
@@ -119,10 +124,10 @@ export function Register() {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || authLoading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
               >
-                {isLoading ? 'Creating account...' : 'Create account'}
+                {isLoading || authLoading ? 'Creating account...' : 'Create account'}
               </button>
             </div>
           </form>

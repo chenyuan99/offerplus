@@ -3,31 +3,10 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-console.log('Supabase URL:', supabaseUrl);
-console.log('Supabase Key length:', supabaseAnonKey?.length || 0);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(`Missing Supabase environment variables:
-    URL: ${supabaseUrl ? 'Set' : 'Missing'}
-    Key: ${supabaseAnonKey ? 'Set' : 'Missing'}`);
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
-  }
-});
-
-// Test the connection
-supabase.auth.getSession().then(({ data, error }) => {
-  if (error) {
-    console.error('Supabase connection error:', error);
-  } else {
-    console.log('Supabase connected successfully');
-  }
-});
+// Export auth types for better TypeScript support
+export type { Session, User, AuthChangeEvent } from '@supabase/supabase-js';
 
 export const uploadResume = async (file: File) => {
   try {
