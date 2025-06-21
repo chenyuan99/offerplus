@@ -19,13 +19,19 @@ export async function fetchWithAuth(endpoint: string, options: FetchOptions = {}
 
     // Prepare headers
     const headers = new Headers(options.headers);
-    headers.set('Authorization', `Bearer ${session.access_token}`);
     headers.set('Content-Type', 'application/json');
+    
+    // Add the authorization token
+    const token = session.access_token;
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
 
     // Make the request
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers,
+      credentials: 'include',
     });
 
     // Handle non-2xx responses
