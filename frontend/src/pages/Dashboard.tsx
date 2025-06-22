@@ -234,7 +234,16 @@ export function Dashboard() {
                         src={`https://logo.clearbit.com/${app.company_link ? new URL(app.company_link).hostname.replace('www.', '') : 'company'}.com`} 
                         alt="Company"
                         onError={(e) => {
-                          (e.target as HTMLImageElement).src = 'https://via.placeholder.com/40';
+                          // Use a base64-encoded SVG as fallback
+                          const svg = `data:image/svg+xml;base64,${btoa(
+                            `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="%23e5e7eb">
+                              <rect width="40" height="40" rx="20" />
+                              <text x="50%" y="50%" font-family="Arial" font-size="16" text-anchor="middle" dy=".3em" fill="%239ca3af">
+                                ${app.company_link ? new URL(app.company_link).hostname.substring(0, 2).toUpperCase() : 'CO'}
+                              </text>
+                            </svg>`
+                          )}`;
+                          (e.target as HTMLImageElement).src = svg;
                         }} 
                       />
                     </div>
