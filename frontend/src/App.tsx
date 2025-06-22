@@ -10,6 +10,7 @@ import { Companies } from './pages/Companies';
 import { CompanyDetail } from './pages/CompanyDetail';
 import { JobGPT } from './pages/JobGPT';
 import { AddApplication } from './pages/AddApplication';
+import EditApplication from './pages/EditApplication';
 import { Privacy } from './pages/Privacy';
 import { Terms } from './pages/Terms';
 import { H1B } from './pages/H1B';
@@ -141,10 +142,18 @@ function AppContent() {
               }
             />
             <Route
-              path="/applications/add"
+              path="/add-application"
               element={
                 <ProtectedRoute>
                   <AddApplication />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit/:id"
+              element={
+                <ProtectedRoute>
+                  <EditApplication />
                 </ProtectedRoute>
               }
             />
