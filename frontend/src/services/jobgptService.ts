@@ -1,48 +1,74 @@
-import axios from 'axios';
-import { JobGPTResponse, ResumeUploadResponse, JobGPTMode, DeepseekModel } from '../types/jobgpt';
+import { supabase } from '../lib/supabase';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+interface JobGPTResponse {
+  response: string;
+  // Add other response properties as needed
+}
+
+interface ResumeUploadResponse {
+  success: boolean;
+  filePath?: string;
+  message?: string;
+  // Add other response properties as needed
+}
 
 export const jobgptService = {
-  generatePrompt: async (prompt: string, mode: JobGPTMode, model: DeepseekModel): Promise<JobGPTResponse> => {
+  sendPrompt: async (prompt: string, context: Record<string, unknown> = {}) => {
     try {
-      const response = await axios.post(`${API_URL}/jobgpt/api/jobgpt/prompt`, {
-        prompt,
-        mode,
-        model
+      const { data, error } = await supabase.functions.invoke('jobgpt-prompt', {
+        body: { prompt, context }
       });
-      return response.data;
-    } catch (error: any) {
-      console.log(error)
-      throw new Error(error.response?.data?.error || 'Failed to generate prompt');
+      
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error sending prompt to JobGPT:', error);
+      throw error;
     }
   },
 
-  uploadResume: async (file: File): Promise<ResumeUploadResponse> => {
+  uploadResume: async (file: File) => {
     try {
-      const formData = new FormData();
-      formData.append('document', file);
-
-      const response = await axios.post(`${API_URL}/jobgpt/api/jobgpt/resume/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      // First upload the file to Supabase Storage
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `resumes/${fileName}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('resumes')
+        .upload(filePath, file);
+      
+      if (uploadError) throw uploadError;
+      
+      // Get the public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('resumes')
+        .getPublicUrl(filePath);
+      
+      // Call the Edge Function to process the resume
+      const { data, error } = await supabase.functions.invoke('process-resume', {
+        body: { filePath: publicUrl }
       });
-      return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to upload resume');
+      
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error uploading resume:', error);
+      throw error;
     }
   },
 
-  matchResume: async (jobDescription: string, resumeUrl: string): Promise<JobGPTResponse> => {
+  matchResume: async (jobDescription: string) => {
     try {
-      const response = await axios.post(`${API_URL}/jobgpt/api/jobgpt/resume/match`, {
-        job_description: jobDescription,
-        resume_url: resumeUrl,
+      const { data, error } = await supabase.functions.invoke('match-resume', {
+        body: { jobDescription }
       });
-      return response.data;
-    } catch (error: any) {
-      throw new Error(error.response?.data?.error || 'Failed to match resume');
+      
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error matching resume:', error);
+      throw error;
     }
   },
 };
