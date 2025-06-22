@@ -6,6 +6,7 @@ const handleSupabaseError = (error: any) => {
   throw error;
 };
 
+// All API calls are now handled directly through Supabase client
 export const api = {
   // Profile related endpoints
   profile: {
@@ -63,7 +64,7 @@ export const api = {
       const fileName = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
       const filePath = `resumes/${fileName}`;
       
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('resumes')
         .upload(filePath, file);
       

@@ -1,5 +1,5 @@
 export type ProcessStage = 'Resume' | 'Phone Screen' | 'Technical' | 'Onsite' | 'Offer';
-export type ApplicationStatus = 'Applied' | 'In Progress' | 'Rejected' | 'Offer' | 'Accepted';
+export type ApplicationStatus = 'applied' | 'in_progress' | 'rejected' | 'offer' | 'accepted' | 'oa' | 'vo';
 export type ApplicationOutcome = 
   | 'TO DO'
   | 'IN PROGRESS'
@@ -56,13 +56,12 @@ export interface Job {
 
 export interface ApplicationRecord {
   id: number;
-  company: Company;
   job_title: string;
+  job_link: string;
+  company_link: string;
   status: ApplicationStatus;
-  source: ApplicationSource;
-  notes: string;
-  email_id?: string;
+  date_applied: string;
   created_at: string;
   updated_at: string;
-  applicant: string;
+  notes?: string;
 }

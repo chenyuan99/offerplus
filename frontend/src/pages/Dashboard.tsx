@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, Search, BarChart3, ChevronLeft, ChevronRight, Mail } from 'lucide-react';
 import { ApplicationRecord, ApplicationStatus } from '../types';
-import api from '../services/api';
+import { supabase } from '../lib/supabase';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -25,8 +25,14 @@ export function Dashboard() {
 
   const fetchApplications = async () => {
     try {
-      const response = await api.get('/api/applications/');
-      setApplications(response.data);
+      const { data, error } = await supabase
+        .from('applications')
+        .select('*')
+        .order('date_applied', { ascending: false });
+      
+      if (error) throw error;
+      
+      setApplications(data || []);
       setError(null);
     } catch (err) {
       setError('Failed to fetch applications');
@@ -39,12 +45,9 @@ export function Dashboard() {
   const syncGmail = async () => {
     setSyncing(true);
     try {
-      const response = await api.post('/api/sync-gmail/');
-      if (response.data.status === 'success') {
-        await fetchApplications();
-      } else {
-        setError(response.data.message || 'Failed to sync with Gmail');
-      }
+      // For now, we'll just refresh the applications
+      // In the future, you might want to implement Gmail sync with Supabase Edge Functions
+      await fetchApplications();
     } catch (err) {
       setError('Failed to sync with Gmail');
       console.error('Error syncing with Gmail:', err);
@@ -54,18 +57,27 @@ export function Dashboard() {
   };
 
   const calculateStats = () => {
-    const stats = applications.reduce((acc, app) => {
-      acc[app.status] = (acc[app.status] || 0) + 1;
-      return acc;
-    }, {} as Record<ApplicationStatus, number>);
+    const statusCounts = applications.reduce(
+      (acc, app) => ({
+        ...acc,
+        [app.status]: (acc[app.status] || 0) + 1,
+      }),
+      {} as Record<ApplicationStatus, number>
+    );
+
+    const totalApplications = applications.length;
+    const activeApplications = applications.filter(
+      (app) => app.status !== 'rejected' && app.status !== 'offer'
+    ).length;
 
     return {
-      total: applications.length,
-      applied: stats['APPLIED'] || 0,
-      oa: stats['OA'] || 0,
-      vo: stats['VO'] || 0,
-      offer: stats['OFFER'] || 0,
-      rejected: stats['REJECTED'] || 0
+      total: totalApplications,
+      active: activeApplications,
+      applied: statusCounts['applied'] || 0,
+      oa: statusCounts['oa'] || 0,
+      vo: statusCounts['vo'] || 0,
+      offer: statusCounts['offer'] || 0,
+      rejected: statusCounts['rejected'] || 0
     };
   };
 
@@ -77,15 +89,15 @@ export function Dashboard() {
     );
   }
 
-  const filteredApplications = applications.filter(app => {
-    const matchesSearch = 
-      app.company.name.toLowerCase().includes(search.toLowerCase()) ||
-      app.job_title.toLowerCase().includes(search.toLowerCase());
-    
-    const matchesStatus = !statusFilter || app.status === statusFilter;
-    
-    return matchesSearch && matchesStatus;
-  });
+  const filteredApplications = applications
+    .filter((app) => {
+      const matchesSearch =
+        app.job_title.toLowerCase().includes(search.toLowerCase()) ||
+        app.company_link.toLowerCase().includes(search.toLowerCase());
+      const matchesStatus = !statusFilter || app.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => new Date(b.date_applied).getTime() - new Date(a.date_applied).getTime());
 
   const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
   const paginatedApplications = filteredApplications.slice(
@@ -94,6 +106,21 @@ export function Dashboard() {
   );
 
   const stats = calculateStats();
+
+  const getStatusColor = (status: ApplicationStatus) => {
+    switch (status) {
+      case 'offer':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      case 'vo':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'oa':
+        return 'bg-blue-100 text-blue-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -152,15 +179,19 @@ export function Dashboard() {
             <div className="text-2xl font-semibold">{stats.total}</div>
           </div>
           <div className="p-4 bg-blue-100 rounded-lg">
-            <div className="text-sm text-blue-600">Applied</div>
-            <div className="text-2xl font-semibold">{stats.applied}</div>
+            <div className="text-sm text-blue-600">Active</div>
+            <div className="text-2xl font-semibold">{stats.active}</div>
           </div>
           <div className="p-4 bg-purple-100 rounded-lg">
-            <div className="text-sm text-purple-600">OA</div>
-            <div className="text-2xl font-semibold">{stats.oa}</div>
+            <div className="text-sm text-purple-600">Applied</div>
+            <div className="text-2xl font-semibold">{stats.applied}</div>
           </div>
           <div className="p-4 bg-indigo-100 rounded-lg">
-            <div className="text-sm text-indigo-600">VO</div>
+            <div className="text-sm text-indigo-600">OA</div>
+            <div className="text-2xl font-semibold">{stats.oa}</div>
+          </div>
+          <div className="p-4 bg-yellow-100 rounded-lg">
+            <div className="text-sm text-yellow-600">VO</div>
             <div className="text-2xl font-semibold">{stats.vo}</div>
           </div>
           <div className="p-4 bg-green-100 rounded-lg">
@@ -178,22 +209,16 @@ export function Dashboard() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Company
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Company & Position
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Position
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Source
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Applied On
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Applied
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
@@ -201,44 +226,43 @@ export function Dashboard() {
           <tbody className="bg-white divide-y divide-gray-200">
             {paginatedApplications.map((app) => (
               <tr key={app.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4">
                   <div className="flex items-center">
-                    {app.company.logo_url ? (
-                      <img
-                        className="h-8 w-8 rounded-full mr-3"
-                        src={app.company.logo_url}
-                        alt={app.company.name}
+                    <div className="flex-shrink-0 h-10 w-10">
+                      <img 
+                        className="h-10 w-10 rounded-full" 
+                        src={`https://logo.clearbit.com/${app.company_link ? new URL(app.company_link).hostname.replace('www.', '') : 'company'}.com`} 
+                        alt="Company"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'https://via.placeholder.com/40';
+                        }} 
                       />
-                    ) : (
-                      <div className="h-8 w-8 rounded-full bg-gray-200 mr-3 flex items-center justify-center">
-                        {app.company.name.charAt(0)}
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-sm font-medium text-gray-900">
+                        {app.company_link ? (
+                          <a href={app.company_link} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                            {new URL(app.company_link).hostname.replace('www.', '')}
+                          </a>
+                        ) : 'Company'}
                       </div>
-                    )}
-                    <div>
-                      <div className="font-medium text-gray-900">{app.company.name}</div>
-                      <div className="text-sm text-gray-500">{app.company.industry}</div>
+                      <div className="text-sm text-gray-500">
+                        {app.job_link ? (
+                          <a href={app.job_link} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                            {app.job_title}
+                          </a>
+                        ) : app.job_title}
+                      </div>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{app.job_title}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${app.status === 'OFFER' ? 'bg-green-100 text-green-800' : 
-                      app.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
-                      app.status === 'VO' ? 'bg-indigo-100 text-indigo-800' :
-                      app.status === 'OA' ? 'bg-purple-100 text-purple-800' :
-                      'bg-blue-100 text-blue-800'}`}
-                  >
-                    {app.status}
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(app.status)}`}>
+                    {app.status.replace('_', ' ')}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {app.source}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {new Date(app.created_at).toLocaleDateString()}
+                  {new Date(app.date_applied).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button
