@@ -1,87 +1,124 @@
 import { supabase } from './supabase';
 
-interface FetchOptions extends RequestInit {
-  token?: string;
-}
+// Helper function to handle Supabase errors
+const handleSupabaseError = (error: any) => {
+  console.error('Supabase error:', error);
+  throw error;
+};
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-export async function fetchWithAuth(endpoint: string, options: FetchOptions = {}) {
-  try {
-    // Get the current session
-    const { data: { session }, error } = await supabase.auth.getSession();
-    if (error) throw error;
-
-    // If no session, throw error
-    if (!session) {
-      throw new Error('No active session');
-    }
-
-    // Prepare headers
-    const headers = new Headers(options.headers);
-    headers.set('Content-Type', 'application/json');
-    
-    // Add the authorization token
-    const token = session.access_token;
-    if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
-    }
-
-    // Make the request
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
-      headers,
-      credentials: 'include',
-    });
-
-    // Handle non-2xx responses
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-    }
-
-    // Parse and return the response
-    return await response.json();
-  } catch (error) {
-    console.error('API request failed:', error);
-    throw error;
-  }
-}
-
-// Example API functions
 export const api = {
   // Profile related endpoints
   profile: {
-    get: () => fetchWithAuth('/api/profile/'),
-    update: (data: any) => fetchWithAuth('/api/profile/', {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
+    get: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No authenticated user');
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+      
+      if (error) handleSupabaseError(error);
+      return data;
+    },
+    
+    update: async (updates: any) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No authenticated user');
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', user.id)
+        .select()
+        .single();
+      
+      if (error) handleSupabaseError(error);
+      return data;
+    },
   },
   
   // Resume related endpoints
   resumes: {
-    list: () => fetchWithAuth('/api/resumes/'),
-    upload: async (file: File) => {
-      const formData = new FormData();
-      formData.append('file', file);
+    list: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No authenticated user');
       
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('No active session');
-
-      return fetch(`${API_BASE_URL}/api/resumes/upload/`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-        body: formData,
-      }).then(res => {
-        if (!res.ok) throw new Error('Upload failed');
-        return res.json();
-      });
+      const { data, error } = await supabase
+        .from('resumes')
+        .select('*')
+        .eq('user_id', user.id);
+      
+      if (error) handleSupabaseError(error);
+      return data;
     },
-    delete: (resumeId: string) => fetchWithAuth(`/api/resumes/${resumeId}/`, {
-      method: 'DELETE',
-    }),
+    
+    upload: async (file: File) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('No authenticated user');
+      
+      // Upload file to Supabase Storage
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+      const filePath = `resumes/${fileName}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('resumes')
+        .upload(filePath, file);
+      
+      if (uploadError) handleSupabaseError(uploadError);
+      
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('resumes')
+        .getPublicUrl(filePath);
+      
+      // Save resume metadata to database
+      const { data: resumeData, error: dbError } = await supabase
+        .from('resumes')
+        .insert([
+          { 
+            user_id: user.id,
+            file_name: file.name,
+            file_path: filePath,
+            file_url: publicUrl,
+            file_size: file.size,
+            file_type: file.type
+          }
+        ])
+        .select()
+        .single();
+      
+      if (dbError) handleSupabaseError(dbError);
+      return resumeData;
+    },
+    
+    delete: async (resumeId: string) => {
+      // First get the file path
+      const { data: resume, error: fetchError } = await supabase
+        .from('resumes')
+        .select('file_path')
+        .eq('id', resumeId)
+        .single();
+      
+      if (fetchError) handleSupabaseError(fetchError);
+      
+      // Delete from storage
+      const { error: storageError } = await supabase.storage
+        .from('resumes')
+        .remove([resume.file_path]);
+      
+      if (storageError) handleSupabaseError(storageError);
+      
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('resumes')
+        .delete()
+        .eq('id', resumeId);
+      
+      if (dbError) handleSupabaseError(dbError);
+      return { success: true };
+    },
   },
-};
+} as const;

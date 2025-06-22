@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ApplicationRecord } from '../types';
-import { jobsDb } from '../lib/db';
 import { CompanyLogo } from '../components/CompanyLogo';
+import { supabase } from '../lib/supabase';
+
+interface Company {
+  id: string;
+  name: string;
+  logo_url?: string;
+  application_count: number;
+}
+
 
 export function Companies() {
-  const [companies, setCompanies] = useState<{ name: string; applicationCount: number }[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
@@ -15,31 +22,65 @@ export function Companies() {
       try {
         setIsLoading(true);
         setError(null);
-        await jobsDb.init();
-        const applications = await jobsDb.getAll();
-        
-        // Group applications by company and count them
-        const companyGroups = applications.reduce((acc, app) => {
-          const companyName = app.company_name;
-          if (!acc[companyName]) {
-            acc[companyName] = 0;
-          }
-          acc[companyName]++;
-          return acc;
-        }, {} as Record<string, number>);
 
-        // Convert to array and sort by company name
-        const companyList = Object.entries(companyGroups)
-          .map(([name, count]) => ({
-            name,
-            applicationCount: count
-          }))
-          .sort((a, b) => a.name.localeCompare(b.name));
+        // First, get all companies
+        const { data: companiesData, error: companiesError } = await supabase
+          .from('tracks_company')
+          .select('id, name, logo_url, website')
+          .order('name')
+          .returns<Array<{
+            id: string;
+            name: string;
+            logo_url: string | null;
+            website: string | null;
+          }>>();
+
+        if (companiesError) throw companiesError;
+
+        // Type guard to ensure we have the expected data structure
+        if (!companiesData || companiesData.length === 0) {
+          setCompanies([]);
+          return;
+        }
+
+
+        // Get application counts per company
+        const { data: applicationsData, error: appsError } = await supabase
+          .from('tracks_applicationrecord')
+          .select('company_id')
+          .not('company_id', 'is', null)
+          .returns<Array<{ company_id: string }>>();
+
+        if (appsError) {
+          console.error('Error fetching applications:', appsError);
+        }
+
+        // Count applications per company
+        const applicationCountMap = new Map<string, number>();
+        if (applicationsData) {
+          applicationsData.forEach(app => {
+            if (app.company_id) {
+              applicationCountMap.set(
+                app.company_id,
+                (applicationCountMap.get(app.company_id) || 0) + 1
+              );
+            }
+          });
+        }
+
+        // Combine company data with application counts
+        const companyList = companiesData.map(company => ({
+          id: company.id,
+          name: company.name,
+          logo_url: company.logo_url || undefined,
+          application_count: applicationCountMap.get(company.id) || 0,
+          website: company.website || undefined
+        }));
 
         setCompanies(companyList);
-      } catch (error: any) {
+      } catch (error) {
         console.error('Error loading companies:', error);
-        setError('Failed to load companies. Please try again later.');
+        setError(error instanceof Error ? error.message : 'Failed to load companies. Please try again later.');
       } finally {
         setIsLoading(false);
       }
@@ -88,11 +129,13 @@ export function Companies() {
           >
             <div className="p-6">
               <div className="flex items-center space-x-4">
-                <CompanyLogo companyName={company.name} size={48} />
+                <div className="flex-shrink-0">
+                  <CompanyLogo companyName={company.name} size={48} className="rounded-full" />
+                </div>
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">{company.name}</h2>
                   <p className="text-sm text-gray-500">
-                    {company.applicationCount} application{company.applicationCount !== 1 ? 's' : ''}
+                    {company.application_count} application{company.application_count !== 1 ? 's' : ''}
                   </p>
                 </div>
               </div>
