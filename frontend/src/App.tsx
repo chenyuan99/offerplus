@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Dashboard } from './pages/Dashboard';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import Login from './pages/auth/Login';
+import CheckEmail from './pages/auth/CheckEmail';
+import Callback from './pages/auth/Callback';
 import { Profile } from './pages/Profile';
 import { Companies } from './pages/Companies';
 import { CompanyDetail } from './pages/CompanyDetail';
@@ -80,12 +81,17 @@ function AppContent() {
             } />
             <Route path="/login" element={
               <PublicRoute>
-                <LoginPage />
+                <Login />
               </PublicRoute>
             } />
-            <Route path="/register" element={
+            <Route path="/auth/callback" element={
               <PublicRoute>
-                <RegisterPage />
+                <Callback />
+              </PublicRoute>
+            } />
+            <Route path="/check-email" element={
+              <PublicRoute>
+                <CheckEmail />
               </PublicRoute>
             } />
             <Route path="/privacy" element={<Privacy />} />
