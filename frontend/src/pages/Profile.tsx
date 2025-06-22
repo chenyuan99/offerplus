@@ -1,71 +1,141 @@
-import { useState, useEffect } from 'react';
-import { uploadResume } from '../lib/supabase';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Resume } from '../components/Resume';
-import { supabase, type User } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
+import { ProfileFormData, ResumeInfo, ExtendedUser, UserMetadata } from '../types/profile';
 
-// Define the user metadata type
-interface UserMetadata {
-  first_name?: string;
-  last_name?: string;
-  username?: string;
-  [key: string]: string | undefined; // Allow for additional properties
-}
+// Utility function to upload files to Supabase Storage
+const uploadFile = async (file: File, bucket: string, path: string) => {
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Math.random()}.${fileExt}`;
+  const filePath = `${path}/${fileName}`;
+  
+  const { data, error: uploadError } = await supabase.storage
+    .from(bucket)
+    .upload(filePath, file);
 
-// Extend the User type to include additional fields
-type ExtendedUser = User & {
-  user_metadata: UserMetadata;
-}
+  if (uploadError) {
+    throw uploadError;
+  }
 
-interface Address {
-  street1: string;
-  street2?: string;
-  country: string;
-  state: string;
-  zip: string;
-}
+  const { data: { publicUrl } } = supabase.storage
+    .from(bucket)
+    .getPublicUrl(filePath);
 
-interface ResumeInfo {
-  publicUrl: string;
-  filePath: string;
-  fileName: string;
-  fileSize: number;
-  fileType: string;
-}
+  return {
+    filePath: data.path,
+    publicUrl,
+    fileName: file.name,
+    fileSize: file.size,
+    fileType: file.type
+  };
+};
 
-export function Profile() {
+// Upload resume to storage
+const uploadResume = (file: File) => {
+  return uploadFile(file, 'resumes', 'user-uploads');
+};
+
+// Upload profile picture to storage
+const uploadProfilePicture = (file: File) => {
+  return uploadFile(file, 'avatars', 'profile-pictures');
+};
+
+export default function Profile() {
   const navigate = useNavigate();
   const [user, setUser] = useState<ExtendedUser | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [resumeInfo, setResumeInfo] = useState<ResumeInfo | null>(null);
   
-  // Get username from email if user_metadata.username is not available
-  const getUsername = (userEmail: string | undefined) => {
+  const [formData, setFormData] = useState<{
+    first_name: string;
+    last_name: string;
+    title: string;
+    bio: string;
+    website: string;
+    github: string;
+    linkedin: string;
+    twitter: string;
+    skills: string;
+  }>({
+    first_name: '',
+    last_name: '',
+    title: '',
+    bio: '',
+    website: '',
+    github: '',
+    linkedin: '',
+    twitter: '',
+    skills: ''
+  });
+  
+  // Get username from email
+  const getUsername = useCallback((userEmail: string | undefined) => {
     return userEmail ? userEmail.split('@')[0] : 'user';
-  };
+  }, []);
   
-  // Safely get user metadata with defaults
-  const getUserMetadata = () => {
-    if (!user) return { first_name: '', last_name: '', username: 'user' };
+  // Get user metadata with defaults
+  const getUserMetadata = useCallback((): UserMetadata & { first_name: string; last_name: string } => {
+    if (!user) { 
+      return { 
+        first_name: '', 
+        last_name: '',
+        username: 'user',
+        title: '',
+        bio: '',
+        website: '',
+        github: '',
+        linkedin: '',
+        twitter: '',
+        skills: [],
+        avatar_url: ''
+      }; 
+    }
+    
+    const skills = user.user_metadata?.skills;
+    const formattedSkills = Array.isArray(skills) 
+      ? skills.join(', ') 
+      : typeof skills === 'string' 
+        ? skills 
+        : '';
+
     return {
       first_name: user.user_metadata?.first_name || '',
       last_name: user.user_metadata?.last_name || '',
-      username: user.user_metadata?.username || getUsername(user.email)
+      username: user.user_metadata?.username || getUsername(user.email),
+      title: user.user_metadata?.title || '',
+      bio: user.user_metadata?.bio || '',
+      website: user.user_metadata?.website || '',
+      github: user.user_metadata?.github || '',
+      linkedin: user.user_metadata?.linkedin || '',
+      twitter: user.user_metadata?.twitter || '',
+      skills: formattedSkills,
+      avatar_url: user.user_metadata?.avatar_url || ''
     };
-  };
+  }, [user]);
   
-  const { first_name, last_name, username: userUsername } = getUserMetadata();
-  const [address, setAddress] = useState<Address>({
-    street1: '',
-    street2: '',
-    country: 'United States',
-    state: '',
-    zip: '',
-  });
-  const [saveInfo, setSaveInfo] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [resumeInfo, setResumeInfo] = useState<ResumeInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (user) {
+      const meta = getUserMetadata();
+      setFormData({
+        first_name: meta.first_name || '',
+        last_name: meta.last_name || '',
+        title: meta.title || '',
+        bio: meta.bio || '',
+        website: meta.website || '',
+        github: meta.github || '',
+        linkedin: meta.linkedin || '',
+        twitter: meta.twitter || '',
+        skills: meta.skills || ''
+      });
+    }
+  }, [user, getUserMetadata]);
 
   // Check for existing session
   useEffect(() => {
@@ -97,15 +167,45 @@ export function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-        <div className="flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#861F41]"></div>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
 
-  const formatFileSize = (bytes: number) => {
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
+
+  // Get user metadata and derived values
+  const userMetadata = useMemo(() => getUserMetadata(), [getUserMetadata]);
+  
+  // Get user's full name
+  const fullName = useMemo(() => {
+    if (!user) return 'User';
+    return `${user.user_metadata?.first_name || ''} ${user.user_metadata?.last_name || ''}`.trim() || 'User';
+  }, [user]);
+  
+  // Get skills as array for display
+  const displaySkills = useMemo(() => {
+    if (!user?.user_metadata?.skills) return [];
+    
+    if (typeof user.user_metadata.skills === 'string') {
+      return user.user_metadata.skills
+        .split(',')
+        .map((s: string) => s.trim())
+        .filter(Boolean) as string[];
+    }
+    
+    if (Array.isArray(user.user_metadata.skills)) {
+      return user.user_metadata.skills as string[];
+    }
+    
+    return [];
+  }, [user]);
+
+  const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -113,56 +213,338 @@ export function Profile() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  const formatDate = (dateString: string): string => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   const handleResumeUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      setUploadError('File size should be less than 5MB');
+      return;
+    }
 
     setIsUploading(true);
     setUploadError(null);
 
     try {
       const result = await uploadResume(file);
-      setResumeInfo(result);
+      const resumeData: Omit<ResumeInfo, 'id'> = {
+        file_name: result.fileName,
+        file_url: result.publicUrl,
+        file_size: result.fileSize,
+        file_type: result.fileType,
+        uploaded_at: new Date().toISOString(),
+        user_id: user?.id || ''
+      };
+      
+      // Save to database
+      if (user) {
+        const { data, error } = await supabase
+          .from('resumes')
+          .upsert(
+            { ...resumeData, user_id: user.id },
+            { onConflict: 'user_id' }
+          )
+          .select()
+          .single();
+          
+        if (error) throw error;
+        
+        setResumeInfo(data as ResumeInfo);
+      }
+      
     } catch (error) {
+      console.error('Upload error:', error);
       setUploadError(error instanceof Error ? error.message : 'Failed to upload resume');
+    } finally {
+      setIsUploading(false);
+      if (event.target) {
+        event.target.value = ''; // Reset file input
+      }
+    }
+  };
+
+  const handleProfilePictureUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Please upload an image file');
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const { publicUrl } = await uploadProfilePicture(file);
+      
+      // Update user metadata with new avatar URL
+      const { error } = await supabase.auth.updateUser({
+        data: { avatar_url: publicUrl }
+      });
+
+      if (error) throw error;
+
+      // Update local state
+      setUser(prev => prev ? { ...prev, avatar_url: publicUrl } : null);
+      
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Failed to upload profile picture');
       console.error('Upload error:', error);
     } finally {
       setIsUploading(false);
-      // Clear the input value to allow uploading the same file again
       event.target.value = '';
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+    
     setIsLoading(true);
+    
     try {
-      // TODO: Implement profile update logic
-      console.log('Profile updated:', { address, saveInfo });
+      // Prepare skills as an array
+      const skillsArray = formData.skills
+        ? formData.skills.split(',').map(skill => skill.trim()).filter(Boolean)
+        : [];
+      
+      // Update user metadata
+      const { data: { user: updatedUser }, error } = await supabase.auth.updateUser({
+        data: {
+          first_name: formData.first_name || '',
+          last_name: formData.last_name || '',
+          title: formData.title || '',
+          bio: formData.bio || '',
+          website: formData.website || '',
+          github: formData.github || '',
+          linkedin: formData.linkedin || '',
+          twitter: formData.twitter || '',
+          skills: skillsArray
+        }
+      });
+      
+      if (error) throw error;
+      
+      // Update local state
+      if (updatedUser) {
+        setUser(updatedUser);
+      }
+      
+      setIsEditing(false);
+      
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      console.error('Error updating profile:', error);
+      setUploadError(error instanceof Error ? error.message : 'Failed to update profile');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancelEdit = () => {
+    // Reset form data to current user data
+    const meta = getUserMetadata();
+    setFormData({
+      first_name: meta.first_name,
+      last_name: meta.last_name,
+      title: meta.title,
+      bio: meta.bio,
+      website: meta.website,
+      github: meta.github,
+      linkedin: meta.linkedin,
+      twitter: meta.twitter,
+      skills: meta.skills
+    });
+    setIsEditing(false);
+    alert('Profile updated successfully!');
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    alert('Failed to update profile. Please try again.');
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+  // Toggle edit mode
+  const handleEditClick = useCallback(() => {
+    setIsEditing(true);
+  }, []);
+
+  // Cancel editing and reset form data
+  const handleCancelEdit = useCallback(() => {
+    if (user) {
+      const meta = getUserMetadata();
+      setFormData({
+        first_name: meta.first_name || '',
+        last_name: meta.last_name || '',
+        title: meta.title || '',
+        bio: meta.bio || '',
+        website: meta.website || '',
+        github: meta.github || '',
+        linkedin: meta.linkedin || '',
+        twitter: meta.twitter || '',
+        skills: Array.isArray(meta.skills) ? meta.skills.join(', ') : meta.skills || ''
+      });
+    }
+    setIsEditing(false);
+  }, [getUserMetadata, user]);
+
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle profile picture upload
+  const handleProfilePictureUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Check file type
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Please upload an image file');
+      return;
+    }
+    
+    setIsUploading(true);
+    setUploadError(null);
+    
+    try {
+      const result = await uploadProfilePicture(file);
+      
+      // Update user's avatar URL in metadata
+      const { error } = await supabase.auth.updateUser({
+        data: { avatar_url: result.publicUrl }
+      });
+      
+      if (error) throw error;
+      
+      // Update local state
+      setUser(prev => prev ? {
+        ...prev,
+        user_metadata: {
+          ...prev.user_metadata,
+          avatar_url: result.publicUrl
+        }
+      } : null);
+      
+    } catch (error) {
+      console.error('Upload error:', error);
+      setUploadError(error instanceof Error ? error.message : 'Failed to upload profile picture');
+    } finally {
+      setIsUploading(false);
+      if (e.target) {
+        e.target.value = ''; // Reset file input
+      }
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 sm:py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          {/* Profile Header */}
+        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+          {/* Header */}
+          <div className="px-4 py-5 sm:px-6 bg-gradient-to-r from-blue-600 to-blue-800">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-white">Profile Settings</h1>
+                <p className="mt-1 text-sm text-blue-100">
+                  Manage your personal information and account settings
+                </p>
+              </div>
+              {!isEditing && (
+                <button
+                  type="button"
+                  onClick={handleEditClick}
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                  Edit Profile
+                </button>
+              )}
+            <div>
+              <h1 className="text-2xl font-bold text-white">Profile Settings</h1>
+              <p className="mt-1 text-sm text-blue-100">
+                Manage your personal information and account settings
+              </p>
+            </div>
+            {!isEditing && (
+              <button
+                type="button"
+                onClick={handleEditClick}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                </svg>
+                Edit Profile
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="border-t border-gray-200">
+          {/* User Information */}
+          <dl>
+            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Username</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {userUsername}
+              </dd>
+            </div>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Email address</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {user?.email}
+              </dd>
+            </div>
+          </dl>
+
+          {/* Resume Section */}
+          <div className="border-t border-gray-200 px-4 py-5 sm:px-6">
+            <Resume />
+          </div>
+
+          {/* Profile Information */}
           <div className="px-4 py-5 sm:px-6 bg-gray-50">
             <h3 className="text-lg leading-6 font-medium text-gray-900">
               Profile Information
             </h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              Personal details and resume
+              Personal details
             </p>
           </div>
 
           <div className="border-t border-gray-200">
-            {/* User Information */}
-            <dl>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                 <dt className="text-sm font-medium text-gray-500">Username</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
