@@ -81,9 +81,9 @@ export function Navbar({
                     </span>
                   </Link>
                   <Link 
-                    to="/add-application"
+                    to="/applications/add" 
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      location.pathname === '/add-application' 
+                      location.pathname === '/applications/add' 
                         ? 'bg-gray-100 text-gray-900' 
                         : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
                     }`}

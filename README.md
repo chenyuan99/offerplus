@@ -40,10 +40,6 @@ Offer+ is an AI-powered job offer seeker that helps users find job opportunities
 
 Apache 2 License
 
-## Deployment
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fchenyuan99%2Fofferplus)
-
 ## Reference
 
 - [Bilibili Video](https://www.bilibili.com/video/BV1BN411D73i/?spm_id_from=333.999.0.0&vd_source=cdc8383991bc95a3b4742f982fc72004)
