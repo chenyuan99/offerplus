@@ -131,16 +131,6 @@ export function Footer() {
             </h5>
             <ul className="space-y-3">
               <li>
-                <Link to="/team" className="text-base text-gray-500 hover:text-gray-900">
-                  Team
-                </Link>
-              </li>
-              <li>
-                <Link to="/locations" className="text-base text-gray-500 hover:text-gray-900">
-                  Locations
-                </Link>
-              </li>
-              <li>
                 <Link to="/privacy" className="text-base text-gray-500 hover:text-gray-900">
                   Privacy
                 </Link>
