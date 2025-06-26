@@ -40,34 +40,6 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Education Resources */}
-          <div>
-            <h5 className="text-sm font-semibold text-gray-700 tracking-wider uppercase mb-4">
-              Education
-            </h5>
-            <ul className="space-y-3">
-              <li>
-                <a 
-                  href="https://cs.vt.edu/"
-                  className="text-base text-gray-500 hover:text-gray-900"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Virginia Tech CS
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://csweb.rice.edu/academics/graduate-programs/online-mcs"
-                  className="text-base text-gray-500 hover:text-gray-900"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Rice University MCS
-                </a>
-              </li>
-            </ul>
-          </div>
 
           {/* Career Resources */}
           <div>
