@@ -56,7 +56,12 @@ export function JobGPT() {
 
     try {
       const response = await jobgptService.generatePrompt(state.input, state.mode, state.model);
-      setState({ ...state, isLoading: false, output: response.response });  
+      setState({ 
+        ...state, 
+        isLoading: false, 
+        output: response.response,
+        lastResponse: response
+      });  
     } catch (error: any) {
       setState({ ...state, isLoading: false, error: error.message });
     }
@@ -178,17 +183,35 @@ export function JobGPT() {
 
       {state.output && (
         <div className="bg-gray-100 p-4 rounded">
-          <div className="flex items-center mb-2">
-            <h2 className="font-bold mr-2">Generated Response:</h2>
-            <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded mr-2">
+          <div className="flex items-center mb-2 flex-wrap gap-2">
+            <h2 className="font-bold">Generated Response:</h2>
+            <span className="text-xs font-medium bg-blue-100 text-blue-800 px-2 py-1 rounded">
               {MODEL_OPTIONS.find(option => option.value === state.model)?.label || state.model}
             </span>
             <span className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">
               {state.mode === 'why_company' ? 'Why Company' : 
                state.mode === 'behavioral' ? 'Behavioral' : 'General'}
             </span>
+            {state.lastResponse?.templateUsed && (
+              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                Template: {state.lastResponse.templateUsed}
+              </span>
+            )}
+            {state.lastResponse?.processingTime && (
+              <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                {state.lastResponse.processingTime}ms
+              </span>
+            )}
           </div>
-          <p className="whitespace-pre-wrap">{state.output}</p>
+          <div className="mb-2">
+            <p className="whitespace-pre-wrap">{state.output}</p>
+          </div>
+          {state.lastResponse?.usage && (
+            <div className="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-300">
+              <span>Tokens: {state.lastResponse.usage.totalTokens} total</span>
+              <span className="ml-4">({state.lastResponse.usage.promptTokens} prompt + {state.lastResponse.usage.completionTokens} completion)</span>
+            </div>
+          )}
         </div>
       )}
     </div>
