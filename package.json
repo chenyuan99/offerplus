@@ -1,0 +1,21 @@
+{
+  "name": "offersplus",
+  "version": "1.0.0",
+  "description": "Job application tracker",
+  "main": "index.js",
+  "scripts": {
+    "upload-applications": "ts-node scripts/uploadApplications.ts",
+    "upload-applications:file": "ts-node scripts/uploadApplications.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.50.0",
+    "csv-parse": "^5.6.0",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

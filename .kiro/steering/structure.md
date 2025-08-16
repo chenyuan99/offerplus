@@ -132,4 +132,4 @@ scripts/
 3. **Database** → Supabase PostgreSQL database
 4. **Authentication** → Supabase Auth with JWT tokens
 5. **File Storage** → Supabase Storage buckets
-6. **AI Integration** → Direct OpenAI/DeepSeek API calls from frontend
+6. **AI Integration** → Direct OpenAI API calls from frontend

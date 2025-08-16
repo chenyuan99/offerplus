@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { JobGPTMode, DeepseekModel, JobGPTResponse } from '../types/jobgpt';
+import { JobGPTMode, AIModel, JobGPTResponse } from '../types/jobgpt';
 import { PromptManager, PromptManagerError } from '../lib/promptManager';
 import { AIModelManager, AIModelError } from '../lib/aiModelAdapters';
 
@@ -14,7 +14,7 @@ export const jobgptService = {
   generatePrompt: async (
     input: string, 
     mode: JobGPTMode, 
-    model: DeepseekModel,
+    model: AIModel,
     additionalContext?: any
   ): Promise<JobGPTResponse> => {
     const startTime = Date.now();

@@ -1,34 +1,31 @@
 import React, { useState } from 'react';
 import { FileText, Upload, ThumbsUp } from 'lucide-react';
 import { jobgptService } from '../services/jobgptService';
-import { JobGPTMode, JobGPTState, DeepseekModel } from '../types/jobgpt';
+import { JobGPTMode, JobGPTState, AIModel } from '../types/jobgpt';
 
 const initialState: JobGPTState = {
   mode: 'why_company',
-  model: 'deepseek-coder-6.7b',
+  model: 'gpt-3.5-turbo',
   isLoading: false,
   error: null,
   input: '',
   output: '',
 };
 
-// Define model options with display names and categories
+// Define model options with display names
 interface ModelOption {
-  value: DeepseekModel;
+  value: AIModel;
   label: string;
-  category: 'Deepseek' | 'OpenAI';
 }
 
 const MODEL_OPTIONS: ModelOption[] = [
-  { value: 'deepseek-coder-6.7b', label: 'Deepseek Coder (6.7B)', category: 'Deepseek' },
-  { value: 'deepseek-coder-33b', label: 'Deepseek Coder (33B)', category: 'Deepseek' },
-  { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo', category: 'OpenAI' },
-  { value: 'gpt-4', label: 'GPT-4', category: 'OpenAI' },
-  { value: 'gpt-4-turbo', label: 'GPT-4 Turbo', category: 'OpenAI' }
+  { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
+  { value: 'gpt-4', label: 'GPT-4' },
+  { value: 'gpt-4-turbo', label: 'GPT-4 Turbo' }
 ];
 
 // Extract just the model values for use in other parts of the code
-const MODELS: DeepseekModel[] = MODEL_OPTIONS.map(option => option.value);
+const MODELS: AIModel[] = MODEL_OPTIONS.map(option => option.value);
 
 export function JobGPT() {
   const [state, setState] = useState<JobGPTState>(initialState);
@@ -38,7 +35,7 @@ export function JobGPT() {
     setState({ ...state, mode, input: '', output: '', error: null });
   };
 
-  const handleModelChange = (model: DeepseekModel) => {
+  const handleModelChange = (model: AIModel) => {
     setState({ ...state, model });
   };
 
@@ -56,12 +53,12 @@ export function JobGPT() {
 
     try {
       const response = await jobgptService.generatePrompt(state.input, state.mode, state.model);
-      setState({ 
-        ...state, 
-        isLoading: false, 
+      setState({
+        ...state,
+        isLoading: false,
         output: response.response,
         lastResponse: response
-      });  
+      });
     } catch (error: any) {
       setState({ ...state, isLoading: false, error: error.message });
     }
@@ -88,7 +85,7 @@ export function JobGPT() {
         // Handle successful upload
         setState({ ...state, isLoading: false });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setState({ ...state, isLoading: false, error: error.message });
     }
   };
@@ -130,32 +127,23 @@ export function JobGPT() {
           <select
             className="w-full p-2 border rounded bg-white"
             value={state.model}
-            onChange={(e) => handleModelChange(e.target.value as DeepseekModel)}
+            onChange={(e) => handleModelChange(e.target.value as AIModel)}
           >
-            <optgroup label="Deepseek Models">
-              {MODEL_OPTIONS.filter(option => option.category === 'Deepseek').map(model => (
-                <option key={model.value} value={model.value}>
-                  {model.label}
-                </option>
-              ))}
-            </optgroup>
-            <optgroup label="OpenAI Models">
-              {MODEL_OPTIONS.filter(option => option.category === 'OpenAI').map(model => (
-                <option key={model.value} value={model.value}>
-                  {model.label}
-                </option>
-              ))}
-            </optgroup>
+            {MODEL_OPTIONS.map(model => (
+              <option key={model.value} value={model.value}>
+                {model.label}
+              </option>
+            ))}
           </select>
         </div>
-        
+
         <textarea
           className="w-full h-32 p-2 border rounded mb-4"
           placeholder={getPlaceholder(state.mode)}
           value={state.input}
           onChange={handleInputChange}
         />
-        
+
         <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
           <button
             className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
@@ -189,8 +177,8 @@ export function JobGPT() {
               {MODEL_OPTIONS.find(option => option.value === state.model)?.label || state.model}
             </span>
             <span className="text-xs bg-gray-200 text-gray-700 px-2 py-1 rounded">
-              {state.mode === 'why_company' ? 'Why Company' : 
-               state.mode === 'behavioral' ? 'Behavioral' : 'General'}
+              {state.mode === 'why_company' ? 'Why Company' :
+                state.mode === 'behavioral' ? 'Behavioral' : 'General'}
             </span>
             {state.lastResponse?.templateUsed && (
               <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">

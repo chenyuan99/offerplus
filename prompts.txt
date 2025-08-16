@@ -1,0 +1,285 @@
+# JobGPT Prompts Collection
+# This file contains all the prompt templates used by the JobGPT AI assistant
+# for different modes and use cases in the OfferPlus application.
+
+## System Prompts
+
+### Base System Prompt
+You are JobGPT, an AI assistant specialized in helping job seekers with their career development. You provide professional, actionable advice for job applications, interviews, and career growth. Always maintain a helpful, encouraging, and professional tone.
+
+### Why Company Mode System Prompt
+You are JobGPT, a career advisor specializing in helping candidates articulate their interest in specific companies. Your role is to help users craft compelling "Why do you want to work at this company?" responses that demonstrate genuine interest, research, and alignment with company values. Focus on specific, authentic reasons rather than generic statements.
+
+### Behavioral Interview Mode System Prompt
+You are JobGPT, an expert in behavioral interview preparation. You help candidates structure their responses using the STAR method (Situation, Task, Action, Result) and provide coaching on how to effectively communicate their experiences. Focus on helping users tell compelling stories that demonstrate their skills and achievements.
+
+### General Career Mode System Prompt
+You are JobGPT, a comprehensive career advisor. You assist with various career-related tasks including resume optimization, cover letter writing, interview preparation, salary negotiation, and career planning. Provide specific, actionable advice tailored to the user's situation and career goals.
+
+## Why Company Mode Prompts
+
+### Template 1: Company Research and Interest
+Based on the company "{company_name}", help me craft a compelling response to "Why do you want to work at {company_name}?" 
+
+Please structure your response to include:
+1. Specific aspects of the company's mission, values, or culture that resonate with me
+2. Recent company achievements, products, or initiatives that interest me
+3. How my skills and career goals align with the company's direction
+4. What unique value I can bring to the organization
+
+Keep the response authentic, specific, and around 150-200 words. Avoid generic statements that could apply to any company.
+
+### Template 2: Company Values Alignment
+I'm preparing for an interview with {company_name}. Help me articulate why I'm specifically interested in this company, focusing on:
+
+- Company culture and values alignment
+- Specific products, services, or initiatives that excite me
+- Growth opportunities and learning potential
+- How my background makes me a good fit
+
+Please provide a structured response that sounds genuine and well-researched.
+
+### Template 3: Role-Specific Company Interest
+For the {role_title} position at {company_name}, help me explain my interest in the company. Consider:
+
+- How this role aligns with my career trajectory
+- What attracts me to the company's approach in this domain
+- Specific projects or teams I'd be excited to work with
+- Long-term growth potential within the organization
+
+## Behavioral Interview Mode Prompts
+
+### Template 1: STAR Method Coaching
+Help me structure a response to the behavioral question: "{behavioral_question}"
+
+Please guide me through the STAR method:
+- Situation: What was the context or background?
+- Task: What was your responsibility or what needed to be accomplished?
+- Action: What specific steps did you take?
+- Result: What was the outcome and what did you learn?
+
+Provide tips on making the story compelling and relevant to the skills the interviewer is assessing.
+
+### Template 2: Common Behavioral Questions
+I need help preparing for this behavioral interview question: "{behavioral_question}"
+
+Please provide:
+1. What the interviewer is really looking for with this question
+2. A framework for structuring my response
+3. Key points to emphasize
+4. Common mistakes to avoid
+5. Example phrases or transitions I can use
+
+### Template 3: Behavioral Story Development
+Help me develop a strong behavioral interview story for: "{behavioral_question}"
+
+Guide me to:
+- Choose the most relevant experience from my background
+- Structure the story for maximum impact
+- Highlight the skills and qualities demonstrated
+- Connect the experience to the role I'm applying for
+- Practice concise but detailed storytelling
+
+## General Career Mode Prompts
+
+### Template 1: Resume Optimization
+Please review and provide feedback on my resume content. Focus on:
+
+1. Overall structure and formatting
+2. Impact and achievement-focused language
+3. Relevance to my target role/industry
+4. ATS (Applicant Tracking System) optimization
+5. Areas for improvement or expansion
+
+Provide specific, actionable suggestions for enhancement.
+
+### Template 2: Cover Letter Writing
+Help me write a compelling cover letter for the {role_title} position at {company_name}. 
+
+Please structure it to include:
+- Strong opening that captures attention
+- Specific examples of relevant experience
+- Connection between my skills and job requirements
+- Demonstration of company knowledge and interest
+- Professional closing with clear next steps
+
+Keep it concise, engaging, and tailored to the specific role.
+
+### Template 3: Interview Preparation
+I have an interview for {role_title} at {company_name}. Help me prepare by providing:
+
+1. Common questions for this type of role
+2. Company-specific questions I should research
+3. Questions I should ask the interviewer
+4. Key points about my background to emphasize
+5. Tips for making a strong impression
+
+### Template 4: Salary Negotiation
+I received a job offer for {role_title} with a salary of {salary_amount}. Help me:
+
+1. Research if this is competitive for my market/experience
+2. Prepare negotiation talking points
+3. Consider the total compensation package
+4. Script professional negotiation language
+5. Understand when and how to negotiate
+
+### Template 5: Career Transition
+I'm looking to transition from {current_field} to {target_field}. Please help me:
+
+1. Identify transferable skills
+2. Address potential concerns about the career change
+3. Develop a transition strategy
+4. Update my resume for the new field
+5. Prepare for questions about the career change
+
+## Resume Analysis Prompts
+
+### Template 1: ATS Optimization
+Analyze this resume for ATS (Applicant Tracking System) compatibility:
+
+{resume_content}
+
+Please evaluate:
+1. Keyword optimization for the target role
+2. Formatting that works well with ATS systems
+3. Section organization and headers
+4. File format recommendations
+5. Specific improvements for better ATS parsing
+
+### Template 2: Impact and Achievement Focus
+Review this resume and help me rewrite bullet points to be more impact-focused:
+
+{resume_content}
+
+For each experience, help me:
+1. Quantify achievements with specific metrics
+2. Use strong action verbs
+3. Focus on results rather than responsibilities
+4. Demonstrate value added to previous employers
+5. Align with target role requirements
+
+### Template 3: Industry-Specific Optimization
+Optimize this resume for the {target_industry} industry:
+
+{resume_content}
+
+Please provide:
+1. Industry-specific keywords to include
+2. Relevant skills to emphasize
+3. Experience to highlight or de-emphasize
+4. Industry formatting conventions
+5. Additional sections that might be valuable
+
+## Company Research Prompts
+
+### Template 1: Pre-Interview Research
+I have an interview with {company_name} for {role_title}. Help me research:
+
+1. Recent company news and developments
+2. Company culture and values
+3. Key competitors and market position
+4. Growth trajectory and future plans
+5. Specific team or department information
+
+Provide insights that will help me ask informed questions and demonstrate genuine interest.
+
+### Template 2: Industry Analysis
+Provide an analysis of {company_name} within the {industry} industry:
+
+1. Market position and competitive advantages
+2. Recent industry trends affecting the company
+3. Growth opportunities and challenges
+4. Company's innovation and adaptation strategies
+5. Career growth potential within this context
+
+## Follow-up and Thank You Prompts
+
+### Template 1: Post-Interview Thank You
+Help me write a professional thank you email after my interview for {role_title} at {company_name}. Include:
+
+1. Appreciation for the interviewer's time
+2. Reiteration of interest in the role
+3. Brief recap of key qualifications discussed
+4. Any additional information that strengthens my candidacy
+5. Professional closing with next steps
+
+### Template 2: Follow-up After No Response
+I applied for {role_title} at {company_name} {time_period} ago and haven't heard back. Help me write a professional follow-up email that:
+
+1. Politely inquires about application status
+2. Reiterates interest in the position
+3. Provides any updates to my qualifications
+4. Maintains professionalism without being pushy
+5. Includes appropriate timing for next follow-up
+
+## Networking and LinkedIn Prompts
+
+### Template 1: LinkedIn Connection Request
+Help me write a personalized LinkedIn connection request to {contact_name} at {company_name}:
+
+1. Brief introduction of who I am
+2. Relevant connection or mutual interest
+3. Specific reason for connecting
+4. Professional and respectful tone
+5. Clear but not overly aggressive intent
+
+### Template 2: Informational Interview Request
+Draft a message requesting an informational interview with {contact_name} about {topic/role/company}:
+
+1. Professional introduction
+2. Specific interest in their expertise/experience
+3. Clear request for brief informational chat
+4. Flexibility with timing and format
+5. Appreciation for their time and consideration
+
+## Error Handling and Fallback Prompts
+
+### Template 1: Insufficient Information
+I need more information to provide the best assistance. Could you please provide:
+
+1. Specific details about the role or company
+2. Your relevant background and experience
+3. Particular challenges you're facing
+4. Your career goals and timeline
+5. Any specific requirements or constraints
+
+### Template 2: Clarification Request
+To give you the most helpful response, I need to understand:
+
+1. What specific outcome you're looking for
+2. Your current situation and background
+3. Any particular constraints or requirements
+4. Timeline for your job search or career goals
+5. Preferred communication style or format
+
+## Usage Guidelines
+
+### For Developers:
+- Use the appropriate system prompt based on the selected mode
+- Combine system prompts with user input and relevant templates
+- Ensure prompts are contextually relevant to the user's specific situation
+- Maintain consistent tone and quality across all responses
+
+### For Users:
+- Provide specific details for more tailored responses
+- Be clear about your career goals and current situation
+- Include relevant context about the role, company, or industry
+- Ask follow-up questions if you need clarification or more detail
+
+### Model-Specific Considerations:
+- GPT models: Excellent for creative and nuanced responses
+- DeepSeek models: Strong for technical roles and structured responses
+- Adjust complexity and length based on model capabilities
+- Consider token limits when crafting longer prompts
+
+## Prompt Optimization Tips
+
+1. **Be Specific**: Include relevant details about role, company, industry
+2. **Provide Context**: Share background information and career goals
+3. **Set Clear Expectations**: Specify desired format, length, and tone
+4. **Use Examples**: Reference specific situations or requirements
+5. **Iterate**: Refine prompts based on response quality and user feedback
+
+## Version History
+- v1.0: Initial prompt collection for JobGPT implementation
+- Future versions will include user feedback and performance optimizations

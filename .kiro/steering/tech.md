@@ -6,7 +6,7 @@
 - **Backend**: Supabase (Backend-as-a-Service)
 - **Database**: Supabase (PostgreSQL)
 - **Authentication**: Supabase Auth
-- **AI/ML**: OpenAI GPT models, DeepSeek models
+- **AI/ML**: OpenAI GPT models
 - **Deployment**: Vercel (frontend), Supabase (backend)
 
 ## Frontend Stack
@@ -26,7 +26,7 @@
 - **Backend-as-a-Service**: Supabase
 - **Database**: PostgreSQL via Supabase
 - **Authentication**: Supabase Auth with JWT tokens
-- **AI Integration**: OpenAI API, DeepSeek API (client-side)
+- **AI Integration**: OpenAI API (client-side)
 - **File Storage**: Supabase Storage
 - **Real-time**: Supabase Realtime
 - **Edge Functions**: Supabase Edge Functions (when needed)
