@@ -1,0 +1,62 @@
+[metadata]
+title = "How ChatGPT Can Help With Finding a Job"
+image = "Shutterstock"
+reviewed_by = "Ellen Glover"
+date = "2025-08-12"
+
+[summary]
+text = "ChatGPT can help refine your resume, tailor cover letters, polish your LinkedIn profile, research prospective employers, prepare for interviews and explore career development opportunities. But it’s important to always fact-check and revise its outputs to ensure they reflect your authentic voice and perspective."
+
+[applications]
+list = [ "Refining your resume", "Writing a cover letter", "Researching companies", "Preparing for an interview", "Polishing your LinkedIn profile", "Exploring career options", "Creating a professional development plan",]
+
+[cover_letter]
+description = "ChatGPT drafts tailored cover letters, which you should edit to keep authentic."
+example_prompt = "I’m applying for the [job title] position at [company name]. Here’s the job description: [paste job description]. Here’s my resume: [paste or summarize]. Please write a 3–4 paragraph cover letter that:\n- Uses a professional but approachable tone\n- Highlights my most relevant skills and accomplishments\n- Explains how I can add value to the company\n- References the company’s mission/products\n- Avoids generic phrases like 'I am excited to apply'"
+
+[research]
+description = "ChatGPT can summarize company mission, culture, competitors, and industry trends."
+example_prompt = "What are the current trends impacting companies in the [industry]? How would [company name] be affected by these trends, and what might it do to adjust?"
+
+[linkedin]
+description = "ChatGPT can refine your LinkedIn headline, About section, and experience summaries."
+
+[career_options]
+description = "ChatGPT suggests roles and industries aligned with your skills, interests, and passions."
+example_prompt = "I have experience in [describe experience], enjoy [activities], and am passionate about [cause]. Suggest careers and training paths."
+
+[development_plan]
+description = "ChatGPT helps create structured career development plans with skills, experiences, and timelines."
+example_prompt = "I’m a [current role] but want to become a [dream role]. Create a 1–3 year plan with:\n- Skills to develop\n- Experiences to gain\n- Education/certifications\n- Resources to use\n- Timeline with milestones"
+
+[resume.brainstorm]
+description = "ChatGPT helps brainstorm skills and accomplishments relevant to your role."
+
+[resume.results_oriented]
+description = "Refine bullet points with action verbs and quantified results."
+
+[resume.tailor]
+description = "Align resume with job descriptions using keywords and skills gap analysis."
+
+[resume.example_prompts]
+brainstorm = "I have worked as a [position title] doing [job responsibilities] in [industry]. What are some examples of skills and accomplishments that I might list on my resume?"
+results = "Here are several bullet points from my resume: [paste bullets]. Rewrite them so each one begins with a strong action verb, clearly states what I did, and quantifies results or outcomes wherever possible."
+tailor = "Here is my resume [paste resume]. Here’s the job description [paste job description]. Highlight important skills, revise my resume, and suggest quantifiable metrics."
+
+[interview.questions]
+description = "Generate role-specific interview questions."
+example_prompt = "I am applying for a [title of position]. If you were the hiring manager, what are the 10 most common interview questions?"
+
+[interview.answers]
+description = "Tailor responses using STAR method and your resume."
+example_prompt = "Here is my resume. For these questions [paste list], write concise answers using STAR."
+
+[linkedin.example_prompts]
+about = "Based on my resume [paste resume], write an 'About' section in first-person, professional but friendly."
+headline = "Use my resume [paste resume] to write a LinkedIn headline for [role title] in [industry], max 220 characters."
+
+[benefits_drawbacks.benefits]
+list = [ "Helps overcome writer’s block", "Improves visibility in applicant tracking systems", "Identifies areas for growth", "Provides structure for resumes and interviews",]
+
+[benefits_drawbacks.drawbacks]
+list = [ "May generate inaccurate or inauthentic content", "Can misunderstand job descriptions", "Requires fact-checking and personalization", "Verbose style often needs rewriting in your own words",]
