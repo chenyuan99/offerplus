@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
-import { H1BViewer } from '../components/h1b/H1BViewer';
+import { H1BViewerNative } from '../components/h1b/H1BViewerNative';
+import { H1BViewerCached } from '../components/h1b/H1BViewerCached';
+import '../styles/animations.css';
 
 // Tableau viz component type declaration
 interface TableauVizProps extends React.HTMLAttributes<HTMLElement> {
@@ -21,7 +23,7 @@ declare global {
 }
 
 export function H1B() {
-  const [viewMode, setViewMode] = useState<'interactive' | 'tableau'>('interactive');
+  const [viewMode, setViewMode] = useState<'cached' | 'native' | 'tableau'>('cached');
 
   return (
     <>
@@ -42,22 +44,32 @@ export function H1B() {
           <div className="flex justify-center py-4">
             <div className="flex bg-gray-100 rounded-lg p-1">
               <button
-                onClick={() => setViewMode('interactive')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'interactive'
+                type="button"
+                onClick={() => setViewMode('cached')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'cached'
                     ? 'bg-white text-blue-600 shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
               >
-                Interactive Data Explorer
+                🚀 Cached Explorer
               </button>
               <button
-                onClick={() => setViewMode('tableau')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                  viewMode === 'tableau'
+                type="button"
+                onClick={() => setViewMode('native')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'native'
                     ? 'bg-white text-blue-600 shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
+              >
+                Native Explorer
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode('tableau')}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'tableau'
+                    ? 'bg-white text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                  }`}
               >
                 USCIS Tableau Dashboard
               </button>
@@ -67,11 +79,15 @@ export function H1B() {
       </div>
 
       {/* Content based on view mode */}
-      {viewMode === 'interactive' ? (
-        <H1BViewer />
-      ) : (
-        <TableauView />
-      )}
+      <div className="fade-in-up">
+        {viewMode === 'cached' ? (
+          <H1BViewerCached />
+        ) : viewMode === 'native' ? (
+          <H1BViewerNative />
+        ) : (
+          <TableauView />
+        )}
+      </div>
     </>
   );
 }

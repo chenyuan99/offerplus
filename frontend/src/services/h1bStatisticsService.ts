@@ -111,7 +111,7 @@ export class H1BStatisticsService {
   }
 
   /**
-   * Get filtered H1B applications with pagination
+   * Get filtered H1B applications with pagination using native Supabase filtering
    */
   static async getFilteredApplications(
     filters: Partial<H1BFilters> = {},
@@ -125,31 +125,63 @@ export class H1BStatisticsService {
         throw new Error(`Invalid filters: ${validation.errors.join(', ')}`);
       }
 
-      const { data, error } = await supabase.rpc('get_h1b_filtered_applications', {
-        filters: filters,
-        page_size: pageSize,
-        page_number: pageNumber
-      });
+      // Build Supabase query with native filtering
+      let query = supabase
+        .from('h1b_applications')
+        .select('*', { count: 'exact' });
+
+      // Apply filters using Supabase's native filtering
+      if (filters.employer) {
+        query = query.ilike('employer_name', `%${filters.employer}%`);
+      }
+
+      if (filters.status) {
+        query = query.eq('case_status', filters.status);
+      }
+
+      if (filters.jobTitle) {
+        query = query.ilike('job_title', `%${filters.jobTitle}%`);
+      }
+
+      if (filters.minSalary !== null && filters.minSalary !== undefined) {
+        query = query.or(`wage_rate_of_pay_from.gte.${filters.minSalary},wage_rate_of_pay_to.gte.${filters.minSalary}`);
+      }
+
+      if (filters.maxSalary !== null && filters.maxSalary !== undefined) {
+        query = query.or(`wage_rate_of_pay_from.lte.${filters.maxSalary},wage_rate_of_pay_to.lte.${filters.maxSalary}`);
+      }
+
+      if (filters.searchTerm) {
+        const searchTerm = filters.searchTerm;
+        query = query.or(`employer_name.ilike.%${searchTerm}%,job_title.ilike.%${searchTerm}%,case_number.ilike.%${searchTerm}%`);
+      }
+
+      // Apply pagination
+      const from = (pageNumber - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      // Execute query with pagination
+      const { data, error, count } = await query
+        .order('id', { ascending: false })
+        .range(from, to);
 
       if (error) {
         console.error('Error fetching filtered applications:', error);
         throw new Error(`Failed to fetch filtered applications: ${error.message}`);
       }
 
-      // Handle error response from function
-      if (data?.error) {
-        throw new Error(data.message || 'Failed to fetch filtered applications');
-      }
+      // Calculate pagination metadata
+      const totalRecords = count || 0;
+      const totalPages = Math.ceil(totalRecords / pageSize);
 
-      // Transform the response to match PaginatedData interface
       const result: PaginatedData<H1BRecord> = {
-        data: data?.data || [],
-        totalRecords: data?.pagination?.totalRecords || 0,
-        totalPages: data?.pagination?.totalPages || 0,
-        currentPage: data?.pagination?.currentPage || 1,
-        pageSize: data?.pagination?.pageSize || pageSize,
-        hasNextPage: data?.pagination?.hasNextPage || false,
-        hasPreviousPage: data?.pagination?.hasPreviousPage || false
+        data: data || [],
+        totalRecords,
+        totalPages,
+        currentPage: pageNumber,
+        pageSize,
+        hasNextPage: pageNumber < totalPages,
+        hasPreviousPage: pageNumber > 1
       };
 
       return result;
@@ -160,22 +192,64 @@ export class H1BStatisticsService {
   }
 
   /**
-   * Get unique values for a specific field (generic helper)
+   * Get unique values using native Supabase queries (fallback method)
+   */
+  static async getUniqueValuesNative(field: string, limit?: number): Promise<string[]> {
+    try {
+      let query = supabase
+        .from('h1b_applications')
+        .select(field, { count: 'exact' });
+
+      // Apply limit if specified
+      if (limit) {
+        query = query.limit(limit);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error(`Error fetching unique ${field} values:`, error);
+        throw new Error(`Failed to fetch unique ${field} values: ${error.message}`);
+      }
+
+      // Extract unique values and filter out nulls/empty strings
+      const uniqueValues = [...new Set(
+        (data || [])
+          .map(item => item[field])
+          .filter(value => value && typeof value === 'string' && value.trim() !== '')
+      )].sort();
+
+      return uniqueValues;
+    } catch (error) {
+      console.error(`Native unique values service error for ${field}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get unique values for a specific field (tries function first, falls back to native)
    */
   static async getUniqueValues(field: string, limit?: number): Promise<string[]> {
-    switch (field) {
-      case 'employer_name':
-      case 'employer':
-        return this.getUniqueEmployers(limit || 50);
-      case 'case_status':
-      case 'status':
-        return this.getUniqueStatuses();
-      case 'job_title':
-      case 'jobTitle':
-        return this.getUniqueJobTitles(limit || 30);
-      default:
-        console.warn(`Unknown field for unique values: ${field}`);
-        return [];
+    try {
+      // Try using the custom functions first
+      switch (field) {
+        case 'employer_name':
+        case 'employer':
+          return await this.getUniqueEmployers(limit || 50);
+        case 'case_status':
+        case 'status':
+          return await this.getUniqueStatuses();
+        case 'job_title':
+        case 'jobTitle':
+          return await this.getUniqueJobTitles(limit || 30);
+        default:
+          // Fall back to native Supabase query for unknown fields
+          return await this.getUniqueValuesNative(field, limit);
+      }
+    } catch (error) {
+      console.warn(`Function-based unique values failed for ${field}, falling back to native query:`, error);
+      // Fallback to native Supabase query
+      return await this.getUniqueValuesNative(field, limit);
     }
   }
   /**

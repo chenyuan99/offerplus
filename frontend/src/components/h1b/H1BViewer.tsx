@@ -1,36 +1,45 @@
 import { useState, useCallback } from 'react';
 import { useH1BData } from '../../hooks/useH1BData';
+import { useUrlFilters } from '../../hooks/useUrlFilters';
 import { H1BFiltersComponent } from './H1BFilters';
 import { H1BStatisticsComponent } from './H1BStatistics';
 import { H1BTable } from './H1BTable';
+import { H1BUrlExamples } from './H1BUrlExamples';
 import { H1BFilters } from '../../types/h1b';
 
 export function H1BViewer() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(50);
 
+  // URL-synchronized filters
+  const {
+    filters: urlFilters,
+    updateFilters: updateUrlFilters,
+    clearFilters: clearUrlFilters,
+    getShareableUrl
+  } = useUrlFilters();
+
   const {
     loading,
     error,
-    filters,
     sortConfig,
     statistics,
     applyFilters,
     applySorting,
     getPaginatedData,
     getUniqueValues,
-    clearFilters,
     refetch
-  } = useH1BData();
+  } = useH1BData({ initialFilters: urlFilters });
 
   // Get paginated data
   const paginatedData = getPaginatedData(currentPage, pageSize);
 
-  // Handle filter changes
+  // Handle filter changes (sync with URL and data hook)
   const handleFiltersChange = useCallback((newFilters: Partial<H1BFilters>) => {
+    updateUrlFilters(newFilters);
     applyFilters(newFilters);
     setCurrentPage(1); // Reset to first page when filters change
-  }, [applyFilters]);
+  }, [updateUrlFilters, applyFilters]);
 
   // Handle sorting
   const handleSort = useCallback((column: string, direction: 'asc' | 'desc') => {
@@ -49,11 +58,11 @@ export function H1BViewer() {
     setCurrentPage(1); // Reset to first page when page size changes
   }, []);
 
-  // Handle clear filters
+  // Handle clear filters (sync with URL and data hook)
   const handleClearFilters = useCallback(() => {
-    clearFilters();
+    clearUrlFilters();
     setCurrentPage(1);
-  }, [clearFilters]);
+  }, [clearUrlFilters]);
 
   if (error) {
     return (
@@ -114,14 +123,44 @@ export function H1BViewer() {
         {/* Statistics */}
         <H1BStatisticsComponent statistics={statistics} loading={loading} />
 
+        {/* URL Examples */}
+        <H1BUrlExamples />
+
         {/* Filters */}
         <H1BFiltersComponent
-          filters={filters}
+          filters={urlFilters}
           onFiltersChange={handleFiltersChange}
           onClearFilters={handleClearFilters}
           getUniqueValues={(field: string, limit?: number) => getUniqueValues(field as keyof import('../../types/h1b').H1BRecord, limit)}
           loading={loading}
         />
+
+        {/* Share URL Section */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+              </svg>
+              <span className="text-sm font-medium text-gray-700">Share this filtered view</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const url = getShareableUrl();
+                navigator.clipboard.writeText(url).then(() => {
+                  // You could add a toast notification here
+                  console.log('URL copied to clipboard:', url);
+                }).catch(err => {
+                  console.error('Failed to copy URL:', err);
+                });
+              }}
+              className="px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            >
+              Copy Link
+            </button>
+          </div>
+        </div>
 
         {/* Table */}
         <H1BTable

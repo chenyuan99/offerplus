@@ -52,6 +52,14 @@ export function H1BFiltersComponent({
         <div className="col-span-full">
           <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-2">
             Search Applications
+            {loading && (
+              <span className="ml-2 inline-flex items-center">
+                <svg className="animate-spin h-3 w-3 text-blue-600" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                </svg>
+              </span>
+            )}
           </label>
           <input
             type="text"
@@ -60,7 +68,9 @@ export function H1BFiltersComponent({
             defaultValue={filters.searchTerm}
             onChange={(e) => handleSearchChange(e.target.value)}
             disabled={loading}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed smooth-transition ${
+              loading ? 'loading-pulse' : ''
+            }`}
           />
         </div>
 
@@ -68,15 +78,22 @@ export function H1BFiltersComponent({
         <div>
           <label htmlFor="employer" className="block text-sm font-medium text-gray-700 mb-2">
             Employer
+            {loading && employers.length === 0 && (
+              <span className="ml-2 text-xs text-blue-600">Loading...</span>
+            )}
           </label>
           <select
             id="employer"
             value={filters.employer}
             onChange={(e) => onFiltersChange({ employer: e.target.value })}
             disabled={loading}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed smooth-transition ${
+              loading && employers.length === 0 ? 'skeleton' : ''
+            }`}
           >
-            <option value="">All Employers</option>
+            <option value="">
+              {loading && employers.length === 0 ? 'Loading employers...' : 'All Employers'}
+            </option>
             {employers.map((employer) => (
               <option key={employer} value={employer}>
                 {employer}
@@ -89,15 +106,22 @@ export function H1BFiltersComponent({
         <div>
           <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
             Case Status
+            {loading && statuses.length === 0 && (
+              <span className="ml-2 text-xs text-blue-600">Loading...</span>
+            )}
           </label>
           <select
             id="status"
             value={filters.status}
             onChange={(e) => onFiltersChange({ status: e.target.value })}
             disabled={loading}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+            className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed smooth-transition ${
+              loading && statuses.length === 0 ? 'skeleton' : ''
+            }`}
           >
-            <option value="">All Statuses</option>
+            <option value="">
+              {loading && statuses.length === 0 ? 'Loading statuses...' : 'All Statuses'}
+            </option>
             {statuses.map((status) => (
               <option key={status} value={status}>
                 {status}
