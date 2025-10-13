@@ -5,20 +5,25 @@ import { H1BStatisticsService } from '../services/h1bStatisticsService';
 
 const TABLE_NAME = 'h1b_applications';
 
-export function useH1BData() {
+interface UseH1BDataOptions {
+  initialFilters?: Partial<H1BFilters>;
+}
+
+export function useH1BData(options: UseH1BDataOptions = {}) {
   const [paginatedData, setPaginatedData] = useState<PaginatedData<H1BRecord> | null>(null);
   const [statistics, setStatistics] = useState<H1BStatistics | null>(null);
   const [uniqueValues, setUniqueValues] = useState<Record<string, string[]>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFilters] = useState<H1BFilters>({
+  const [filters, setFilters] = useState<H1BFilters>(() => ({
     employer: '',
     status: '',
     jobTitle: '',
     minSalary: null,
     maxSalary: null,
-    searchTerm: ''
-  });
+    searchTerm: '',
+    ...options.initialFilters
+  }));
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     column: null,
     direction: 'asc'
