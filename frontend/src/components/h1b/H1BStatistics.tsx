@@ -1,13 +1,27 @@
-import React from 'react';
-import { H1BStatistics } from '../../types/h1b';
+import { H1BStatistics, H1BFilters } from '../../types/h1b';
+import { useH1BStatistics } from '../../hooks/useH1BStatistics';
 
 interface H1BStatisticsProps {
-  statistics: H1BStatistics;
-  loading?: boolean;
+  filters?: Partial<H1BFilters>;
+  enableCache?: boolean;
+  onError?: (error: string) => void;
 }
 
-export function H1BStatisticsComponent({ statistics, loading = false }: H1BStatisticsProps) {
-  if (loading) {
+export function H1BStatisticsComponent({ 
+  filters, 
+  enableCache = true, 
+  onError 
+}: H1BStatisticsProps) {
+  const { statistics, loading, error, refresh } = useH1BStatistics({
+    filters,
+    enableCache
+  });
+
+  // Handle errors
+  if (error && onError) {
+    onError(error);
+  }
+  if (loading || !statistics) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         {[...Array(4)].map((_, index) => (
@@ -36,7 +50,27 @@ export function H1BStatisticsComponent({ statistics, loading = false }: H1BStati
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <div className="space-y-4">
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <svg className="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-sm text-red-700">
+              Error loading statistics: {error}
+            </p>
+            <button
+              onClick={refresh}
+              className="ml-auto text-sm text-red-600 hover:text-red-800 underline"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
       {/* Total Applications */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center">
@@ -108,6 +142,7 @@ export function H1BStatisticsComponent({ statistics, loading = false }: H1BStati
             )}
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
