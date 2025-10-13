@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import SEO from '../components/SEO';
 import { H1BViewerNative } from '../components/h1b/H1BViewerNative';
-import { H1BViewerCached } from '../components/h1b/H1BViewerCached';
 import '../styles/animations.css';
 
 // Tableau viz component type declaration
@@ -23,7 +22,7 @@ declare global {
 }
 
 export function H1B() {
-  const [viewMode, setViewMode] = useState<'cached' | 'native' | 'tableau'>('cached');
+  const [viewMode, setViewMode] = useState<'native' | 'tableau'>('native');
 
   return (
     <>
@@ -45,23 +44,13 @@ export function H1B() {
             <div className="flex bg-gray-100 rounded-lg p-1">
               <button
                 type="button"
-                onClick={() => setViewMode('cached')}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'cached'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                  }`}
-              >
-                🚀 Cached Explorer
-              </button>
-              <button
-                type="button"
                 onClick={() => setViewMode('native')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'native'
                     ? 'bg-white text-blue-600 shadow-sm'
                     : 'text-gray-600 hover:text-gray-900'
                   }`}
               >
-                Native Explorer
+                H1B Data Explorer
               </button>
               <button
                 type="button"
@@ -80,9 +69,7 @@ export function H1B() {
 
       {/* Content based on view mode */}
       <div className="fade-in-up">
-        {viewMode === 'cached' ? (
-          <H1BViewerCached />
-        ) : viewMode === 'native' ? (
+        {viewMode === 'native' ? (
           <H1BViewerNative />
         ) : (
           <TableauView />

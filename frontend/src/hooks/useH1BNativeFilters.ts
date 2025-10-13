@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { H1BFilters, H1BRecord, PaginatedData, H1BStatistics } from '../types/h1b';
+import { H1BFilters, H1BRecord, PaginatedData, H1BStatistics, SortConfig } from '../types/h1b';
 import { H1BNativeFilterService, H1BFilterOptions } from '../services/h1bNativeFilterService';
 
 interface UseH1BNativeFiltersOptions {
@@ -31,11 +31,15 @@ interface UseH1BNativeFiltersReturn {
   totalPages: number;
   totalRecords: number;
 
+  // Sorting
+  sortConfig: SortConfig;
+
   // Actions
   updateFilters: (newFilters: Partial<H1BFilters>) => void;
   clearFilters: () => void;
   setPage: (page: number) => void;
   setPageSize: (size: number) => void;
+  setSort: (column: string, direction: 'asc' | 'desc') => void;
   refresh: () => Promise<void>;
   exportAllData: () => Promise<H1BRecord[]>;
 
@@ -68,6 +72,10 @@ export function useH1BNativeFilters(options: UseH1BNativeFiltersOptions = {}): U
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
   const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    column: 'id',
+    direction: 'desc'
+  });
 
   // Filters state
   const [filters, setFilters] = useState<H1BFilters>(() => ({
@@ -84,7 +92,8 @@ export function useH1BNativeFilters(options: UseH1BNativeFiltersOptions = {}): U
   const fetchData = useCallback(async (
     filtersToUse: Partial<H1BFilters> = filters,
     page: number = currentPage,
-    size: number = pageSize
+    size: number = pageSize,
+    sort: SortConfig = sortConfig
   ) => {
     try {
       setLoading(true);
@@ -99,8 +108,8 @@ export function useH1BNativeFilters(options: UseH1BNativeFiltersOptions = {}): U
       const options: H1BFilterOptions = {
         pageSize: size,
         pageNumber: page,
-        sortBy: 'id',
-        sortOrder: 'desc'
+        sortBy: sort.column || 'id',
+        sortOrder: sort.direction
       };
 
       // Fetch paginated data and statistics in parallel
@@ -119,24 +128,25 @@ export function useH1BNativeFilters(options: UseH1BNativeFiltersOptions = {}): U
     } finally {
       setLoading(false);
     }
-  }, [filters, currentPage, pageSize]);
+  }, [filters, currentPage, pageSize, sortConfig]);
 
   // Debounced fetch for filter changes
   const debouncedFetch = useCallback((
     filtersToUse: Partial<H1BFilters>,
     page: number = 1,
-    size: number = pageSize
+    size: number = pageSize,
+    sort: SortConfig = sortConfig
   ) => {
     if (debounceTimeout) {
       clearTimeout(debounceTimeout);
     }
 
     const timeout = setTimeout(() => {
-      fetchData(filtersToUse, page, size);
+      fetchData(filtersToUse, page, size, sort);
     }, debounceMs);
 
     setDebounceTimeout(timeout);
-  }, [debounceTimeout, debounceMs, fetchData, pageSize]);
+  }, [debounceTimeout, debounceMs, fetchData, pageSize, sortConfig]);
 
   // Load unique values for dropdowns
   const loadUniqueValues = useCallback(async () => {
@@ -162,8 +172,8 @@ export function useH1BNativeFilters(options: UseH1BNativeFiltersOptions = {}): U
     const updatedFilters = { ...filters, ...newFilters };
     setFilters(updatedFilters);
     setCurrentPage(1); // Reset to first page
-    debouncedFetch(updatedFilters, 1, pageSize);
-  }, [filters, debouncedFetch, pageSize]);
+    debouncedFetch(updatedFilters, 1, pageSize, sortConfig);
+  }, [filters, debouncedFetch, pageSize, sortConfig]);
 
   // Clear filters
   const clearFilters = useCallback(() => {
@@ -183,21 +193,29 @@ export function useH1BNativeFilters(options: UseH1BNativeFiltersOptions = {}): U
   // Set page
   const setPage = useCallback((page: number) => {
     setCurrentPage(page);
-    fetchData(filters, page, pageSize);
-  }, [fetchData, filters, pageSize]);
+    fetchData(filters, page, pageSize, sortConfig);
+  }, [fetchData, filters, pageSize, sortConfig]);
 
   // Set page size
   const setPageSizeHandler = useCallback((size: number) => {
     setPageSize(size);
     setCurrentPage(1);
-    fetchData(filters, 1, size);
-  }, [fetchData, filters]);
+    fetchData(filters, 1, size, sortConfig);
+  }, [fetchData, filters, sortConfig]);
+
+  // Set sort
+  const setSort = useCallback((column: string, direction: 'asc' | 'desc') => {
+    const newSortConfig = { column, direction };
+    setSortConfig(newSortConfig);
+    setCurrentPage(1); // Reset to first page when sorting
+    fetchData(filters, 1, pageSize, newSortConfig);
+  }, [fetchData, filters, pageSize]);
 
   // Refresh data
   const refresh = useCallback(async () => {
-    await fetchData(filters, currentPage, pageSize);
+    await fetchData(filters, currentPage, pageSize, sortConfig);
     await loadUniqueValues();
-  }, [fetchData, loadUniqueValues, filters, currentPage, pageSize]);
+  }, [fetchData, loadUniqueValues, filters, currentPage, pageSize, sortConfig]);
 
   // Get unique values for any field
   const getUniqueValues = useCallback(async (field: string, limit?: number): Promise<string[]> => {
@@ -260,11 +278,15 @@ export function useH1BNativeFilters(options: UseH1BNativeFiltersOptions = {}): U
     totalPages,
     totalRecords,
 
+    // Sorting
+    sortConfig,
+
     // Actions
     updateFilters,
     clearFilters,
     setPage,
     setPageSize: setPageSizeHandler,
+    setSort,
     refresh,
     exportAllData,
 

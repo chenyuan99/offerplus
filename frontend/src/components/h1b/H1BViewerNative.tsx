@@ -27,10 +27,12 @@ export function H1BViewerNative() {
     loading,
     error,
     totalRecords,
+    sortConfig,
     updateFilters: updateDataFilters,
     clearFilters: clearDataFilters,
     setPage,
     setPageSize,
+    setSort,
     refresh,
     exportAllData
   } = useH1BNativeFilters({
@@ -62,11 +64,11 @@ export function H1BViewerNative() {
     setPageSize(newPageSize);
   }, [setPageSize]);
 
-  // Handle sorting (placeholder for now)
+  // Handle sorting
   const handleSort = useCallback((column: string, direction: 'asc' | 'desc') => {
     console.log('Sorting:', column, direction);
-    // TODO: Implement sorting in native service
-  }, []);
+    setSort(column, direction);
+  }, [setSort]);
 
   // Get unique values for dropdowns (sync version for backward compatibility)
   const getUniqueValuesSync = useCallback((field: string, limit?: number): string[] => {
@@ -135,16 +137,16 @@ export function H1BViewerNative() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">H1B Data Viewer</h1>
+              <h1 className="text-3xl font-bold text-gray-900">H1B Data Explorer</h1>
               <p className="mt-2 text-gray-600">
-                Interactive explorer for H1B visa application data with advanced filtering and analysis
+                Interactive explorer for H1B visa application data with advanced filtering, search, and analytics
               </p>
             </div>
             
             {/* Data Source Indicator */}
             <div className="flex items-center space-x-2 bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-sm font-medium text-gray-700">Native Supabase Filtering</span>
+              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+              <span className="text-sm font-medium text-gray-700">Live Data</span>
               {!loading && statistics && (
                 <span className="text-sm text-gray-500">
                   ({statistics.totalApplications.toLocaleString()} records)
@@ -219,16 +221,16 @@ export function H1BViewerNative() {
 
         {/* Performance Info */}
         {!loading && paginatedData && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <div className="flex items-center space-x-2">
-              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
-              <span className="text-sm font-medium text-green-800">
-                Native Supabase Filtering Active
+              <span className="text-sm font-medium text-blue-800">
+                Real-time Data Explorer
               </span>
-              <span className="text-sm text-green-700">
-                • Server-side filtering • Optimized queries • Real-time results
+              <span className="text-sm text-blue-700">
+                • Server-side filtering • Advanced search • Sortable columns • CSV export
               </span>
             </div>
           </div>
@@ -245,7 +247,7 @@ export function H1BViewerNative() {
             hasNextPage: false,
             hasPreviousPage: false
           }}
-          sortConfig={{ column: null, direction: 'asc' }}
+          sortConfig={sortConfig}
           onSort={handleSort}
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
