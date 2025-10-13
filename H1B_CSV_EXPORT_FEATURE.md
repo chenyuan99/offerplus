@@ -82,15 +82,11 @@ H1BExportButton Component
 
 ## Integration Points
 
-### Cached Explorer
-- Uses IndexedDB for lightning-fast repeated exports
-- 2-minute cache TTL for export data
-- Automatic cache invalidation on filter changes
-
-### Native Explorer  
+### H1B Data Explorer
 - Direct Supabase queries for real-time data
 - Server-side filtering for optimal performance
 - Graceful fallback for database issues
+- Advanced sorting and search capabilities
 
 ### URL Integration
 - Export respects URL-based filters

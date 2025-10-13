@@ -219,22 +219,7 @@ export function H1BViewerNative() {
           </div>
         </div>
 
-        {/* Performance Info */}
-        {!loading && paginatedData && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <div className="flex items-center space-x-2">
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span className="text-sm font-medium text-blue-800">
-                Real-time Data Explorer
-              </span>
-              <span className="text-sm text-blue-700">
-                • Server-side filtering • Advanced search • Sortable columns • CSV export
-              </span>
-            </div>
-          </div>
-        )}
+
 
         {/* Table */}
         <H1BTable
