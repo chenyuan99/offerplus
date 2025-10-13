@@ -158,7 +158,7 @@ export class H1BNativeFilterService {
         (data || [])
           .map(item => item.employer_name)
           .filter(name => name && name.trim() !== '')
-      )].sort().slice(0, limit);
+      )].sort((a, b) => a.localeCompare(b)).slice(0, limit);
 
       return uniqueEmployers;
     } catch (error) {
@@ -198,7 +198,7 @@ export class H1BNativeFilterService {
 
       // Get unique values
       const uniqueStatuses = [...new Set((data || []).map(item => item.case_status))];
-      return uniqueStatuses.sort();
+      return uniqueStatuses.sort((a, b) => a.localeCompare(b));
     } catch (error) {
       console.error('Native unique statuses error:', error);
       
@@ -239,7 +239,7 @@ export class H1BNativeFilterService {
         (data || [])
           .map(item => item.job_title)
           .filter(title => title && title.trim() !== '')
-      )].sort().slice(0, limit);
+      )].sort((a, b) => a.localeCompare(b)).slice(0, limit);
 
       return uniqueJobTitles;
     } catch (error) {
@@ -397,7 +397,7 @@ export class H1BNativeFilterService {
         (data || [])
           .map((item: any) => item[field])
           .filter(value => value && typeof value === 'string' && value.trim() !== '')
-      )].sort();
+      )].sort((a, b) => a.localeCompare(b));
 
       return uniqueValues;
     } catch (error) {

@@ -217,7 +217,7 @@ export class H1BStatisticsService {
         (data || [])
           .map(item => item[field])
           .filter(value => value && typeof value === 'string' && value.trim() !== '')
-      )].sort();
+      )].sort((a, b) => a.localeCompare(b));
 
       return uniqueValues;
     } catch (error) {

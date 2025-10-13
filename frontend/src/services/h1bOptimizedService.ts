@@ -185,7 +185,7 @@ export class H1BOptimizedService {
           (data || [])
             .map(item => item[field])
             .filter(value => value && typeof value === 'string' && value.trim() !== '')
-        )].sort().slice(0, limit);
+        )].sort((a, b) => a.localeCompare(b)).slice(0, limit);
 
         this.setCache(cacheKey, uniqueValues);
         return uniqueValues;
