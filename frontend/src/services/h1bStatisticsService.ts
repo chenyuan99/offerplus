@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { H1BStatistics, H1BFilters } from '../types/h1b';
+import { H1BStatistics, H1BFilters, H1BRecord, PaginatedData } from '../types/h1b';
 
 export interface H1BEmployerStats {
   name: string;
@@ -34,6 +34,150 @@ export interface H1BStateStats {
 }
 
 export class H1BStatisticsService {
+  /**
+   * Get unique employers for dropdown population
+   */
+  static async getUniqueEmployers(limit: number = 50): Promise<string[]> {
+    try {
+      const { data, error } = await supabase.rpc('get_h1b_unique_employers', {
+        limit_count: limit
+      });
+
+      if (error) {
+        console.error('Error fetching unique employers:', error);
+        throw new Error(`Failed to fetch unique employers: ${error.message}`);
+      }
+
+      // Handle error response from function
+      if (data?.error) {
+        throw new Error(data.message || 'Failed to fetch unique employers');
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error('Unique employers service error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get unique case statuses for dropdown population
+   */
+  static async getUniqueStatuses(): Promise<string[]> {
+    try {
+      const { data, error } = await supabase.rpc('get_h1b_unique_statuses');
+
+      if (error) {
+        console.error('Error fetching unique statuses:', error);
+        throw new Error(`Failed to fetch unique statuses: ${error.message}`);
+      }
+
+      // Handle error response from function
+      if (data?.error) {
+        throw new Error(data.message || 'Failed to fetch unique statuses');
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error('Unique statuses service error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get unique job titles for dropdown population
+   */
+  static async getUniqueJobTitles(limit: number = 30): Promise<string[]> {
+    try {
+      const { data, error } = await supabase.rpc('get_h1b_unique_job_titles', {
+        limit_count: limit
+      });
+
+      if (error) {
+        console.error('Error fetching unique job titles:', error);
+        throw new Error(`Failed to fetch unique job titles: ${error.message}`);
+      }
+
+      // Handle error response from function
+      if (data?.error) {
+        throw new Error(data.message || 'Failed to fetch unique job titles');
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error('Unique job titles service error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get filtered H1B applications with pagination
+   */
+  static async getFilteredApplications(
+    filters: Partial<H1BFilters> = {},
+    pageSize: number = 20,
+    pageNumber: number = 1
+  ): Promise<PaginatedData<H1BRecord>> {
+    try {
+      // Validate filters first
+      const validation = this.validateFilters(filters);
+      if (!validation.valid) {
+        throw new Error(`Invalid filters: ${validation.errors.join(', ')}`);
+      }
+
+      const { data, error } = await supabase.rpc('get_h1b_filtered_applications', {
+        filters: filters,
+        page_size: pageSize,
+        page_number: pageNumber
+      });
+
+      if (error) {
+        console.error('Error fetching filtered applications:', error);
+        throw new Error(`Failed to fetch filtered applications: ${error.message}`);
+      }
+
+      // Handle error response from function
+      if (data?.error) {
+        throw new Error(data.message || 'Failed to fetch filtered applications');
+      }
+
+      // Transform the response to match PaginatedData interface
+      const result: PaginatedData<H1BRecord> = {
+        data: data?.data || [],
+        totalRecords: data?.pagination?.totalRecords || 0,
+        totalPages: data?.pagination?.totalPages || 0,
+        currentPage: data?.pagination?.currentPage || 1,
+        pageSize: data?.pagination?.pageSize || pageSize,
+        hasNextPage: data?.pagination?.hasNextPage || false,
+        hasPreviousPage: data?.pagination?.hasPreviousPage || false
+      };
+
+      return result;
+    } catch (error) {
+      console.error('Filtered applications service error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get unique values for a specific field (generic helper)
+   */
+  static async getUniqueValues(field: string, limit?: number): Promise<string[]> {
+    switch (field) {
+      case 'employer_name':
+      case 'employer':
+        return this.getUniqueEmployers(limit || 50);
+      case 'case_status':
+      case 'status':
+        return this.getUniqueStatuses();
+      case 'job_title':
+      case 'jobTitle':
+        return this.getUniqueJobTitles(limit || 30);
+      default:
+        console.warn(`Unknown field for unique values: ${field}`);
+        return [];
+    }
+  }
   /**
    * Get comprehensive H1B statistics with optional filters
    */
@@ -100,14 +244,11 @@ export class H1BStatisticsService {
    * Get top employers with pagination and search
    */
   static async getTopEmployers(
-    limit: number = 50,
-    offset: number = 0,
-    searchTerm?: string
+    limit: number = 50
   ): Promise<{ data: H1BEmployerStats[]; totalCount: number }> {
     try {
       const { data, error } = await supabase.rpc('get_top_employers', {
-        p_limit: limit,
-        p_offset: offset
+        p_limit: limit
       });
 
       if (error) {
@@ -115,9 +256,17 @@ export class H1BStatisticsService {
         throw new Error(`Failed to fetch top employers: ${error.message}`);
       }
 
+      // Transform the response to match H1BEmployerStats interface
+      const transformedData = (data || []).map((employer: any) => ({
+        name: employer.name,
+        count: employer.count,
+        averageSalary: employer.averageSalary || 0,
+        certificationRate: employer.certificationRate || 0
+      }));
+
       return {
-        data: data?.data || [],
-        totalCount: data?.totalCount || 0
+        data: transformedData,
+        totalCount: transformedData.length
       };
     } catch (error) {
       console.error('Top employers service error:', error);

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { H1BStatistics, H1BFilters } from '../types/h1b';
+import { H1BStatistics, H1BFilters, H1BRecord, PaginatedData } from '../types/h1b';
 import { H1BStatisticsService } from '../services/h1bStatisticsService';
 
 interface UseH1BStatisticsOptions {
@@ -15,6 +15,11 @@ interface UseH1BStatisticsReturn {
   error: string | null;
   refresh: () => Promise<void>;
   clearCache: () => void;
+  // New filter functions
+  getUniqueEmployers: (limit?: number) => Promise<string[]>;
+  getUniqueStatuses: () => Promise<string[]>;
+  getUniqueJobTitles: (limit?: number) => Promise<string[]>;
+  getUniqueValues: (field: string, limit?: number) => Promise<string[]>;
 }
 
 export function useH1BStatistics(options: UseH1BStatisticsOptions = {}): UseH1BStatisticsReturn {
@@ -64,6 +69,23 @@ export function useH1BStatistics(options: UseH1BStatisticsOptions = {}): UseH1BS
     H1BStatisticsService.clearCache();
   }, []);
 
+  // Filter function implementations
+  const getUniqueEmployers = useCallback(async (limit?: number) => {
+    return H1BStatisticsService.getUniqueEmployers(limit);
+  }, []);
+
+  const getUniqueStatuses = useCallback(async () => {
+    return H1BStatisticsService.getUniqueStatuses();
+  }, []);
+
+  const getUniqueJobTitles = useCallback(async (limit?: number) => {
+    return H1BStatisticsService.getUniqueJobTitles(limit);
+  }, []);
+
+  const getUniqueValues = useCallback(async (field: string, limit?: number) => {
+    return H1BStatisticsService.getUniqueValues(field, limit);
+  }, []);
+
   // Initial fetch
   useEffect(() => {
     fetchStatistics();
@@ -85,7 +107,11 @@ export function useH1BStatistics(options: UseH1BStatisticsOptions = {}): UseH1BS
     loading,
     error,
     refresh,
-    clearCache
+    clearCache,
+    getUniqueEmployers,
+    getUniqueStatuses,
+    getUniqueJobTitles,
+    getUniqueValues
   };
 }
 
@@ -117,8 +143,80 @@ export function useQuickH1BStats() {
   return { stats, loading };
 }
 
+// Hook for filtered H1B applications with pagination
+export function useH1BFilteredApplications(
+  filters: Partial<H1BFilters> = {},
+  pageSize: number = 20,
+  pageNumber: number = 1
+) {
+  const [data, setData] = useState<PaginatedData<H1BRecord> | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const result = await H1BStatisticsService.getFilteredApplications(filters, pageSize, pageNumber);
+      setData(result);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch filtered applications';
+      setError(errorMessage);
+      console.error('Error fetching filtered applications:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [filters, pageSize, pageNumber]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return {
+    data,
+    loading,
+    error,
+    refresh: fetchData
+  };
+}
+
+// Hook for unique values with caching
+export function useH1BUniqueValues(field: string, limit?: number) {
+  const [values, setValues] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchValues = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const result = await H1BStatisticsService.getUniqueValues(field, limit);
+      setValues(result);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : `Failed to fetch unique ${field} values`;
+      setError(errorMessage);
+      console.error(`Error fetching unique ${field} values:`, err);
+    } finally {
+      setLoading(false);
+    }
+  }, [field, limit]);
+
+  useEffect(() => {
+    fetchValues();
+  }, [fetchValues]);
+
+  return {
+    values,
+    loading,
+    error,
+    refresh: fetchValues
+  };
+}
+
 // Hook for top employers
-export function useTopH1BEmployers(limit: number = 10, searchTerm?: string) {
+export function useTopH1BEmployers(limit: number = 10) {
   const [employers, setEmployers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -129,7 +227,7 @@ export function useTopH1BEmployers(limit: number = 10, searchTerm?: string) {
       setLoading(true);
       setError(null);
       
-      const result = await H1BStatisticsService.getTopEmployers(limit, 0, searchTerm);
+      const result = await H1BStatisticsService.getTopEmployers(limit);
       setEmployers(result.data);
       setTotalCount(result.totalCount);
     } catch (err) {
@@ -138,7 +236,7 @@ export function useTopH1BEmployers(limit: number = 10, searchTerm?: string) {
     } finally {
       setLoading(false);
     }
-  }, [limit, searchTerm]);
+  }, [limit]);
 
   useEffect(() => {
     fetchEmployers();
