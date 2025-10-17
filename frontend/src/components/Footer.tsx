@@ -36,6 +36,11 @@ export function Footer() {
                   <MessageCircle className="h-5 w-5" />
                   <span>Join our Discord</span>
                 </a>
+
+                                  <p class="attribution">
+                    <a href="https://logo.dev">Logos provided by Logo.dev</a>
+                  </p>
+                
               </div>
             </div>
           </div>
