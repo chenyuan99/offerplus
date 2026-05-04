@@ -1,0 +1,804 @@
+openapi: 3.0.0
+info:
+  title: OffersPlus API
+  description: REST API for OffersPlus - Job application tracking and salary data platform
+  version: 1.0.0
+  contact:
+    name: OffersPlus Team
+    email: support@offersplus.io
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8000
+    description: Development server
+  - url: https://api.offersplus.io
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication endpoints
+  - name: Applications
+    description: Job application tracking
+  - name: Profile
+    description: User profile management
+  - name: Job Applications (Future)
+    description: Advanced job application tracking with MongoDB
+
+paths:
+  /api/auth/login/:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user with username and password
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: john_doe
+                password:
+                  type: string
+                  format: password
+                  example: securepassword123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access:
+                    type: string
+                    description: JWT access token
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  refresh:
+                    type: string
+                    description: JWT refresh token
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+
+  /api/auth/register/:
+    post:
+      tags:
+        - Authentication
+      summary: User registration
+      description: Create a new user account
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+                - password2
+              properties:
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  example: john_doe
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  example: securepassword123
+                password2:
+                  type: string
+                  format: password
+                  description: Password confirmation
+                  example: securepassword123
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+
+  /api/auth/refresh/:
+    post:
+      tags:
+        - Authentication
+      summary: Refresh access token
+      description: Get a new access token using refresh token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refresh
+              properties:
+                refresh:
+                  type: string
+                  description: Refresh token
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access:
+                    type: string
+                    description: New JWT access token
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/auth/user/:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      description: Retrieve information about the currently authenticated user
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/applications/:
+    get:
+      tags:
+        - Applications
+      summary: List all applications
+      description: Retrieve all job applications for the current user
+      operationId: listApplications
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          description: Filter by application status
+          schema:
+            type: string
+            enum: [APPLIED, OA, VO, OFFER, REJECTED]
+        - name: company_id
+          in: query
+          description: Filter by company ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Application'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - Applications
+      summary: Create a new application
+      description: Record a new job application
+      operationId: createApplication
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationInput'
+      responses:
+        '201':
+          description: Application created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  /api/applications/{id}/:
+    get:
+      tags:
+        - Applications
+      summary: Get application details
+      description: Retrieve details of a specific application
+      operationId: getApplication
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Application ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Application details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    put:
+      tags:
+        - Applications
+      summary: Update application
+      description: Update a job application record
+      operationId: updateApplication
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Application ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationInput'
+      responses:
+        '200':
+          description: Application updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+    delete:
+      tags:
+        - Applications
+      summary: Delete application
+      description: Delete a job application record
+      operationId: deleteApplication
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Application ID
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Application deleted successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /api/profile/:
+    get:
+      tags:
+        - Profile
+      summary: Get user profile
+      description: Retrieve the current user's profile information
+      operationId: getUserProfile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    patch:
+      tags:
+        - Profile
+      summary: Update user profile
+      description: Update user profile including resume upload/deletion
+      operationId: updateUserProfile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                resume:
+                  type: string
+                  format: binary
+                  description: Resume file upload
+                resume_name:
+                  type: string
+                  nullable: true
+                  description: Resume name (set to null to delete)
+              required: []
+          application/json:
+            schema:
+              type: object
+              properties:
+                resume:
+                  type: string
+                  nullable: true
+                  description: Resume file path or null to delete
+                resume_name:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # Future endpoints for advanced job application tracking
+  /api/job-applications/:
+    get:
+      tags:
+        - Job Applications (Future)
+      summary: List job applications (MongoDB)
+      description: Retrieve advanced job application records with detailed tracking
+      operationId: listJobApplications
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          description: Filter by application status
+          schema:
+            type: string
+            enum: [resume_submitted, screening_scheduled, screening_done, interview_scheduled, interview_done, offer_received, offer_accepted, offer_declined, rejected, ghosted]
+        - name: company_name
+          in: query
+          description: Filter by company name
+          schema:
+            type: string
+        - name: priority
+          in: query
+          description: Filter by priority level
+          schema:
+            type: string
+            enum: [low, medium, high]
+      responses:
+        '200':
+          description: List of job applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JobApplication'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+    post:
+      tags:
+        - Job Applications (Future)
+      summary: Create job application
+      description: Record a new advanced job application with full tracking
+      operationId: createJobApplication
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobApplicationInput'
+      responses:
+        '201':
+          description: Job application created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobApplication'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: john_doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+      required:
+        - id
+        - username
+        - email
+
+    Application:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        company:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: Google
+            description:
+              type: string
+              nullable: true
+            industry:
+              type: string
+              nullable: true
+        job_title:
+          type: string
+          example: Software Engineer
+        status:
+          type: string
+          enum: [APPLIED, OA, VO, OFFER, REJECTED]
+          example: APPLIED
+        source:
+          type: string
+          description: Application source (LinkedIn, email, referral, etc.)
+          example: LinkedIn
+        notes:
+          type: string
+          nullable: true
+        email_id:
+          type: string
+          nullable: true
+          description: Associated email ID for tracking
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - company
+        - job_title
+        - status
+
+    ApplicationInput:
+      type: object
+      properties:
+        company:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            name:
+              type: string
+              example: Google
+          required:
+            - id
+        job_title:
+          type: string
+          example: Software Engineer
+        status:
+          type: string
+          enum: [APPLIED, OA, VO, OFFER, REJECTED]
+          example: APPLIED
+        source:
+          type: string
+          example: LinkedIn
+        notes:
+          type: string
+          nullable: true
+        email_id:
+          type: string
+          nullable: true
+      required:
+        - company
+        - job_title
+        - status
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        resume:
+          type: string
+          nullable: true
+          description: Resume file path
+        resume_name:
+          type: string
+          nullable: true
+        resume_updated_at:
+          type: string
+          format: date-time
+          nullable: true
+        resume_url:
+          type: string
+          format: uri
+          nullable: true
+      required:
+        - id
+        - user
+
+    JobApplication:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: MongoDB ObjectId
+          example: 69f90cc9052f5e8cf4ac98f8
+        company:
+          type: object
+          properties:
+            name:
+              type: string
+              example: Attention
+            industry:
+              type: string
+              example: AI / Sales Intelligence
+            stage:
+              type: string
+              example: Series A
+            funding:
+              type: string
+              example: $17M
+            location:
+              type: object
+              properties:
+                city:
+                  type: string
+                state:
+                  type: string
+                neighborhood:
+                  type: string
+                  nullable: true
+                remote_policy:
+                  type: string
+                  enum: [remote, hybrid, on-site]
+                office_days_required:
+                  type: integer
+                  nullable: true
+        role:
+          type: object
+          properties:
+            title:
+              type: string
+              example: Full Stack Engineer
+            level:
+              type: string
+              enum: [entry, mid, senior]
+            department:
+              type: string
+            type:
+              type: string
+              enum: [full-time, part-time, contract, internship]
+            salary_range:
+              type: object
+              properties:
+                min:
+                  type: number
+                  nullable: true
+                max:
+                  type: number
+                  nullable: true
+                currency:
+                  type: string
+        status:
+          type: string
+          enum: [resume_submitted, screening_scheduled, screening_done, interview_scheduled, interview_done, offer_received, offer_accepted, offer_declined, rejected, ghosted]
+        source:
+          type: string
+          example: recruiter_outreach
+        recruiter:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            agency:
+              type: string
+              nullable: true
+        timeline:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date-time
+              event:
+                type: string
+              direction:
+                type: string
+                enum: [inbound, outbound]
+              medium:
+                type: string
+              notes:
+                type: string
+        meta:
+          type: object
+          properties:
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            next_action:
+              type: string
+            next_action_date:
+              type: string
+              format: date-time
+            priority:
+              type: string
+              enum: [low, medium, high]
+            tags:
+              type: array
+              items:
+                type: string
+
+    JobApplicationInput:
+      type: object
+      properties:
+        company:
+          type: object
+          properties:
+            name:
+              type: string
+            industry:
+              type: string
+            stage:
+              type: string
+            funding:
+              type: string
+            location:
+              type: object
+          required:
+            - name
+        role:
+          type: object
+          properties:
+            title:
+              type: string
+            level:
+              type: string
+            department:
+              type: string
+            type:
+              type: string
+          required:
+            - title
+        status:
+          type: string
+          example: resume_submitted
+        source:
+          type: string
+        recruiter:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+        meta:
+          type: object
+          properties:
+            priority:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
+      required:
+        - company
+        - role
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+      required:
+        - detail
+
+  responses:
+    BadRequestError:
+      description: Bad request - invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    UnauthorizedError:
+      description: Unauthorized - missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Bearer token for authentication
+
+security:
+  - bearerAuth: []
