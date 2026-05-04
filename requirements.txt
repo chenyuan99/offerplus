@@ -14,7 +14,7 @@ psycopg2-binary>=2.9.9
 python-dotenv>=1.0.0
 requests>=2.25.1
 supabase
-tqdm==4.66.3
+tqdm==4.67.3
 typing_extensions>=4.6.3
 urllib3>=1.26.0
 yarl==1.17.2
