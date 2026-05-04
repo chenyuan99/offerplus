@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { authService } from './auth';
+import type { paths } from '../types/api';
 
 // const API_URL = import.meta.env.VITE_API_URL || 'https://offerplus.io';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -41,22 +42,9 @@ api.interceptors.response.use(
   }
 );
 
-export interface Application {
-  id?: number;
-  company: {
-    id: number;
-    name: string;
-    description?: string;
-    industry?: string;
-  };
-  job_title: string;
-  status: 'APPLIED' | 'OA' | 'VO' | 'OFFER' | 'REJECTED';
-  source: string;
-  notes?: string;
-  email_id?: string;
-  created_at?: string;
-  updated_at?: string;
-}
+// Auto-generated from OpenAPI spec
+export type Application = paths['/api/applications/']['get']['responses']['200']['content']['application/json'][number];
+export type ApplicationInput = paths['/api/applications/']['post']['requestBody']['content']['application/json'];
 
 // Auth API endpoints
 export const authApi = {
@@ -78,18 +66,8 @@ export const applicationsApi = {
   delete: (id: number) => api.delete(`/api/applications/${id}/`),
 };
 
-export interface UserProfile {
-  id: number;
-  user: {
-    id: number;
-    username: string;
-    email: string;
-  };
-  resume: string | null;
-  resume_name: string | null;
-  resume_updated_at: string | null;
-  resume_url: string | null;
-}
+// Auto-generated from OpenAPI spec
+export type UserProfile = paths['/api/profile/']['get']['responses']['200']['content']['application/json'];
 
 class ApiService {
   async getUserProfile(): Promise<UserProfile> {
