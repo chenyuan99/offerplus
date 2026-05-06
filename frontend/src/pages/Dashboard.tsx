@@ -234,9 +234,21 @@ export function Dashboard() {
                         src={app.company_link ? (() => {
                           const hostname = new URL(app.company_link).hostname.replace('www.', '');
                           const domain = hostname.split('.').slice(-2).join('.');
-                          return `https://api.dicebear.com/7.x/initials/svg?seed=${domain}`;
-                        })() : 'https://api.dicebear.com/7.x/initials/svg?seed=CO'}
+                          const token = import.meta.env.VITE_LOGO_DEV_TOKEN ? `?token=${import.meta.env.VITE_LOGO_DEV_TOKEN}` : '';
+                          return `https://img.logo.dev/${domain}${token}`;
+                        })() : 'https://img.logo.dev/company'}
                         alt="Company"
+                        onError={(e) => {
+                          const svg = `data:image/svg+xml;base64,${btoa(
+                            `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="%23e5e7eb">
+                              <rect width="40" height="40" rx="20" />
+                              <text x="50%" y="50%" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" dy=".3em" fill="%239ca3af">
+                                ${app.company_link ? new URL(app.company_link).hostname.substring(0, 2).toUpperCase() : 'CO'}
+                              </text>
+                            </svg>`
+                          )}`;
+                          (e.target as HTMLImageElement).src = svg;
+                        }}
                       />
                     </div>
                     <div className="ml-4">
