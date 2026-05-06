@@ -86,8 +86,8 @@ class ApiService {
 
     // If profile doesn't exist, create a basic one from auth user
     let profile = profileData;
-    if (profileError && profileError.code === 'PGRST116') {
-      // Profile doesn't exist, use defaults
+    if (profileError && (profileError.code === 'PGRST116' || profileError.code === 'PGRST205')) {
+      // Profile doesn't exist or table not in schema cache, use defaults
       profile = {
         id: user.id,
         resume: null,
