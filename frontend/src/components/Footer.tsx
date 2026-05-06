@@ -44,9 +44,9 @@ export function Footer() {
                   <span>Join our Discord</span>
                 </a>
 
-                                  <p class="attribution">
-                    <a href="https://logo.dev">Logos provided by Logo.dev</a>
-                  </p>
+                <p className="attribution">
+                  <a href="https://logo.dev">Logos provided by Logo.dev</a>
+                </p>
                 
               </div>
             </div>
