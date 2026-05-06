@@ -161,7 +161,7 @@ export class AIModelManager {
 
     try {
       // Initialize OpenAI adapter if API key is available
-      const openaiKey = import.meta.env.VITE_OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+      const openaiKey = import.meta.env.NEXT_PUBLIC_OPENAI_API_KEY || process.env.OPENAI_API_KEY;
       if (openaiKey) {
         const openaiAdapter = new OpenAIAdapter({ apiKey: openaiKey });
         this.adapters.set('openai', openaiAdapter);

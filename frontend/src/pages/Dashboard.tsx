@@ -234,7 +234,7 @@ export function Dashboard() {
                         src={app.company_link ? (() => {
                           const hostname = new URL(app.company_link).hostname.replace('www.', '');
                           const domain = hostname.split('.').slice(-2).join('.');
-                          const token = import.meta.env.VITE_LOGO_DEV_TOKEN ? `?token=${import.meta.env.VITE_LOGO_DEV_TOKEN}` : '';
+                          const token = import.meta.env.NEXT_PUBLIC_LOGO_DEV_TOKEN ? `?token=${import.meta.env.NEXT_PUBLIC_LOGO_DEV_TOKEN}` : '';
                           return `https://img.logo.dev/${domain}${token}`;
                         })() : 'https://img.logo.dev/company'}
                         alt="Company"

@@ -1,0 +1,483 @@
+{
+  "generated_at": "2026-04-21T00:00:00Z",
+  "note": "Auto-generated from Gmail. Re-run .github/update_application_status.py to refresh.",
+  "summary": {
+    "applied": 14,
+    "interviewing": 7,
+    "interview_scheduled": 3,
+    "rejected": 2
+  },
+  "total": 26,
+  "applications": [
+    {
+      "company": "Zscaler",
+      "role": "Software Development Engineer (Golang)",
+      "status": "interview_scheduled",
+      "applied_date": "",
+      "last_update": "2026-04-20T23:33:05Z",
+      "thread_id": "19dad3d902ec9fb3",
+      "emails": [
+        {
+          "date": "2026-04-20T23:32:55Z",
+          "subject": "Zscaler Interview | Hiring Manager Screen Confirmation (Virtual) - Software Development Engineer (Golang)",
+          "sender": "no-reply@interviews.modernloop.io",
+          "status_signal": "interview_scheduled"
+        },
+        {
+          "date": "2026-04-20T20:37:01Z",
+          "subject": "Your interview availability with Zscaler was submitted",
+          "sender": "no-reply@interviews.modernloop.io",
+          "status_signal": "interviewing"
+        }
+      ]
+    },
+    {
+      "company": "Microsoft",
+      "role": "Software Engineer II (Job number: 200035071)",
+      "status": "applied",
+      "applied_date": "2026-04-19T12:03:10Z",
+      "last_update": "2026-04-19T12:09:21Z",
+      "thread_id": "19da59f8ecb9e844",
+      "emails": [
+        {
+          "date": "2026-04-19T12:03:10Z",
+          "subject": "Thank you for your application!",
+          "sender": "donotreply@email.careers.microsoft.com",
+          "status_signal": "applied"
+        },
+        {
+          "date": "2026-04-19T12:09:21Z",
+          "subject": "Thank you for your application!",
+          "sender": "donotreply@email.careers.microsoft.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Salient AI",
+      "role": "Senior Software Engineer - Core Product",
+      "status": "rejected",
+      "applied_date": "",
+      "last_update": "2026-04-15T11:46:14Z",
+      "thread_id": "19d8cd68a05d2251",
+      "emails": [
+        {
+          "date": "2026-04-07T15:47:18Z",
+          "subject": "Salient Interview Confirmation - Senior Software Engineer - Core Product",
+          "sender": "isabella@trysalient.com",
+          "status_signal": "interview_scheduled"
+        },
+        {
+          "date": "2026-04-14T16:32:41Z",
+          "subject": "Salient AI | Interview Update",
+          "sender": "isabella@trysalient.com",
+          "status_signal": "rejected"
+        }
+      ]
+    },
+    {
+      "company": "Akamai Technologies",
+      "role": "Software Engineer II - 2835",
+      "status": "applied",
+      "applied_date": "2026-04-14T04:22:38Z",
+      "last_update": "2026-04-14T04:22:38Z",
+      "thread_id": "19d8a3a22ecc642e",
+      "emails": [
+        {
+          "date": "2026-04-14T04:22:38Z",
+          "subject": "Thank you for your application to Akamai Technologies",
+          "sender": "hr-akamaijobs@akamai.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Microsoft",
+      "role": "Software Engineer (Job number: 200031316)",
+      "status": "applied",
+      "applied_date": "2026-04-14T03:41:42Z",
+      "last_update": "2026-04-14T03:46:04Z",
+      "thread_id": "19d8a14a79a36367",
+      "emails": [
+        {
+          "date": "2026-04-14T03:41:42Z",
+          "subject": "Thank you for your application!",
+          "sender": "donotreply@email.careers.microsoft.com",
+          "status_signal": "applied"
+        },
+        {
+          "date": "2026-04-14T03:43:14Z",
+          "subject": "Thank you for your application!",
+          "sender": "donotreply@email.careers.microsoft.com",
+          "status_signal": "applied"
+        },
+        {
+          "date": "2026-04-14T03:46:04Z",
+          "subject": "Thank you for your application!",
+          "sender": "donotreply@email.careers.microsoft.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "GitHub",
+      "role": "Software Engineer II, Identity Core",
+      "status": "applied",
+      "applied_date": "2026-04-07T01:07:46Z",
+      "last_update": "2026-04-07T01:07:46Z",
+      "thread_id": "19d657b3939ab4b3",
+      "emails": [
+        {
+          "date": "2026-04-07T01:07:46Z",
+          "subject": "Thank You For Your Application",
+          "sender": "githubinc+autoreply@talent.icims.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Morgan Stanley (Workday)",
+      "role": "Java Developer – Server Side (Associate)",
+      "status": "applied",
+      "applied_date": "2026-04-04T17:34:41Z",
+      "last_update": "2026-04-04T17:34:41Z",
+      "thread_id": "19d598fae919e68d",
+      "emails": [
+        {
+          "date": "2026-04-04T17:34:41Z",
+          "subject": "Thank You for Your Application!",
+          "sender": "ms@myworkday.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Capsule",
+      "role": "IC Engineering",
+      "status": "interviewing",
+      "applied_date": "",
+      "last_update": "2026-04-02T19:04:53Z",
+      "thread_id": "19d30f9a837c7211",
+      "emails": [
+        {
+          "date": "2026-03-27T20:26:00Z",
+          "subject": "Invitation: IC Engineering HM Interview: Yuan Chen",
+          "sender": "manathan@capsule.com",
+          "status_signal": "interview_scheduled"
+        }
+      ]
+    },
+    {
+      "company": "Chewy",
+      "role": "Software Engineer",
+      "status": "applied",
+      "applied_date": "2026-03-27T22:46:55Z",
+      "last_update": "2026-03-27T22:46:55Z",
+      "thread_id": "19d317aa959da51f",
+      "emails": [
+        {
+          "date": "2026-03-27T22:46:55Z",
+          "subject": "Thank you for applying to Chewy!",
+          "sender": "chewy@myworkday.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Oracle",
+      "role": "Software Developer 3 - 308634",
+      "status": "rejected",
+      "applied_date": "",
+      "last_update": "2026-03-24T05:09:03Z",
+      "thread_id": "19d1e3f173ad8f7d",
+      "emails": [
+        {
+          "date": "2026-03-24T05:09:03Z",
+          "subject": "Thank you for your application to Oracle",
+          "sender": "noreply@oracle.com",
+          "status_signal": "rejected"
+        }
+      ]
+    },
+    {
+      "company": "Goldman Sachs",
+      "role": "Software Engineer - Associate, Asset & Wealth Management (Dallas) - 163722",
+      "status": "interviewing",
+      "applied_date": "",
+      "last_update": "2026-03-27T12:27:12Z",
+      "thread_id": "19cf6c1c51a639b5",
+      "emails": [
+        {
+          "date": "2026-03-09T15:00:48Z",
+          "subject": "Action Required: Goldman Sachs CoderPad Interview",
+          "sender": "gs-eto-rc-awm-eng@ny.email.gs.com",
+          "status_signal": "interview_scheduled"
+        },
+        {
+          "date": "2026-03-16T13:06:47Z",
+          "subject": "Goldman Sachs CoderPad Interview – Yuan Chen – AWM SE Associate",
+          "sender": "gs-eto-rc-awm-eng@ny.email.gs.com",
+          "status_signal": "interview_scheduled"
+        },
+        {
+          "date": "2026-03-23T12:24:26Z",
+          "subject": "Goldman Sachs CoderPad Interview – Yuan Chen – AWM SE Associate",
+          "sender": "gs-eto-rc-awm-eng@ny.email.gs.com",
+          "status_signal": "interview_scheduled"
+        }
+      ]
+    },
+    {
+      "company": "Bloomberg",
+      "role": "Senior Software Engineer (Qlik) - Data Management & Analytics Platform - 10049030",
+      "status": "rejected",
+      "applied_date": "2026-03-10T04:33:17Z",
+      "last_update": "2026-03-11T17:27:34Z",
+      "thread_id": "19cddf08c72938ec",
+      "emails": [
+        {
+          "date": "2026-03-10T04:33:17Z",
+          "subject": "Bloomberg- Thank you for your Application (Senior Software Engineer (Qlik) - Data Management & Analytics Platform)",
+          "sender": "blprecruiting@recruiting.bloomberg.com",
+          "status_signal": "applied"
+        },
+        {
+          "date": "2026-03-11T17:27:34Z",
+          "subject": "Bloomberg - Thank you for your application (Senior Software Engineer (Qlik))",
+          "sender": "blprecruiting@recruiting.bloomberg.com",
+          "status_signal": "rejected"
+        }
+      ]
+    },
+    {
+      "company": "Kepler",
+      "role": "Software Engineer",
+      "status": "interviewing",
+      "applied_date": "",
+      "last_update": "2026-03-11T20:32:38Z",
+      "thread_id": "19cde99f9bf49367",
+      "emails": [
+        {
+          "date": "2026-03-09T03:29:12Z",
+          "subject": "Invitation from an unknown sender: Interview with Kepler",
+          "sender": "rui.zhang@kepler.ai",
+          "status_signal": "interview_scheduled"
+        },
+        {
+          "date": "2026-03-11T20:32:38Z",
+          "subject": "Reminder: Your Upcoming Interview with Kepler",
+          "sender": "no-reply@ashbyhq.com",
+          "status_signal": "interview_scheduled"
+        }
+      ]
+    },
+    {
+      "company": "WHOOP",
+      "role": "Software Engineer II (Backend, Growth)",
+      "status": "applied",
+      "applied_date": "2026-03-01T22:46:55Z",
+      "last_update": "2026-03-01T22:46:55Z",
+      "thread_id": "19cab9551e470f60",
+      "emails": [
+        {
+          "date": "2026-03-01T22:46:55Z",
+          "subject": "Thank you for your application to WHOOP",
+          "sender": "no-reply@hire.lever.co",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Oracle",
+      "role": "Senior Software Development Engineer - Austin & Nashville - 313617",
+      "status": "applied",
+      "applied_date": "2026-02-25T19:05:27Z",
+      "last_update": "2026-02-25T19:05:27Z",
+      "thread_id": "19c9631210ccc41b",
+      "emails": [
+        {
+          "date": "2026-02-25T19:05:27Z",
+          "subject": "Thank you for your application to Oracle",
+          "sender": "noreply@oracle.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Charta Health",
+      "role": "Software Engineer",
+      "status": "interviewing",
+      "applied_date": "",
+      "last_update": "2026-03-05T00:00:00Z",
+      "thread_id": "19c9cfaa79edff53",
+      "emails": [
+        {
+          "date": "2026-02-27T02:43:17Z",
+          "subject": "Appointment booked: Charta Health Interview Schedule (Yuan Chen)",
+          "sender": "arthur@chartahealth.com",
+          "status_signal": "interview_scheduled"
+        }
+      ]
+    },
+    {
+      "company": "Tesla",
+      "role": "Software Engineer, Robotaxi Experience, Vehicle Software - 263371",
+      "status": "applied",
+      "applied_date": "2026-02-21T13:20:15Z",
+      "last_update": "2026-02-21T13:20:15Z",
+      "thread_id": "19c805ba6f86d7a2",
+      "emails": [
+        {
+          "date": "2026-02-21T13:20:15Z",
+          "subject": "Thank you – we've received your Tesla application",
+          "sender": "noreply@tesla.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Walleye Capital",
+      "role": "Systems Engineer (Dockside)",
+      "status": "interviewing",
+      "applied_date": "",
+      "last_update": "2026-02-03T17:54:05Z",
+      "thread_id": "19becac44a244737",
+      "emails": [
+        {
+          "date": "2026-01-23T21:04:30Z",
+          "subject": "Walleye Capital Interview Confirmation",
+          "sender": "vjayaraman@walleyetrading.net",
+          "status_signal": "interview_scheduled"
+        }
+      ]
+    },
+    {
+      "company": "Uber",
+      "role": "Software Engineer II - Data (Backend)",
+      "status": "applied",
+      "applied_date": "2026-02-14T17:39:10Z",
+      "last_update": "2026-02-14T17:39:10Z",
+      "thread_id": "19c5d3c31438400e",
+      "emails": [
+        {
+          "date": "2026-02-14T17:39:10Z",
+          "subject": "Uber Careers: Thank you for your application for Software Engineer II - Data(Backend)",
+          "sender": "noreply@uber.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Oracle",
+      "role": "Software Developer 3 - 315780",
+      "status": "rejected",
+      "applied_date": "",
+      "last_update": "2026-02-14T00:46:00Z",
+      "thread_id": "19c599c9ba1f3b6a",
+      "emails": [
+        {
+          "date": "2026-02-14T00:46:00Z",
+          "subject": "Thank you for your application to Oracle",
+          "sender": "noreply@oracle.com",
+          "status_signal": "rejected"
+        }
+      ]
+    },
+    {
+      "company": "Mastercard",
+      "role": "Senior Software Engineer",
+      "status": "applied",
+      "applied_date": "2026-02-13T23:27:04Z",
+      "last_update": "2026-02-13T23:27:04Z",
+      "thread_id": "19c5954550efaccd",
+      "emails": [
+        {
+          "date": "2026-02-13T23:27:04Z",
+          "subject": "Thank you for your application!",
+          "sender": "mastercard@myworkday.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Akamai Technologies",
+      "role": "Software Engineer II - 2330",
+      "status": "applied",
+      "applied_date": "2026-02-11T12:27:37Z",
+      "last_update": "2026-02-11T12:27:37Z",
+      "thread_id": "19c4cabde4c57bb5",
+      "emails": [
+        {
+          "date": "2026-02-11T12:27:37Z",
+          "subject": "Thank you for your application to Akamai Technologies",
+          "sender": "hr-akamaijobs@akamai.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Uber",
+      "role": "Software Engineer II - Backend (Marketplace/Maps/Membership/AV)",
+      "status": "applied",
+      "applied_date": "2026-02-08T18:29:45Z",
+      "last_update": "2026-02-08T18:29:45Z",
+      "thread_id": "19c3e8456658465a",
+      "emails": [
+        {
+          "date": "2026-02-08T18:29:45Z",
+          "subject": "Uber Careers: Thank you for your application for Software Engineer II- Backend, Marketplace/Maps/Membership/AV",
+          "sender": "noreply@uber.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Asana",
+      "role": "Software Engineer",
+      "status": "applied",
+      "applied_date": "2026-02-08T02:53:04Z",
+      "last_update": "2026-02-08T02:53:04Z",
+      "thread_id": "19c3b2ac961d7475",
+      "emails": [
+        {
+          "date": "2026-02-08T02:53:04Z",
+          "subject": "Thank you for your application to Asana!",
+          "sender": "no-reply@asana.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Microsoft",
+      "role": "Software Engineer II (Job number: 200022515)",
+      "status": "applied",
+      "applied_date": "2026-02-03T17:38:40Z",
+      "last_update": "2026-02-03T17:38:40Z",
+      "thread_id": "19c2495c3be03f94",
+      "emails": [
+        {
+          "date": "2026-02-03T17:38:40Z",
+          "subject": "Thank you for your application!",
+          "sender": "donotreply@email.careers.microsoft.com",
+          "status_signal": "applied"
+        }
+      ]
+    },
+    {
+      "company": "Neon Health",
+      "role": "Software Engineer Generalist",
+      "status": "interviewing",
+      "applied_date": "",
+      "last_update": "2026-01-26T15:03:44Z",
+      "thread_id": "19b96fade32817fb",
+      "emails": [
+        {
+          "date": "2026-01-07T05:43:01Z",
+          "subject": "Invitation from an unknown sender: Interview with Neon Health",
+          "sender": "kimslade@break-line.com",
+          "status_signal": "interview_scheduled"
+        }
+      ]
+    }
+  ]
+}

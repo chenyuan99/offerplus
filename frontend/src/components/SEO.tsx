@@ -18,7 +18,7 @@ const SEO: React.FC<SEOProps> = ({
   url = '/',
   type = 'website'
 }) => {
-  const siteUrl = import.meta.env.VITE_SITE_URL || 'https://offersplus.io';
+  const siteUrl = import.meta.env.NEXT_PUBLIC_SITE_URL || 'https://offersplus.io';
   const fullUrl = url.startsWith('http') ? url : `${siteUrl}${url}`;
   const fullImage = image.startsWith('http') ? image : `${siteUrl}${image}`;
 

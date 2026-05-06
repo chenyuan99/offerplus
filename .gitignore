@@ -14,3 +14,4 @@ credentials.json
 db.sqlite3
 /token.json
 /token.pickle
+set_vercel_env.py

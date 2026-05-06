@@ -7,6 +7,7 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+  envPrefix: 'NEXT_PUBLIC_',
   define: {
     __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   },

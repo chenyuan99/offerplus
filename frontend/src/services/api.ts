@@ -186,7 +186,7 @@ class ApiService {
 
     if (updateError) throw updateError;
 
-    return this.getUserProfile();
+    return await this.getUserProfile();
   }
 
   async deleteResume(): Promise<UserProfile> {

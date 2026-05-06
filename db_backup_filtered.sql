@@ -1,0 +1,1000 @@
+--
+-- PostgreSQL database cluster dump
+--
+
+\restrict KWLIwhgHN7etZzXfeVZzncKRZf1orA0NiMoY8QMyGMaY7UIoWPipXkvVpurrTK1
+
+SET default_transaction_read_only = off;
+
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+
+--
+-- Roles
+--
+
+
+--
+-- User Configurations
+--
+
+--
+-- User Config "anon"
+--
+
+
+--
+-- User Config "authenticated"
+--
+
+
+--
+-- User Config "authenticator"
+--
+
+
+--
+-- User Config "postgres"
+--
+
+
+--
+-- User Config "supabase_admin"
+--
+
+
+--
+-- User Config "supabase_auth_admin"
+--
+
+
+--
+-- User Config "supabase_storage_admin"
+--
+
+
+
+--
+-- Role memberships
+--
+
+GRANT anon TO authenticator GRANTED BY postgres;
+GRANT anon TO postgres GRANTED BY supabase_admin;
+GRANT authenticated TO authenticator GRANTED BY postgres;
+GRANT authenticated TO postgres GRANTED BY supabase_admin;
+GRANT authenticator TO supabase_storage_admin GRANTED BY supabase_admin;
+GRANT pg_monitor TO postgres GRANTED BY supabase_admin;
+GRANT pg_read_all_data TO postgres GRANTED BY supabase_admin;
+GRANT pg_read_all_data TO supabase_read_only_user GRANTED BY postgres;
+GRANT pg_signal_backend TO postgres GRANTED BY supabase_admin;
+GRANT pgsodium_keyholder TO pgsodium_keymaker GRANTED BY supabase_admin;
+GRANT pgsodium_keyholder TO postgres WITH ADMIN OPTION GRANTED BY supabase_admin;
+GRANT pgsodium_keyholder TO service_role GRANTED BY supabase_admin;
+GRANT pgsodium_keyiduser TO pgsodium_keyholder GRANTED BY supabase_admin;
+GRANT pgsodium_keyiduser TO pgsodium_keymaker GRANTED BY supabase_admin;
+GRANT pgsodium_keyiduser TO postgres WITH ADMIN OPTION GRANTED BY supabase_admin;
+GRANT pgsodium_keymaker TO postgres WITH ADMIN OPTION GRANTED BY supabase_admin;
+GRANT service_role TO authenticator GRANTED BY postgres;
+GRANT service_role TO postgres GRANTED BY supabase_admin;
+GRANT supabase_realtime_admin TO postgres GRANTED BY supabase_admin;
+
+
+
+
+
+
+\unrestrict KWLIwhgHN7etZzXfeVZzncKRZf1orA0NiMoY8QMyGMaY7UIoWPipXkvVpurrTK1
+
+--
+-- Databases
+--
+
+--
+-- Database "template1" dump
+--
+
+\connect template1
+
+--
+-- PostgreSQL database dump
+--
+
+\restrict 2glfYBvNu4OShNq4c1g3r3biI6rbUwyp3ddAmPBb8VsEcoqf9FSCZUOoKMy4g09
+
+-- Dumped from database version 15.8
+-- Dumped by pg_dump version 15.14 (Debian 15.14-1.pgdg12+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict 2glfYBvNu4OShNq4c1g3r3biI6rbUwyp3ddAmPBb8VsEcoqf9FSCZUOoKMy4g09
+
+--
+-- Database "/Users/yuanchen/PycharmProjects/offersplus/test_db.sqlite3" dump
+--
+
+--
+-- PostgreSQL database dump
+--
+
+\restrict OqZ1Q2BlLTAFJEtpAm7EYEVz0uJhicVhYa4h6HAKWumRmrXn13jcVtxngovImGV
+
+-- Dumped from database version 15.8
+-- Dumped by pg_dump version 15.14 (Debian 15.14-1.pgdg12+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: /Users/yuanchen/PycharmProjects/offersplus/test_db.sqlite3; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE "/Users/yuanchen/PycharmProjects/offersplus/test_db.sqlite3" WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.UTF-8';
+
+
+ALTER DATABASE "/Users/yuanchen/PycharmProjects/offersplus/test_db.sqlite3" OWNER TO postgres;
+
+\unrestrict OqZ1Q2BlLTAFJEtpAm7EYEVz0uJhicVhYa4h6HAKWumRmrXn13jcVtxngovImGV
+\encoding SQL_ASCII
+\connect -reuse-previous=on "dbname='/Users/yuanchen/PycharmProjects/offersplus/test_db.sqlite3'"
+\restrict OqZ1Q2BlLTAFJEtpAm7EYEVz0uJhicVhYa4h6HAKWumRmrXn13jcVtxngovImGV
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: accounts_userprofile; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.accounts_userprofile (
+    id bigint NOT NULL,
+    resume character varying(100),
+    resume_name character varying(255),
+    resume_updated_at timestamp with time zone NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.accounts_userprofile OWNER TO postgres;
+
+--
+-- Name: accounts_userprofile_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.accounts_userprofile ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.accounts_userprofile_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_group (
+    id integer NOT NULL,
+    name character varying(150) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO postgres;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.auth_group ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.auth_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_group_permissions (
+    id bigint NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO postgres;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.auth_group_permissions ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.auth_group_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO postgres;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.auth_permission ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.auth_permission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(150) NOT NULL,
+    last_name character varying(150) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO postgres;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user_groups (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO postgres;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.auth_user_groups ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.auth_user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.auth_user ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.auth_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.auth_user_user_permissions (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO postgres;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.auth_user_user_permissions ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.auth_user_user_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO postgres;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.django_admin_log ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.django_admin_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO postgres;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.django_content_type ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.django_content_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_migrations (
+    id bigint NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO postgres;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.django_migrations ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.django_migrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO postgres;
+
+--
+-- Name: jobgpt_jobposting; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.jobgpt_jobposting (
+    id uuid NOT NULL,
+    company_name character varying(200) NOT NULL,
+    locations character varying(200)[] NOT NULL,
+    title character varying(200) NOT NULL,
+    date_posted bigint NOT NULL,
+    terms character varying(100)[] NOT NULL,
+    active boolean NOT NULL,
+    url character varying(500) NOT NULL,
+    is_visible boolean NOT NULL,
+    source character varying(100) NOT NULL,
+    company_url character varying(500) NOT NULL,
+    date_updated bigint NOT NULL,
+    sponsorship character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.jobgpt_jobposting OWNER TO postgres;
+
+--
+-- Name: social_auth_association; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.social_auth_association (
+    id bigint NOT NULL,
+    server_url character varying(255) NOT NULL,
+    handle character varying(255) NOT NULL,
+    secret character varying(255) NOT NULL,
+    issued integer NOT NULL,
+    lifetime integer NOT NULL,
+    assoc_type character varying(64) NOT NULL
+);
+
+
+ALTER TABLE public.social_auth_association OWNER TO postgres;
+
+--
+-- Name: social_auth_association_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.social_auth_association ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.social_auth_association_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: social_auth_code; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.social_auth_code (
+    id bigint NOT NULL,
+    email character varying(254) NOT NULL,
+    code character varying(32) NOT NULL,
+    verified boolean NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.social_auth_code OWNER TO postgres;
+
+--
+-- Name: social_auth_code_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.social_auth_code ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.social_auth_code_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: social_auth_nonce; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.social_auth_nonce (
+    id bigint NOT NULL,
+    server_url character varying(255) NOT NULL,
+    "timestamp" integer NOT NULL,
+    salt character varying(65) NOT NULL
+);
+
+
+ALTER TABLE public.social_auth_nonce OWNER TO postgres;
+
+--
+-- Name: social_auth_nonce_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.social_auth_nonce ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.social_auth_nonce_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: social_auth_partial; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.social_auth_partial (
+    id bigint NOT NULL,
+    token character varying(32) NOT NULL,
+    next_step smallint NOT NULL,
+    backend character varying(32) NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    data jsonb NOT NULL,
+    CONSTRAINT social_auth_partial_next_step_check CHECK ((next_step >= 0))
+);
+
+
+ALTER TABLE public.social_auth_partial OWNER TO postgres;
+
+--
+-- Name: social_auth_partial_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.social_auth_partial ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.social_auth_partial_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: social_auth_usersocialauth; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.social_auth_usersocialauth (
+    id bigint NOT NULL,
+    provider character varying(32) NOT NULL,
+    uid character varying(255) NOT NULL,
+    user_id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    extra_data jsonb NOT NULL
+);
+
+
+ALTER TABLE public.social_auth_usersocialauth OWNER TO postgres;
+
+--
+-- Name: social_auth_usersocialauth_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.social_auth_usersocialauth ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.social_auth_usersocialauth_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: tracks_applicationrecord; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tracks_applicationrecord (
+    id bigint NOT NULL,
+    outcome text NOT NULL,
+    job_title text NOT NULL,
+    company_name text NOT NULL,
+    application_link text NOT NULL,
+    "OA_date" timestamp with time zone,
+    "VO_date" timestamp with time zone,
+    created timestamp with time zone NOT NULL,
+    updated timestamp with time zone NOT NULL,
+    applicant_id character varying(150) NOT NULL
+);
+
+
+ALTER TABLE public.tracks_applicationrecord OWNER TO postgres;
+
+--
+-- Name: tracks_applicationrecord_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.tracks_applicationrecord ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tracks_applicationrecord_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: tracks_company; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tracks_company (
+    id bigint NOT NULL,
+    name character varying(200) NOT NULL,
+    description text NOT NULL,
+    industry character varying(100) NOT NULL,
+    website character varying(200) NOT NULL,
+    logo_url character varying(200) NOT NULL,
+    location character varying(200) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.tracks_company OWNER TO postgres;
+
+--
+-- Name: tracks_company_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.tracks_company ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tracks_company_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: tracks_emailmessage; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tracks_emailmessage (
+    id bigint NOT NULL,
+    message_id character varying(100) NOT NULL,
+    sender character varying(254) NOT NULL,
+    recipient character varying(254) NOT NULL,
+    subject character varying(500) NOT NULL,
+    body text NOT NULL,
+    sent_at timestamp with time zone NOT NULL,
+    raw_payload jsonb,
+    thread_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.tracks_emailmessage OWNER TO postgres;
+
+--
+-- Name: tracks_emailmessage_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.tracks_emailmessage ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tracks_emailmessage_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Name: tracks_emailthread; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tracks_emailthread (
+    id bigint NOT NULL,
+    thread_id character varying(100) NOT NULL,
+    subject character varying(500) NOT NULL,
+    last_updated timestamp with time zone NOT NULL,
+    application_id bigint NOT NULL
+);
+
+
+ALTER TABLE public.tracks_emailthread OWNER TO postgres;
+
+--
+-- Name: tracks_emailthread_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.tracks_emailthread ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (
+    SEQUENCE NAME public.tracks_emailthread_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- Data for Name: accounts_userprofile; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.accounts_userprofile (id, resume, resume_name, resume_updated_at, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can view log entry	1	view_logentry
+5	Can add permission	2	add_permission
+6	Can change permission	2	change_permission
+7	Can delete permission	2	delete_permission
+8	Can view permission	2	view_permission
+9	Can add group	3	add_group
+10	Can change group	3	change_group
+11	Can delete group	3	delete_group
+12	Can view group	3	view_group
+13	Can add user	4	add_user
+14	Can change user	4	change_user
+15	Can delete user	4	delete_user
+16	Can view user	4	view_user
+17	Can add content type	5	add_contenttype
+18	Can change content type	5	change_contenttype
+19	Can delete content type	5	delete_contenttype
+20	Can view content type	5	view_contenttype
+21	Can add session	6	add_session
+22	Can change session	6	change_session
+23	Can delete session	6	delete_session
+24	Can view session	6	view_session
+25	Can add association	7	add_association
+26	Can change association	7	change_association
+27	Can delete association	7	delete_association
+28	Can view association	7	view_association
+29	Can add code	8	add_code
+30	Can change code	8	change_code
+31	Can delete code	8	delete_code
+32	Can view code	8	view_code
+33	Can add nonce	9	add_nonce
+34	Can change nonce	9	change_nonce
+35	Can delete nonce	9	delete_nonce
+36	Can view nonce	9	view_nonce
+37	Can add user social auth	10	add_usersocialauth
+38	Can change user social auth	10	change_usersocialauth
+39	Can delete user social auth	10	delete_usersocialauth
+40	Can view user social auth	10	view_usersocialauth
+41	Can add partial	11	add_partial
+42	Can change partial	11	change_partial
+43	Can delete partial	11	delete_partial
+44	Can view partial	11	view_partial
+45	Can add user profile	12	add_userprofile
+46	Can change user profile	12	change_userprofile
+47	Can delete user profile	12	delete_userprofile
+48	Can view user profile	12	view_userprofile
+49	Can add Company	13	add_company
+50	Can change Company	13	change_company
+51	Can delete Company	13	delete_company
+52	Can view Company	13	view_company
+53	Can add application record	14	add_applicationrecord
+54	Can change application record	14	change_applicationrecord
+55	Can delete application record	14	delete_applicationrecord
+56	Can view application record	14	view_applicationrecord
+57	Can add email thread	15	add_emailthread
+58	Can change email thread	15	change_emailthread
+59	Can delete email thread	15	delete_emailthread
+60	Can view email thread	15	view_emailthread
+61	Can add email message	16	add_emailmessage
+62	Can change email message	16	change_emailmessage
+63	Can delete email message	16	delete_emailmessage
+64	Can view email message	16	view_emailmessage
+65	Can add job posting	17	add_jobposting
+66	Can change job posting	17	change_jobposting
+67	Can delete job posting	17	delete_jobposting
+68	Can view job posting	17	view_jobposting
+\.
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_content_type (id, app_label, model) FROM stdin;
+1	admin	logentry
+2	auth	permission
+3	auth	group
+4	auth	user
+5	contenttypes	contenttype
+6	sessions	session
+7	social_django	association
+8	social_django	code
+9	social_django	nonce
+10	social_django	usersocialauth
+11	social_django	partial
+12	accounts	userprofile
+13	tracks	company
+14	tracks	applicationrecord
+15	tracks	emailthread
+16	tracks	emailmessage
+17	jobgpt	jobposting
+\.
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2025-03-09 02:31:42.832925+00
+2	auth	0001_initial	2025-03-09 02:31:43.915953+00
+3	accounts	0001_initial	2025-03-09 02:31:44.107384+00
+4	admin	0001_initial	2025-03-09 02:31:44.388541+00
+5	admin	0002_logentry_remove_auto_add	2025-03-09 02:31:44.431083+00
+6	admin	0003_logentry_add_action_flag_choices	2025-03-09 02:31:44.531968+00
+7	contenttypes	0002_remove_content_type_name	2025-03-09 02:31:44.737173+00
+8	auth	0002_alter_permission_name_max_length	2025-03-09 02:31:44.884333+00
+9	auth	0003_alter_user_email_max_length	2025-03-09 02:31:45.027195+00
+10	auth	0004_alter_user_username_opts	2025-03-09 02:31:45.103626+00
+11	auth	0005_alter_user_last_login_null	2025-03-09 02:31:45.272876+00
+12	auth	0006_require_contenttypes_0002	2025-03-09 02:31:45.332885+00
+13	auth	0007_alter_validators_add_error_messages	2025-03-09 02:31:45.440567+00
+14	auth	0008_alter_user_username_max_length	2025-03-09 02:31:45.606973+00
+15	auth	0009_alter_user_last_name_max_length	2025-03-09 02:31:45.740458+00
+16	auth	0010_alter_group_name_max_length	2025-03-09 02:31:45.869103+00
+17	auth	0011_update_proxy_permissions	2025-03-09 02:31:45.937666+00
+18	auth	0012_alter_user_first_name_max_length	2025-03-09 02:31:46.096485+00
+19	company	0001_initial	2025-03-09 02:31:46.622558+00
+20	company	0002_remove_job_company_remove_job_applicants_and_more	2025-03-09 02:31:46.925339+00
+21	jobgpt	0001_initial	2025-03-09 02:31:47.248155+00
+22	sessions	0001_initial	2025-03-09 02:31:47.457668+00
+23	default	0001_initial	2025-03-09 02:31:47.967503+00
+24	social_auth	0001_initial	2025-03-09 02:31:48.003156+00
+25	default	0002_add_related_name	2025-03-09 02:31:48.047711+00
+26	social_auth	0002_add_related_name	2025-03-09 02:31:48.110042+00
+27	default	0003_alter_email_max_length	2025-03-09 02:31:48.239268+00
+28	social_auth	0003_alter_email_max_length	2025-03-09 02:31:48.270726+00
+29	default	0004_auto_20160423_0400	2025-03-09 02:31:48.341665+00
+30	social_auth	0004_auto_20160423_0400	2025-03-09 02:31:48.413304+00
+31	social_auth	0005_auto_20160727_2333	2025-03-09 02:31:48.546086+00
+32	social_django	0006_partial	2025-03-09 02:31:48.781045+00
+33	social_django	0007_code_timestamp	2025-03-09 02:31:48.969743+00
+34	social_django	0008_partial_timestamp	2025-03-09 02:31:49.1594+00
+35	social_django	0009_auto_20191118_0520	2025-03-09 02:31:49.37249+00
+36	social_django	0010_uid_db_index	2025-03-09 02:31:49.544327+00
+37	social_django	0011_alter_id_fields	2025-03-09 02:31:50.218483+00
+38	social_django	0012_usersocialauth_extra_data_new	2025-03-09 02:31:50.471241+00
+39	social_django	0013_migrate_extra_data	2025-03-09 02:31:50.707758+00
+40	social_django	0014_remove_usersocialauth_extra_data	2025-03-09 02:31:50.889429+00
+41	social_django	0015_rename_extra_data_new_usersocialauth_extra_data	2025-03-09 02:31:51.050263+00
+42	tracks	0001_initial	2025-03-09 02:31:51.687491+00
+43	social_django	0002_add_related_name	2025-03-09 02:31:51.766191+00
+44	social_django	0003_alter_email_max_length	2025-03-09 02:31:51.809213+00
+45	social_django	0001_initial	2025-03-09 02:31:51.839417+00
+46	social_django	0004_auto_20160423_0400	2025-03-09 02:31:51.875293+00
+47	social_django	0005_auto_20160727_2333	2025-03-09 02:31:51.908238+00
+\.
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+\.
+
+
+--
+-- Data for Name: jobgpt_jobposting; Type: TABLE DATA; Schema: public; Owner: postgres

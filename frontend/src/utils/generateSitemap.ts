@@ -2,7 +2,7 @@ import fs from 'fs';
 import { globby } from 'globby';
 import prettier from 'prettier';
 
-const SITE_URL = process.env.VITE_SITE_URL || 'https://offersplus.io';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://offersplus.io';
 
 async function generateSitemap() {
   const pages = await globby([
