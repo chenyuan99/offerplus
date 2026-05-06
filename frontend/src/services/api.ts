@@ -58,13 +58,50 @@ export const authApi = {
     api.post('/api/auth/refresh/', { refresh }),
 };
 
-// Application API endpoints
+// Application API endpoints (using Supabase)
 export const applicationsApi = {
-  list: () => api.get<Application[]>('/api/applications/'),
-  create: (data: Application) => api.post<Application>('/api/applications/', data),
-  get: (id: number) => api.get<Application>(`/api/applications/${id}/`),
-  update: (id: number, data: Application) => api.put<Application>(`/api/applications/${id}/`, data),
-  delete: (id: number) => api.delete(`/api/applications/${id}/`),
+  list: async () => {
+    const { data, error } = await supabase
+      .from('applications')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return { data: data || [] };
+  },
+  create: async (data: Application) => {
+    const { data: result, error } = await supabase
+      .from('applications')
+      .insert([data])
+      .select();
+    if (error) throw error;
+    return { data: result?.[0] };
+  },
+  get: async (id: number) => {
+    const { data, error } = await supabase
+      .from('applications')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error) throw error;
+    return { data };
+  },
+  update: async (id: number, data: Application) => {
+    const { data: result, error } = await supabase
+      .from('applications')
+      .update(data)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return { data: result?.[0] };
+  },
+  delete: async (id: number) => {
+    const { error } = await supabase
+      .from('applications')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return { data: null };
+  },
 };
 
 // Auto-generated from OpenAPI spec
