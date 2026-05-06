@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../services/supabaseAuth';
 
 const AuthCallback = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -11,10 +10,13 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuth = async () => {
       try {
-        const accessToken = searchParams.get('access_token');
-        const refreshToken = searchParams.get('refresh_token');
-        const type = searchParams.get('type');
-        const next = searchParams.get('next') || '/';
+        // Parse hash fragment (OAuth tokens are in #access_token=...)
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+        const type = params.get('type');
+        const next = params.get('next') || '/dashboard';
 
         if (type === 'signup') {
           // Handle new user signup flow if needed
@@ -50,7 +52,7 @@ const AuthCallback = () => {
     };
 
     handleAuth();
-  }, [searchParams, navigate]);
+  }, [navigate]);
 
   if (isLoading) {
     return (
