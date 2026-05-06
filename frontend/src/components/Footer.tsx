@@ -1,6 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle } from 'lucide-react';
+import packageJson from '../../package.json';
+
+const BUILD_TIME = __BUILD_TIME__ || new Date().toISOString();
+const VERSION = packageJson.version;
 
 export function Footer() {
   return (
@@ -12,6 +16,9 @@ export function Footer() {
             <div className="space-y-4">
               <div className="text-sm text-gray-500">
                 <p>&copy; {new Date().getFullYear()} RiseWorks</p>
+                <p className="text-xs text-gray-400 mt-2">
+                  v{VERSION} • {new Date(BUILD_TIME).toLocaleString()}
+                </p>
               </div>
               <div>
                 <a 
