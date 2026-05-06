@@ -229,9 +229,9 @@ export function Dashboard() {
                 <td className="px-6 py-4">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
-                      <img 
-                        className="h-10 w-10 rounded-full" 
-                        src={`https://logo.clearbit.com/${app.company_link ? new URL(app.company_link).hostname.replace('www.', '') : 'company'}.com`} 
+                      <img
+                        className="h-10 w-10 rounded-full"
+                        src={`https://logo.clearbit.com/${app.company_link ? new URL(app.company_link).hostname.replace('www.', '') : 'company'}`}
                         alt="Company"
                         onError={(e) => {
                           // Use a base64-encoded SVG as fallback
