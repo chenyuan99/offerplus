@@ -100,7 +100,7 @@ interface UserProfile {
   username?: string;            // Optional username
   resume_url?: string;          // Public URL to resume file
   resume_name?: string;         // Original resume filename
-  resume: string;               // Resume file path in storage bucket
+  resume?: string;              // Resume file path in storage bucket
   resume_updated_at?: string;   // When resume was last updated
   created_at: string;           // Profile creation timestamp
   updated_at: string;           // Profile update timestamp

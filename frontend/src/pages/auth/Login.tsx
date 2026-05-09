@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabaseAuthService } from '../../services/supabaseAuth';
+import { authService } from '../../services/authService';
 import { toast } from 'react-toastify';
 
 const Login = () => {
@@ -21,13 +21,13 @@ const Login = () => {
     setError(null);
 
     try {
-      const { data, error: authError } = await supabaseAuthService.signInWithMagicLink(email);
-      
+      const { error: authError } = await authService.signInWithMagicLink(email);
+
       if (authError) {
         throw authError;
       }
-      
-      toast.success(data?.message || 'Check your email for the login link!');
+
+      toast.success('Check your email for the login link!');
       // Optionally redirect to a page explaining to check their email
       // navigate('/check-email', { state: { email } });
     } catch (error) {
@@ -119,7 +119,7 @@ const Login = () => {
             <div className="mt-6 grid grid-cols-2 gap-3">
               <div>
                 <button
-                  onClick={() => supabaseAuthService.signInWithProvider('google')}
+                  onClick={() => authService.signInWithProvider('google')}
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
                   <span className="sr-only">Sign in with Google</span>
@@ -130,7 +130,7 @@ const Login = () => {
               </div>
               <div>
                 <button
-                  onClick={() => supabaseAuthService.signInWithProvider('github')}
+                  onClick={() => authService.signInWithProvider('github')}
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
                   <span className="sr-only">Sign in with GitHub</span>
