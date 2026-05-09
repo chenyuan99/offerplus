@@ -10,6 +10,7 @@ import { Profile } from './pages/Profile';
 import { Companies } from './pages/Companies';
 import { CompanyDetail } from './pages/CompanyDetail';
 import { JobGPT } from './pages/JobGPT';
+import { JobPostings } from './pages/JobPostings';
 import { AddApplication } from './pages/AddApplication';
 import EditApplication from './pages/EditApplication';
 import { Privacy } from './pages/Privacy';
@@ -146,6 +147,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <JobGPT />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/job-postings"
+              element={
+                <ProtectedRoute>
+                  <JobPostings />
                 </ProtectedRoute>
               }
             />

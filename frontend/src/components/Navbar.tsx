@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, FileText, BarChart2, LogOut, User as UserIcon, ChevronDown } from 'lucide-react';
+import { Menu, X, FileText, BarChart2, LogOut, User as UserIcon, ChevronDown, Briefcase } from 'lucide-react';
 import { supabase, type User as SupabaseUser } from '../lib/supabase';
 
 interface NavbarProps {
@@ -93,15 +93,28 @@ export function Navbar({
                       Add Application
                     </span>
                   </Link>
-                  <Link 
-                    to="/jobgpt" 
+                  <Link
+                    to="/jobgpt"
                     className={`px-3 py-2 rounded-md text-sm font-medium ${
-                      location.pathname === '/jobgpt' 
-                        ? 'bg-gray-100 text-gray-900' 
+                      location.pathname === '/jobgpt'
+                        ? 'bg-gray-100 text-gray-900'
                         : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
                     }`}
                   >
                     JobGPT
+                  </Link>
+                  <Link
+                    to="/job-postings"
+                    className={`px-3 py-2 rounded-md text-sm font-medium ${
+                      location.pathname === '/job-postings'
+                        ? 'bg-gray-100 text-gray-900'
+                        : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span className="flex items-center">
+                      <Briefcase className="h-4 w-4 mr-2" />
+                      Job Postings
+                    </span>
                   </Link>
                   {/* User Menu */}
                   <div className="relative ml-3" ref={userMenuRef}>
@@ -226,6 +239,20 @@ export function Navbar({
                   onClick={() => setIsMenuOpen(false)}
                 >
                   JobGPT
+                </Link>
+                <Link
+                  to="/job-postings"
+                  className={`block px-3 py-2 text-base font-medium ${
+                    location.pathname === '/job-postings'
+                      ? 'bg-gray-100 text-gray-900'
+                      : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <span className="flex items-center">
+                    <Briefcase className="h-5 w-5 mr-3" />
+                    Job Postings
+                  </span>
                 </Link>
                 <Link
                   to="/profile"
