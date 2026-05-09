@@ -1,113 +1,106 @@
-import axios from 'axios';
-import { authService } from './auth';
 import { supabase } from '../lib/supabase';
-import type { paths } from '../types/api';
+import type {
+  Application,
+  ApplicationInsert,
+  ApplicationUpdate,
+  UserProfile,
+  UserProfileInsert,
+  UserProfileUpdate,
+  Resume,
+  ResumeInsert,
+} from '../types/supabase';
 
-// const API_URL = import.meta.env.VITE_API_URL || 'https://offerplus.io';
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-// Add request interceptor for authentication
-api.interceptors.request.use((config) => {
-  const token = authService.getAccessToken();
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
-
-// Add response interceptor for token refresh
-api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const newToken = await authService.refreshToken();
-      
-      if (newToken) {
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return api(originalRequest);
-      }
-    }
-
-    return Promise.reject(error);
-  }
-);
-
-// Auto-generated from OpenAPI spec
-export type Application = paths['/api/applications/']['get']['responses']['200']['content']['application/json'][number];
-export type ApplicationInput = paths['/api/applications/']['post']['requestBody']['content']['application/json'];
-
-// Auth API endpoints
-export const authApi = {
-  getUser: () => api.get('/api/auth/user/'),
-  login: (credentials: { username: string; password: string }) =>
-    api.post('/api/auth/login/', credentials),
-  register: (userData: { username: string; email: string; password: string; password2: string }) =>
-    api.post('/api/auth/register/', userData),
-  refreshToken: (refresh: string) =>
-    api.post('/api/auth/refresh/', { refresh }),
-};
-
-// Application API endpoints (using Supabase)
+/**
+ * Applications Service
+ * Type-safe methods for managing job applications in Supabase
+ */
 export const applicationsApi = {
-  list: async () => {
+  /**
+   * Fetch all applications for the current user
+   * Ordered by date applied (newest first)
+   * @returns Array of Application records
+   */
+  list: async (): Promise<Application[]> => {
     const { data, error } = await supabase
       .from('applications')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('date_applied', { ascending: false });
     if (error) throw error;
-    return { data: data || [] };
+    return (data as Application[]) || [];
   },
-  create: async (data: Application) => {
+
+  /**
+   * Create a new application
+   * @param data Application data (user_id is added automatically)
+   * @returns Created Application with id and timestamps
+   */
+  create: async (data: ApplicationInsert): Promise<Application> => {
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) throw new Error('User not authenticated');
+
     const { data: result, error } = await supabase
       .from('applications')
-      .insert([data])
-      .select();
+      .insert([{ ...data, user_id: user.id }])
+      .select()
+      .single();
     if (error) throw error;
-    return { data: result?.[0] };
+    return result as Application;
   },
-  get: async (id: number) => {
+
+  /**
+   * Get a single application by ID
+   * @param id Application ID
+   * @returns Application record
+   */
+  get: async (id: number): Promise<Application> => {
     const { data, error } = await supabase
       .from('applications')
       .select('*')
       .eq('id', id)
       .single();
     if (error) throw error;
-    return { data };
+    return data as Application;
   },
-  update: async (id: number, data: Application) => {
+
+  /**
+   * Update an application
+   * @param id Application ID
+   * @param updates Partial application data
+   * @returns Updated Application
+   */
+  update: async (id: number, updates: ApplicationUpdate): Promise<Application> => {
     const { data: result, error } = await supabase
       .from('applications')
-      .update(data)
+      .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', id)
-      .select();
+      .select()
+      .single();
     if (error) throw error;
-    return { data: result?.[0] };
+    return result as Application;
   },
-  delete: async (id: number) => {
+
+  /**
+   * Delete an application
+   * @param id Application ID
+   */
+  delete: async (id: number): Promise<void> => {
     const { error } = await supabase
       .from('applications')
       .delete()
       .eq('id', id);
     if (error) throw error;
-    return { data: null };
   },
 };
 
-// Auto-generated from OpenAPI spec
-export type UserProfile = paths['/api/profile/']['get']['responses']['200']['content']['application/json'];
-
+/**
+ * User Profile Service
+ * Type-safe methods for managing user profiles
+ */
 class ApiService {
+  /**
+   * Get the current user's profile
+   * @returns UserProfile with resume information
+   */
   async getUserProfile(): Promise<UserProfile> {
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error || !user) {
@@ -122,11 +115,13 @@ class ApiService {
       .single();
 
     // If profile doesn't exist, create a basic one from auth user
-    let profile = profileData;
+    let profile = profileData as any;
     if (profileError && (profileError.code === 'PGRST116' || profileError.code === 'PGRST205')) {
       // Profile doesn't exist or table not in schema cache, use defaults
       profile = {
         id: user.id,
+        email: user.email,
+        username: user.user_metadata?.username || user.email?.split('@')[0] || 'user',
         resume: null,
         resume_name: null,
         resume_updated_at: null,
@@ -138,18 +133,22 @@ class ApiService {
 
     return {
       id: profile.id,
-      user: {
-        id: user.id,
-        username: user.user_metadata?.username || user.email?.split('@')[0] || 'user',
-        email: user.email || '',
-      },
+      email: profile.email || user.email || '',
+      username: profile.username || user.user_metadata?.username || user.email?.split('@')[0] || 'user',
       resume: profile.resume || null,
       resume_name: profile.resume_name || null,
       resume_updated_at: profile.resume_updated_at || null,
       resume_url: profile.resume_url || null,
-    };
+      created_at: profile.created_at || new Date().toISOString(),
+      updated_at: profile.updated_at || new Date().toISOString(),
+    } as UserProfile;
   }
 
+  /**
+   * Upload a resume file to storage and update user profile
+   * @param file Resume file to upload
+   * @returns Updated UserProfile
+   */
   async uploadResume(file: File): Promise<UserProfile> {
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error || !user) {
@@ -182,6 +181,7 @@ class ApiService {
         resume_name: file.name,
         resume_updated_at: new Date().toISOString(),
         resume_url: publicUrl,
+        updated_at: new Date().toISOString(),
       });
 
     if (updateError) throw updateError;
@@ -189,6 +189,10 @@ class ApiService {
     return await this.getUserProfile();
   }
 
+  /**
+   * Delete user's resume from storage and profile
+   * @returns Updated UserProfile with resume fields cleared
+   */
   async deleteResume(): Promise<UserProfile> {
     const { data: { user }, error } = await supabase.auth.getUser();
     if (error || !user) {
@@ -202,7 +206,7 @@ class ApiService {
       .single();
 
     if (profileData?.resume) {
-      await supabase.storage.from('resumes').remove([profileData.resume]);
+      await supabase.storage.from('resumes').remove([profileData.resume as string]);
     }
 
     await supabase
@@ -212,6 +216,7 @@ class ApiService {
         resume_name: null,
         resume_url: null,
         resume_updated_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       })
       .eq('id', user.id);
 
@@ -220,5 +225,3 @@ class ApiService {
 }
 
 export const apiService = new ApiService();
-
-export default api;
