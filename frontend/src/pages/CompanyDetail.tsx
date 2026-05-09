@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
-import { ApplicationRecord, Company } from '../types';
-import { jobsDb } from '../lib/db';
+import { supabase } from '../lib/supabase';
 import { CompanyLogo } from '../components/CompanyLogo';
 import { getCompanyDomain } from '../utils/companyLogo';
+
+interface ApplicationRecord {
+  id: string;
+  company_name: string;
+  job_title: string;
+  status: string;
+  application_link?: string;
+}
 
 export function CompanyDetail() {
   const { companyName } = useParams<{ companyName: string }>();
@@ -15,16 +22,19 @@ export function CompanyDetail() {
   useEffect(() => {
     const loadApplications = async () => {
       if (!companyName) return;
-      
+
       try {
         setIsLoading(true);
         setError(null);
-        await jobsDb.init();
-        const allApplications = await jobsDb.getAll();
-        const companyApplications = allApplications.filter(
-          app => app.company_name.toLowerCase() === companyName.toLowerCase()
-        );
-        setApplications(companyApplications);
+
+        const { data, error: fetchError } = await supabase
+          .from('applications')
+          .select('id, company_name, job_title, status, application_link')
+          .eq('company_name', decodeURIComponent(companyName));
+
+        if (fetchError) throw fetchError;
+
+        setApplications((data || []) as ApplicationRecord[]);
       } catch (error: any) {
         console.error('Error loading applications:', error);
         setError('Failed to load applications. Please try again later.');
@@ -123,12 +133,14 @@ export function CompanyDetail() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                        ${application.outcome.includes('REJECT')
+                        ${application.status === 'REJECTED'
                           ? 'bg-red-100 text-red-800'
-                          : 'bg-green-100 text-green-800'
+                          : application.status === 'OFFER'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-blue-100 text-blue-800'
                         }`}
                     >
-                      {application.outcome}
+                      {application.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
