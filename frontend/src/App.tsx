@@ -134,7 +134,7 @@ function AppContent() {
               }
             />
             <Route
-              path="/companies/:id"
+              path="/company/:companyName"
               element={
                 <ProtectedRoute>
                   <CompanyDetail />
