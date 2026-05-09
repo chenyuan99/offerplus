@@ -4,78 +4,32 @@
  */
 
 export interface paths {
-    "/api/auth/login/": {
+    "/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        /**
-         * User login
-         * @description Authenticate user with username and password
-         */
-        post: operations["loginUser"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/auth/register/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+        /** OpenAPI description (this document) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
         };
-        get?: never;
-        put?: never;
-        /**
-         * User registration
-         * @description Create a new user account
-         */
-        post: operations["registerUser"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/auth/refresh/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Refresh access token
-         * @description Get a new access token using refresh token
-         */
-        post: operations["refreshToken"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/auth/user/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get current user
-         * @description Retrieve information about the currently authenticated user
-         */
-        get: operations["getCurrentUser"];
         put?: never;
         post?: never;
         delete?: never;
@@ -84,708 +38,3881 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/applications/": {
+    "/social_auth_partial": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * List all applications
-         * @description Retrieve all job applications for the current user
-         */
-        get: operations["listApplications"];
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_partial.id"];
+                    token?: components["parameters"]["rowFilter.social_auth_partial.token"];
+                    next_step?: components["parameters"]["rowFilter.social_auth_partial.next_step"];
+                    backend?: components["parameters"]["rowFilter.social_auth_partial.backend"];
+                    timestamp?: components["parameters"]["rowFilter.social_auth_partial.timestamp"];
+                    data?: components["parameters"]["rowFilter.social_auth_partial.data"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["social_auth_partial"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_partial"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["social_auth_partial"][];
+                        "text/csv": components["schemas"]["social_auth_partial"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         put?: never;
-        /**
-         * Create a new application
-         * @description Record a new job application
-         */
-        post: operations["createApplication"];
-        delete?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_partial"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_partial.id"];
+                    token?: components["parameters"]["rowFilter.social_auth_partial.token"];
+                    next_step?: components["parameters"]["rowFilter.social_auth_partial.next_step"];
+                    backend?: components["parameters"]["rowFilter.social_auth_partial.backend"];
+                    timestamp?: components["parameters"]["rowFilter.social_auth_partial.timestamp"];
+                    data?: components["parameters"]["rowFilter.social_auth_partial.data"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         options?: never;
         head?: never;
-        patch?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_partial.id"];
+                    token?: components["parameters"]["rowFilter.social_auth_partial.token"];
+                    next_step?: components["parameters"]["rowFilter.social_auth_partial.next_step"];
+                    backend?: components["parameters"]["rowFilter.social_auth_partial.backend"];
+                    timestamp?: components["parameters"]["rowFilter.social_auth_partial.timestamp"];
+                    data?: components["parameters"]["rowFilter.social_auth_partial.data"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_partial"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         trace?: never;
     };
-    "/api/applications/{id}/": {
+    "/auth_group": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get application details
-         * @description Retrieve details of a specific application
-         */
-        get: operations["getApplication"];
-        /**
-         * Update application
-         * @description Update a job application record
-         */
-        put: operations["updateApplication"];
-        post?: never;
-        /**
-         * Delete application
-         * @description Delete a job application record
-         */
-        delete: operations["deleteApplication"];
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_group.id"];
+                    name?: components["parameters"]["rowFilter.auth_group.name"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["auth_group"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_group"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["auth_group"][];
+                        "text/csv": components["schemas"]["auth_group"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_group"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_group.id"];
+                    name?: components["parameters"]["rowFilter.auth_group.name"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         options?: never;
         head?: never;
-        patch?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_group.id"];
+                    name?: components["parameters"]["rowFilter.auth_group.name"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_group"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         trace?: never;
     };
-    "/api/profile/": {
+    "/tracks_emailthread": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get user profile
-         * @description Retrieve the current user's profile information
-         */
-        get: operations["getUserProfile"];
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_emailthread.id"];
+                    thread_id?: components["parameters"]["rowFilter.tracks_emailthread.thread_id"];
+                    subject?: components["parameters"]["rowFilter.tracks_emailthread.subject"];
+                    last_updated?: components["parameters"]["rowFilter.tracks_emailthread.last_updated"];
+                    application_id?: components["parameters"]["rowFilter.tracks_emailthread.application_id"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["tracks_emailthread"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_emailthread"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["tracks_emailthread"][];
+                        "text/csv": components["schemas"]["tracks_emailthread"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         put?: never;
-        post?: never;
-        delete?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_emailthread"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_emailthread.id"];
+                    thread_id?: components["parameters"]["rowFilter.tracks_emailthread.thread_id"];
+                    subject?: components["parameters"]["rowFilter.tracks_emailthread.subject"];
+                    last_updated?: components["parameters"]["rowFilter.tracks_emailthread.last_updated"];
+                    application_id?: components["parameters"]["rowFilter.tracks_emailthread.application_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         options?: never;
         head?: never;
-        /**
-         * Update user profile
-         * @description Update user profile including resume upload/deletion
-         */
-        patch: operations["updateUserProfile"];
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_emailthread.id"];
+                    thread_id?: components["parameters"]["rowFilter.tracks_emailthread.thread_id"];
+                    subject?: components["parameters"]["rowFilter.tracks_emailthread.subject"];
+                    last_updated?: components["parameters"]["rowFilter.tracks_emailthread.last_updated"];
+                    application_id?: components["parameters"]["rowFilter.tracks_emailthread.application_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_emailthread"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         trace?: never;
     };
-    "/api/job-applications/": {
+    "/jobgpt_jobposting": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /**
-         * List job applications (MongoDB)
-         * @description Retrieve advanced job application records with detailed tracking
-         */
-        get: operations["listJobApplications"];
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.jobgpt_jobposting.id"];
+                    company_name?: components["parameters"]["rowFilter.jobgpt_jobposting.company_name"];
+                    locations?: components["parameters"]["rowFilter.jobgpt_jobposting.locations"];
+                    title?: components["parameters"]["rowFilter.jobgpt_jobposting.title"];
+                    date_posted?: components["parameters"]["rowFilter.jobgpt_jobposting.date_posted"];
+                    terms?: components["parameters"]["rowFilter.jobgpt_jobposting.terms"];
+                    active?: components["parameters"]["rowFilter.jobgpt_jobposting.active"];
+                    url?: components["parameters"]["rowFilter.jobgpt_jobposting.url"];
+                    is_visible?: components["parameters"]["rowFilter.jobgpt_jobposting.is_visible"];
+                    source?: components["parameters"]["rowFilter.jobgpt_jobposting.source"];
+                    company_url?: components["parameters"]["rowFilter.jobgpt_jobposting.company_url"];
+                    date_updated?: components["parameters"]["rowFilter.jobgpt_jobposting.date_updated"];
+                    sponsorship?: components["parameters"]["rowFilter.jobgpt_jobposting.sponsorship"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["jobgpt_jobposting"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["jobgpt_jobposting"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["jobgpt_jobposting"][];
+                        "text/csv": components["schemas"]["jobgpt_jobposting"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         put?: never;
-        /**
-         * Create job application
-         * @description Record a new advanced job application with full tracking
-         */
-        post: operations["createJobApplication"];
-        delete?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["jobgpt_jobposting"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.jobgpt_jobposting.id"];
+                    company_name?: components["parameters"]["rowFilter.jobgpt_jobposting.company_name"];
+                    locations?: components["parameters"]["rowFilter.jobgpt_jobposting.locations"];
+                    title?: components["parameters"]["rowFilter.jobgpt_jobposting.title"];
+                    date_posted?: components["parameters"]["rowFilter.jobgpt_jobposting.date_posted"];
+                    terms?: components["parameters"]["rowFilter.jobgpt_jobposting.terms"];
+                    active?: components["parameters"]["rowFilter.jobgpt_jobposting.active"];
+                    url?: components["parameters"]["rowFilter.jobgpt_jobposting.url"];
+                    is_visible?: components["parameters"]["rowFilter.jobgpt_jobposting.is_visible"];
+                    source?: components["parameters"]["rowFilter.jobgpt_jobposting.source"];
+                    company_url?: components["parameters"]["rowFilter.jobgpt_jobposting.company_url"];
+                    date_updated?: components["parameters"]["rowFilter.jobgpt_jobposting.date_updated"];
+                    sponsorship?: components["parameters"]["rowFilter.jobgpt_jobposting.sponsorship"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         options?: never;
         head?: never;
-        patch?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.jobgpt_jobposting.id"];
+                    company_name?: components["parameters"]["rowFilter.jobgpt_jobposting.company_name"];
+                    locations?: components["parameters"]["rowFilter.jobgpt_jobposting.locations"];
+                    title?: components["parameters"]["rowFilter.jobgpt_jobposting.title"];
+                    date_posted?: components["parameters"]["rowFilter.jobgpt_jobposting.date_posted"];
+                    terms?: components["parameters"]["rowFilter.jobgpt_jobposting.terms"];
+                    active?: components["parameters"]["rowFilter.jobgpt_jobposting.active"];
+                    url?: components["parameters"]["rowFilter.jobgpt_jobposting.url"];
+                    is_visible?: components["parameters"]["rowFilter.jobgpt_jobposting.is_visible"];
+                    source?: components["parameters"]["rowFilter.jobgpt_jobposting.source"];
+                    company_url?: components["parameters"]["rowFilter.jobgpt_jobposting.company_url"];
+                    date_updated?: components["parameters"]["rowFilter.jobgpt_jobposting.date_updated"];
+                    sponsorship?: components["parameters"]["rowFilter.jobgpt_jobposting.sponsorship"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["jobgpt_jobposting"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/tracks_company": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_company.id"];
+                    name?: components["parameters"]["rowFilter.tracks_company.name"];
+                    description?: components["parameters"]["rowFilter.tracks_company.description"];
+                    industry?: components["parameters"]["rowFilter.tracks_company.industry"];
+                    website?: components["parameters"]["rowFilter.tracks_company.website"];
+                    logo_url?: components["parameters"]["rowFilter.tracks_company.logo_url"];
+                    location?: components["parameters"]["rowFilter.tracks_company.location"];
+                    created_at?: components["parameters"]["rowFilter.tracks_company.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.tracks_company.updated_at"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["tracks_company"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_company"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["tracks_company"][];
+                        "text/csv": components["schemas"]["tracks_company"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_company"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_company.id"];
+                    name?: components["parameters"]["rowFilter.tracks_company.name"];
+                    description?: components["parameters"]["rowFilter.tracks_company.description"];
+                    industry?: components["parameters"]["rowFilter.tracks_company.industry"];
+                    website?: components["parameters"]["rowFilter.tracks_company.website"];
+                    logo_url?: components["parameters"]["rowFilter.tracks_company.logo_url"];
+                    location?: components["parameters"]["rowFilter.tracks_company.location"];
+                    created_at?: components["parameters"]["rowFilter.tracks_company.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.tracks_company.updated_at"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_company.id"];
+                    name?: components["parameters"]["rowFilter.tracks_company.name"];
+                    description?: components["parameters"]["rowFilter.tracks_company.description"];
+                    industry?: components["parameters"]["rowFilter.tracks_company.industry"];
+                    website?: components["parameters"]["rowFilter.tracks_company.website"];
+                    logo_url?: components["parameters"]["rowFilter.tracks_company.logo_url"];
+                    location?: components["parameters"]["rowFilter.tracks_company.location"];
+                    created_at?: components["parameters"]["rowFilter.tracks_company.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.tracks_company.updated_at"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_company"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.profiles.id"];
+                    resume?: components["parameters"]["rowFilter.profiles.resume"];
+                    resume_name?: components["parameters"]["rowFilter.profiles.resume_name"];
+                    resume_url?: components["parameters"]["rowFilter.profiles.resume_url"];
+                    resume_updated_at?: components["parameters"]["rowFilter.profiles.resume_updated_at"];
+                    created_at?: components["parameters"]["rowFilter.profiles.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.profiles.updated_at"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["profiles"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["profiles"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["profiles"][];
+                        "text/csv": components["schemas"]["profiles"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["profiles"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.profiles.id"];
+                    resume?: components["parameters"]["rowFilter.profiles.resume"];
+                    resume_name?: components["parameters"]["rowFilter.profiles.resume_name"];
+                    resume_url?: components["parameters"]["rowFilter.profiles.resume_url"];
+                    resume_updated_at?: components["parameters"]["rowFilter.profiles.resume_updated_at"];
+                    created_at?: components["parameters"]["rowFilter.profiles.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.profiles.updated_at"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.profiles.id"];
+                    resume?: components["parameters"]["rowFilter.profiles.resume"];
+                    resume_name?: components["parameters"]["rowFilter.profiles.resume_name"];
+                    resume_url?: components["parameters"]["rowFilter.profiles.resume_url"];
+                    resume_updated_at?: components["parameters"]["rowFilter.profiles.resume_updated_at"];
+                    created_at?: components["parameters"]["rowFilter.profiles.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.profiles.updated_at"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["profiles"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/social_auth_association": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_association.id"];
+                    server_url?: components["parameters"]["rowFilter.social_auth_association.server_url"];
+                    handle?: components["parameters"]["rowFilter.social_auth_association.handle"];
+                    secret?: components["parameters"]["rowFilter.social_auth_association.secret"];
+                    issued?: components["parameters"]["rowFilter.social_auth_association.issued"];
+                    lifetime?: components["parameters"]["rowFilter.social_auth_association.lifetime"];
+                    assoc_type?: components["parameters"]["rowFilter.social_auth_association.assoc_type"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["social_auth_association"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_association"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["social_auth_association"][];
+                        "text/csv": components["schemas"]["social_auth_association"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_association"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_association.id"];
+                    server_url?: components["parameters"]["rowFilter.social_auth_association.server_url"];
+                    handle?: components["parameters"]["rowFilter.social_auth_association.handle"];
+                    secret?: components["parameters"]["rowFilter.social_auth_association.secret"];
+                    issued?: components["parameters"]["rowFilter.social_auth_association.issued"];
+                    lifetime?: components["parameters"]["rowFilter.social_auth_association.lifetime"];
+                    assoc_type?: components["parameters"]["rowFilter.social_auth_association.assoc_type"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_association.id"];
+                    server_url?: components["parameters"]["rowFilter.social_auth_association.server_url"];
+                    handle?: components["parameters"]["rowFilter.social_auth_association.handle"];
+                    secret?: components["parameters"]["rowFilter.social_auth_association.secret"];
+                    issued?: components["parameters"]["rowFilter.social_auth_association.issued"];
+                    lifetime?: components["parameters"]["rowFilter.social_auth_association.lifetime"];
+                    assoc_type?: components["parameters"]["rowFilter.social_auth_association.assoc_type"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_association"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/auth_user_groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_user_groups.id"];
+                    user_id?: components["parameters"]["rowFilter.auth_user_groups.user_id"];
+                    group_id?: components["parameters"]["rowFilter.auth_user_groups.group_id"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["auth_user_groups"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_user_groups"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["auth_user_groups"][];
+                        "text/csv": components["schemas"]["auth_user_groups"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_user_groups"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_user_groups.id"];
+                    user_id?: components["parameters"]["rowFilter.auth_user_groups.user_id"];
+                    group_id?: components["parameters"]["rowFilter.auth_user_groups.group_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_user_groups.id"];
+                    user_id?: components["parameters"]["rowFilter.auth_user_groups.user_id"];
+                    group_id?: components["parameters"]["rowFilter.auth_user_groups.group_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_user_groups"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/tracks_emailmessage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_emailmessage.id"];
+                    message_id?: components["parameters"]["rowFilter.tracks_emailmessage.message_id"];
+                    sender?: components["parameters"]["rowFilter.tracks_emailmessage.sender"];
+                    recipient?: components["parameters"]["rowFilter.tracks_emailmessage.recipient"];
+                    subject?: components["parameters"]["rowFilter.tracks_emailmessage.subject"];
+                    body?: components["parameters"]["rowFilter.tracks_emailmessage.body"];
+                    sent_at?: components["parameters"]["rowFilter.tracks_emailmessage.sent_at"];
+                    raw_payload?: components["parameters"]["rowFilter.tracks_emailmessage.raw_payload"];
+                    thread_id?: components["parameters"]["rowFilter.tracks_emailmessage.thread_id"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["tracks_emailmessage"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_emailmessage"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["tracks_emailmessage"][];
+                        "text/csv": components["schemas"]["tracks_emailmessage"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_emailmessage"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_emailmessage.id"];
+                    message_id?: components["parameters"]["rowFilter.tracks_emailmessage.message_id"];
+                    sender?: components["parameters"]["rowFilter.tracks_emailmessage.sender"];
+                    recipient?: components["parameters"]["rowFilter.tracks_emailmessage.recipient"];
+                    subject?: components["parameters"]["rowFilter.tracks_emailmessage.subject"];
+                    body?: components["parameters"]["rowFilter.tracks_emailmessage.body"];
+                    sent_at?: components["parameters"]["rowFilter.tracks_emailmessage.sent_at"];
+                    raw_payload?: components["parameters"]["rowFilter.tracks_emailmessage.raw_payload"];
+                    thread_id?: components["parameters"]["rowFilter.tracks_emailmessage.thread_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_emailmessage.id"];
+                    message_id?: components["parameters"]["rowFilter.tracks_emailmessage.message_id"];
+                    sender?: components["parameters"]["rowFilter.tracks_emailmessage.sender"];
+                    recipient?: components["parameters"]["rowFilter.tracks_emailmessage.recipient"];
+                    subject?: components["parameters"]["rowFilter.tracks_emailmessage.subject"];
+                    body?: components["parameters"]["rowFilter.tracks_emailmessage.body"];
+                    sent_at?: components["parameters"]["rowFilter.tracks_emailmessage.sent_at"];
+                    raw_payload?: components["parameters"]["rowFilter.tracks_emailmessage.raw_payload"];
+                    thread_id?: components["parameters"]["rowFilter.tracks_emailmessage.thread_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_emailmessage"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/tracks_applicationrecord": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_applicationrecord.id"];
+                    outcome?: components["parameters"]["rowFilter.tracks_applicationrecord.outcome"];
+                    job_title?: components["parameters"]["rowFilter.tracks_applicationrecord.job_title"];
+                    company_name?: components["parameters"]["rowFilter.tracks_applicationrecord.company_name"];
+                    application_link?: components["parameters"]["rowFilter.tracks_applicationrecord.application_link"];
+                    OA_date?: components["parameters"]["rowFilter.tracks_applicationrecord.OA_date"];
+                    VO_date?: components["parameters"]["rowFilter.tracks_applicationrecord.VO_date"];
+                    created?: components["parameters"]["rowFilter.tracks_applicationrecord.created"];
+                    updated?: components["parameters"]["rowFilter.tracks_applicationrecord.updated"];
+                    applicant_id?: components["parameters"]["rowFilter.tracks_applicationrecord.applicant_id"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["tracks_applicationrecord"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_applicationrecord"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["tracks_applicationrecord"][];
+                        "text/csv": components["schemas"]["tracks_applicationrecord"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_applicationrecord"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_applicationrecord.id"];
+                    outcome?: components["parameters"]["rowFilter.tracks_applicationrecord.outcome"];
+                    job_title?: components["parameters"]["rowFilter.tracks_applicationrecord.job_title"];
+                    company_name?: components["parameters"]["rowFilter.tracks_applicationrecord.company_name"];
+                    application_link?: components["parameters"]["rowFilter.tracks_applicationrecord.application_link"];
+                    OA_date?: components["parameters"]["rowFilter.tracks_applicationrecord.OA_date"];
+                    VO_date?: components["parameters"]["rowFilter.tracks_applicationrecord.VO_date"];
+                    created?: components["parameters"]["rowFilter.tracks_applicationrecord.created"];
+                    updated?: components["parameters"]["rowFilter.tracks_applicationrecord.updated"];
+                    applicant_id?: components["parameters"]["rowFilter.tracks_applicationrecord.applicant_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_applicationrecord.id"];
+                    outcome?: components["parameters"]["rowFilter.tracks_applicationrecord.outcome"];
+                    job_title?: components["parameters"]["rowFilter.tracks_applicationrecord.job_title"];
+                    company_name?: components["parameters"]["rowFilter.tracks_applicationrecord.company_name"];
+                    application_link?: components["parameters"]["rowFilter.tracks_applicationrecord.application_link"];
+                    OA_date?: components["parameters"]["rowFilter.tracks_applicationrecord.OA_date"];
+                    VO_date?: components["parameters"]["rowFilter.tracks_applicationrecord.VO_date"];
+                    created?: components["parameters"]["rowFilter.tracks_applicationrecord.created"];
+                    updated?: components["parameters"]["rowFilter.tracks_applicationrecord.updated"];
+                    applicant_id?: components["parameters"]["rowFilter.tracks_applicationrecord.applicant_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_applicationrecord"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/social_auth_nonce": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_nonce.id"];
+                    server_url?: components["parameters"]["rowFilter.social_auth_nonce.server_url"];
+                    timestamp?: components["parameters"]["rowFilter.social_auth_nonce.timestamp"];
+                    salt?: components["parameters"]["rowFilter.social_auth_nonce.salt"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["social_auth_nonce"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_nonce"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["social_auth_nonce"][];
+                        "text/csv": components["schemas"]["social_auth_nonce"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_nonce"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_nonce.id"];
+                    server_url?: components["parameters"]["rowFilter.social_auth_nonce.server_url"];
+                    timestamp?: components["parameters"]["rowFilter.social_auth_nonce.timestamp"];
+                    salt?: components["parameters"]["rowFilter.social_auth_nonce.salt"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_nonce.id"];
+                    server_url?: components["parameters"]["rowFilter.social_auth_nonce.server_url"];
+                    timestamp?: components["parameters"]["rowFilter.social_auth_nonce.timestamp"];
+                    salt?: components["parameters"]["rowFilter.social_auth_nonce.salt"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_nonce"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/auth_user_user_permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_user_user_permissions.id"];
+                    user_id?: components["parameters"]["rowFilter.auth_user_user_permissions.user_id"];
+                    permission_id?: components["parameters"]["rowFilter.auth_user_user_permissions.permission_id"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["auth_user_user_permissions"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_user_user_permissions"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["auth_user_user_permissions"][];
+                        "text/csv": components["schemas"]["auth_user_user_permissions"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_user_user_permissions"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_user_user_permissions.id"];
+                    user_id?: components["parameters"]["rowFilter.auth_user_user_permissions.user_id"];
+                    permission_id?: components["parameters"]["rowFilter.auth_user_user_permissions.permission_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_user_user_permissions.id"];
+                    user_id?: components["parameters"]["rowFilter.auth_user_user_permissions.user_id"];
+                    permission_id?: components["parameters"]["rowFilter.auth_user_user_permissions.permission_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_user_user_permissions"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/social_auth_usersocialauth": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_usersocialauth.id"];
+                    provider?: components["parameters"]["rowFilter.social_auth_usersocialauth.provider"];
+                    uid?: components["parameters"]["rowFilter.social_auth_usersocialauth.uid"];
+                    user_id?: components["parameters"]["rowFilter.social_auth_usersocialauth.user_id"];
+                    created?: components["parameters"]["rowFilter.social_auth_usersocialauth.created"];
+                    modified?: components["parameters"]["rowFilter.social_auth_usersocialauth.modified"];
+                    extra_data?: components["parameters"]["rowFilter.social_auth_usersocialauth.extra_data"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["social_auth_usersocialauth"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_usersocialauth"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["social_auth_usersocialauth"][];
+                        "text/csv": components["schemas"]["social_auth_usersocialauth"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_usersocialauth"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_usersocialauth.id"];
+                    provider?: components["parameters"]["rowFilter.social_auth_usersocialauth.provider"];
+                    uid?: components["parameters"]["rowFilter.social_auth_usersocialauth.uid"];
+                    user_id?: components["parameters"]["rowFilter.social_auth_usersocialauth.user_id"];
+                    created?: components["parameters"]["rowFilter.social_auth_usersocialauth.created"];
+                    modified?: components["parameters"]["rowFilter.social_auth_usersocialauth.modified"];
+                    extra_data?: components["parameters"]["rowFilter.social_auth_usersocialauth.extra_data"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_usersocialauth.id"];
+                    provider?: components["parameters"]["rowFilter.social_auth_usersocialauth.provider"];
+                    uid?: components["parameters"]["rowFilter.social_auth_usersocialauth.uid"];
+                    user_id?: components["parameters"]["rowFilter.social_auth_usersocialauth.user_id"];
+                    created?: components["parameters"]["rowFilter.social_auth_usersocialauth.created"];
+                    modified?: components["parameters"]["rowFilter.social_auth_usersocialauth.modified"];
+                    extra_data?: components["parameters"]["rowFilter.social_auth_usersocialauth.extra_data"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_usersocialauth"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/auth_group_permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_group_permissions.id"];
+                    group_id?: components["parameters"]["rowFilter.auth_group_permissions.group_id"];
+                    permission_id?: components["parameters"]["rowFilter.auth_group_permissions.permission_id"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["auth_group_permissions"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_group_permissions"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["auth_group_permissions"][];
+                        "text/csv": components["schemas"]["auth_group_permissions"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_group_permissions"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_group_permissions.id"];
+                    group_id?: components["parameters"]["rowFilter.auth_group_permissions.group_id"];
+                    permission_id?: components["parameters"]["rowFilter.auth_group_permissions.permission_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_group_permissions.id"];
+                    group_id?: components["parameters"]["rowFilter.auth_group_permissions.group_id"];
+                    permission_id?: components["parameters"]["rowFilter.auth_group_permissions.permission_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_group_permissions"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/tracks_job_applicants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_job_applicants.id"];
+                    job_id?: components["parameters"]["rowFilter.tracks_job_applicants.job_id"];
+                    user_id?: components["parameters"]["rowFilter.tracks_job_applicants.user_id"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["tracks_job_applicants"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_job_applicants"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["tracks_job_applicants"][];
+                        "text/csv": components["schemas"]["tracks_job_applicants"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_job_applicants"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_job_applicants.id"];
+                    job_id?: components["parameters"]["rowFilter.tracks_job_applicants.job_id"];
+                    user_id?: components["parameters"]["rowFilter.tracks_job_applicants.user_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_job_applicants.id"];
+                    job_id?: components["parameters"]["rowFilter.tracks_job_applicants.job_id"];
+                    user_id?: components["parameters"]["rowFilter.tracks_job_applicants.user_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_job_applicants"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/social_auth_code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_code.id"];
+                    email?: components["parameters"]["rowFilter.social_auth_code.email"];
+                    code?: components["parameters"]["rowFilter.social_auth_code.code"];
+                    verified?: components["parameters"]["rowFilter.social_auth_code.verified"];
+                    timestamp?: components["parameters"]["rowFilter.social_auth_code.timestamp"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["social_auth_code"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_code"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["social_auth_code"][];
+                        "text/csv": components["schemas"]["social_auth_code"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_code"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_code.id"];
+                    email?: components["parameters"]["rowFilter.social_auth_code.email"];
+                    code?: components["parameters"]["rowFilter.social_auth_code.code"];
+                    verified?: components["parameters"]["rowFilter.social_auth_code.verified"];
+                    timestamp?: components["parameters"]["rowFilter.social_auth_code.timestamp"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.social_auth_code.id"];
+                    email?: components["parameters"]["rowFilter.social_auth_code.email"];
+                    code?: components["parameters"]["rowFilter.social_auth_code.code"];
+                    verified?: components["parameters"]["rowFilter.social_auth_code.verified"];
+                    timestamp?: components["parameters"]["rowFilter.social_auth_code.timestamp"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["social_auth_code"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/tracks_job": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_job.id"];
+                    title?: components["parameters"]["rowFilter.tracks_job.title"];
+                    description?: components["parameters"]["rowFilter.tracks_job.description"];
+                    requirements?: components["parameters"]["rowFilter.tracks_job.requirements"];
+                    location?: components["parameters"]["rowFilter.tracks_job.location"];
+                    salary_range?: components["parameters"]["rowFilter.tracks_job.salary_range"];
+                    employment_type?: components["parameters"]["rowFilter.tracks_job.employment_type"];
+                    status?: components["parameters"]["rowFilter.tracks_job.status"];
+                    created_at?: components["parameters"]["rowFilter.tracks_job.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.tracks_job.updated_at"];
+                    deadline?: components["parameters"]["rowFilter.tracks_job.deadline"];
+                    company_id?: components["parameters"]["rowFilter.tracks_job.company_id"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["tracks_job"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_job"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["tracks_job"][];
+                        "text/csv": components["schemas"]["tracks_job"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_job"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_job.id"];
+                    title?: components["parameters"]["rowFilter.tracks_job.title"];
+                    description?: components["parameters"]["rowFilter.tracks_job.description"];
+                    requirements?: components["parameters"]["rowFilter.tracks_job.requirements"];
+                    location?: components["parameters"]["rowFilter.tracks_job.location"];
+                    salary_range?: components["parameters"]["rowFilter.tracks_job.salary_range"];
+                    employment_type?: components["parameters"]["rowFilter.tracks_job.employment_type"];
+                    status?: components["parameters"]["rowFilter.tracks_job.status"];
+                    created_at?: components["parameters"]["rowFilter.tracks_job.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.tracks_job.updated_at"];
+                    deadline?: components["parameters"]["rowFilter.tracks_job.deadline"];
+                    company_id?: components["parameters"]["rowFilter.tracks_job.company_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.tracks_job.id"];
+                    title?: components["parameters"]["rowFilter.tracks_job.title"];
+                    description?: components["parameters"]["rowFilter.tracks_job.description"];
+                    requirements?: components["parameters"]["rowFilter.tracks_job.requirements"];
+                    location?: components["parameters"]["rowFilter.tracks_job.location"];
+                    salary_range?: components["parameters"]["rowFilter.tracks_job.salary_range"];
+                    employment_type?: components["parameters"]["rowFilter.tracks_job.employment_type"];
+                    status?: components["parameters"]["rowFilter.tracks_job.status"];
+                    created_at?: components["parameters"]["rowFilter.tracks_job.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.tracks_job.updated_at"];
+                    deadline?: components["parameters"]["rowFilter.tracks_job.deadline"];
+                    company_id?: components["parameters"]["rowFilter.tracks_job.company_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["tracks_job"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/auth_user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_user.id"];
+                    password?: components["parameters"]["rowFilter.auth_user.password"];
+                    last_login?: components["parameters"]["rowFilter.auth_user.last_login"];
+                    is_superuser?: components["parameters"]["rowFilter.auth_user.is_superuser"];
+                    username?: components["parameters"]["rowFilter.auth_user.username"];
+                    first_name?: components["parameters"]["rowFilter.auth_user.first_name"];
+                    last_name?: components["parameters"]["rowFilter.auth_user.last_name"];
+                    email?: components["parameters"]["rowFilter.auth_user.email"];
+                    is_staff?: components["parameters"]["rowFilter.auth_user.is_staff"];
+                    is_active?: components["parameters"]["rowFilter.auth_user.is_active"];
+                    date_joined?: components["parameters"]["rowFilter.auth_user.date_joined"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["auth_user"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_user"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["auth_user"][];
+                        "text/csv": components["schemas"]["auth_user"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_user"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_user.id"];
+                    password?: components["parameters"]["rowFilter.auth_user.password"];
+                    last_login?: components["parameters"]["rowFilter.auth_user.last_login"];
+                    is_superuser?: components["parameters"]["rowFilter.auth_user.is_superuser"];
+                    username?: components["parameters"]["rowFilter.auth_user.username"];
+                    first_name?: components["parameters"]["rowFilter.auth_user.first_name"];
+                    last_name?: components["parameters"]["rowFilter.auth_user.last_name"];
+                    email?: components["parameters"]["rowFilter.auth_user.email"];
+                    is_staff?: components["parameters"]["rowFilter.auth_user.is_staff"];
+                    is_active?: components["parameters"]["rowFilter.auth_user.is_active"];
+                    date_joined?: components["parameters"]["rowFilter.auth_user.date_joined"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_user.id"];
+                    password?: components["parameters"]["rowFilter.auth_user.password"];
+                    last_login?: components["parameters"]["rowFilter.auth_user.last_login"];
+                    is_superuser?: components["parameters"]["rowFilter.auth_user.is_superuser"];
+                    username?: components["parameters"]["rowFilter.auth_user.username"];
+                    first_name?: components["parameters"]["rowFilter.auth_user.first_name"];
+                    last_name?: components["parameters"]["rowFilter.auth_user.last_name"];
+                    email?: components["parameters"]["rowFilter.auth_user.email"];
+                    is_staff?: components["parameters"]["rowFilter.auth_user.is_staff"];
+                    is_active?: components["parameters"]["rowFilter.auth_user.is_active"];
+                    date_joined?: components["parameters"]["rowFilter.auth_user.date_joined"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_user"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/auth_permission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_permission.id"];
+                    name?: components["parameters"]["rowFilter.auth_permission.name"];
+                    content_type_id?: components["parameters"]["rowFilter.auth_permission.content_type_id"];
+                    codename?: components["parameters"]["rowFilter.auth_permission.codename"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["auth_permission"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_permission"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["auth_permission"][];
+                        "text/csv": components["schemas"]["auth_permission"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_permission"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_permission.id"];
+                    name?: components["parameters"]["rowFilter.auth_permission.name"];
+                    content_type_id?: components["parameters"]["rowFilter.auth_permission.content_type_id"];
+                    codename?: components["parameters"]["rowFilter.auth_permission.codename"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.auth_permission.id"];
+                    name?: components["parameters"]["rowFilter.auth_permission.name"];
+                    content_type_id?: components["parameters"]["rowFilter.auth_permission.content_type_id"];
+                    codename?: components["parameters"]["rowFilter.auth_permission.codename"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["auth_permission"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/accounts_userprofile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.accounts_userprofile.id"];
+                    resume?: components["parameters"]["rowFilter.accounts_userprofile.resume"];
+                    resume_name?: components["parameters"]["rowFilter.accounts_userprofile.resume_name"];
+                    resume_updated_at?: components["parameters"]["rowFilter.accounts_userprofile.resume_updated_at"];
+                    user_id?: components["parameters"]["rowFilter.accounts_userprofile.user_id"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["accounts_userprofile"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["accounts_userprofile"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["accounts_userprofile"][];
+                        "text/csv": components["schemas"]["accounts_userprofile"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["accounts_userprofile"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.accounts_userprofile.id"];
+                    resume?: components["parameters"]["rowFilter.accounts_userprofile.resume"];
+                    resume_name?: components["parameters"]["rowFilter.accounts_userprofile.resume_name"];
+                    resume_updated_at?: components["parameters"]["rowFilter.accounts_userprofile.resume_updated_at"];
+                    user_id?: components["parameters"]["rowFilter.accounts_userprofile.user_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.accounts_userprofile.id"];
+                    resume?: components["parameters"]["rowFilter.accounts_userprofile.resume"];
+                    resume_name?: components["parameters"]["rowFilter.accounts_userprofile.resume_name"];
+                    resume_updated_at?: components["parameters"]["rowFilter.accounts_userprofile.resume_updated_at"];
+                    user_id?: components["parameters"]["rowFilter.accounts_userprofile.user_id"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["accounts_userprofile"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        trace?: never;
+    };
+    "/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.applications.id"];
+                    job_title?: components["parameters"]["rowFilter.applications.job_title"];
+                    job_link?: components["parameters"]["rowFilter.applications.job_link"];
+                    company_link?: components["parameters"]["rowFilter.applications.company_link"];
+                    status?: components["parameters"]["rowFilter.applications.status"];
+                    date_applied?: components["parameters"]["rowFilter.applications.date_applied"];
+                    created_at?: components["parameters"]["rowFilter.applications.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.applications.updated_at"];
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                    /** @description Ordering */
+                    order?: components["parameters"]["order"];
+                    /** @description Limiting and Pagination */
+                    offset?: components["parameters"]["offset"];
+                    /** @description Limiting and Pagination */
+                    limit?: components["parameters"]["limit"];
+                };
+                header?: {
+                    /** @description Limiting and Pagination */
+                    Range?: components["parameters"]["range"];
+                    /** @description Limiting and Pagination */
+                    "Range-Unit"?: components["parameters"]["rangeUnit"];
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferCount"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["applications"][];
+                        "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["applications"][];
+                        "application/vnd.pgrst.object+json": components["schemas"]["applications"][];
+                        "text/csv": components["schemas"]["applications"][];
+                    };
+                };
+                /** @description Partial Content */
+                206: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: {
+                    /** @description Filtering Columns */
+                    select?: components["parameters"]["select"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferPost"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["applications"];
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.applications.id"];
+                    job_title?: components["parameters"]["rowFilter.applications.job_title"];
+                    job_link?: components["parameters"]["rowFilter.applications.job_link"];
+                    company_link?: components["parameters"]["rowFilter.applications.company_link"];
+                    status?: components["parameters"]["rowFilter.applications.status"];
+                    date_applied?: components["parameters"]["rowFilter.applications.date_applied"];
+                    created_at?: components["parameters"]["rowFilter.applications.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.applications.updated_at"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: {
+                    id?: components["parameters"]["rowFilter.applications.id"];
+                    job_title?: components["parameters"]["rowFilter.applications.job_title"];
+                    job_link?: components["parameters"]["rowFilter.applications.job_link"];
+                    company_link?: components["parameters"]["rowFilter.applications.company_link"];
+                    status?: components["parameters"]["rowFilter.applications.status"];
+                    date_applied?: components["parameters"]["rowFilter.applications.date_applied"];
+                    created_at?: components["parameters"]["rowFilter.applications.created_at"];
+                    updated_at?: components["parameters"]["rowFilter.applications.updated_at"];
+                };
+                header?: {
+                    /** @description Preference */
+                    Prefer?: components["parameters"]["preferReturn"];
+                };
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: components["requestBodies"]["applications"];
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
         trace?: never;
     };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        User: {
-            /** @example 1 */
-            id: number;
-            /** @example john_doe */
-            username: string;
+        social_auth_partial: {
             /**
-             * Format: email
-             * @example john@example.com
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
              */
+            id: number;
+            /** Format: character varying */
+            token: string;
+            /** Format: smallint */
+            next_step: number;
+            /** Format: character varying */
+            backend: string;
+            /** Format: timestamp with time zone */
+            timestamp: string;
+            /** Format: jsonb */
+            data: unknown;
+        };
+        auth_group: {
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            name: string;
+        };
+        tracks_emailthread: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            thread_id: string;
+            /** Format: character varying */
+            subject: string;
+            /** Format: timestamp with time zone */
+            last_updated: string;
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Foreign Key to `tracks_applicationrecord.id`.<fk table='tracks_applicationrecord' column='id'/>
+             */
+            application_id: number;
+        };
+        jobgpt_jobposting: {
+            /**
+             * Format: uuid
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: string;
+            /** Format: character varying */
+            company_name: string;
+            /** Format: character varying[] */
+            locations: string[];
+            /** Format: character varying */
+            title: string;
+            /** Format: bigint */
+            date_posted: number;
+            /** Format: character varying[] */
+            terms: string[];
+            /** Format: boolean */
+            active: boolean;
+            /** Format: character varying */
+            url: string;
+            /** Format: boolean */
+            is_visible: boolean;
+            /** Format: character varying */
+            source: string;
+            /** Format: character varying */
+            company_url: string;
+            /** Format: bigint */
+            date_updated: number;
+            /** Format: character varying */
+            sponsorship: string;
+        };
+        tracks_company: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            name: string;
+            /** Format: text */
+            description: string;
+            /** Format: character varying */
+            industry: string;
+            /** Format: character varying */
+            website: string;
+            /** Format: character varying */
+            logo_url: string;
+            /** Format: character varying */
+            location: string;
+            /** Format: timestamp with time zone */
+            created_at: string;
+            /** Format: timestamp with time zone */
+            updated_at: string;
+        };
+        profiles: {
+            /**
+             * Format: uuid
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: string;
+            /** Format: text */
+            resume?: string;
+            /** Format: text */
+            resume_name?: string;
+            /** Format: text */
+            resume_url?: string;
+            /** Format: timestamp with time zone */
+            resume_updated_at?: string;
+            /**
+             * Format: timestamp with time zone
+             * @default now()
+             */
+            created_at: string;
+            /**
+             * Format: timestamp with time zone
+             * @default now()
+             */
+            updated_at: string;
+        };
+        social_auth_association: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            server_url: string;
+            /** Format: character varying */
+            handle: string;
+            /** Format: character varying */
+            secret: string;
+            /** Format: integer */
+            issued: number;
+            /** Format: integer */
+            lifetime: number;
+            /** Format: character varying */
+            assoc_type: string;
+        };
+        auth_user_groups: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Foreign Key to `auth_user.id`.<fk table='auth_user' column='id'/>
+             */
+            user_id: number;
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Foreign Key to `auth_group.id`.<fk table='auth_group' column='id'/>
+             */
+            group_id: number;
+        };
+        tracks_emailmessage: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            message_id: string;
+            /** Format: character varying */
+            sender: string;
+            /** Format: character varying */
+            recipient: string;
+            /** Format: character varying */
+            subject: string;
+            /** Format: text */
+            body: string;
+            /** Format: timestamp with time zone */
+            sent_at: string;
+            /** Format: jsonb */
+            raw_payload?: unknown;
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Foreign Key to `tracks_emailthread.id`.<fk table='tracks_emailthread' column='id'/>
+             */
+            thread_id: number;
+        };
+        tracks_applicationrecord: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: text */
+            outcome: string;
+            /** Format: text */
+            job_title: string;
+            /** Format: text */
+            company_name: string;
+            /** Format: text */
+            application_link: string;
+            /** Format: timestamp with time zone */
+            OA_date?: string;
+            /** Format: timestamp with time zone */
+            VO_date?: string;
+            /** Format: timestamp with time zone */
+            created: string;
+            /** Format: timestamp with time zone */
+            updated: string;
+            /**
+             * Format: character varying
+             * @description Note:
+             *     This is a Foreign Key to `auth_user.username`.<fk table='auth_user' column='username'/>
+             */
+            applicant_id: string;
+        };
+        social_auth_nonce: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            server_url: string;
+            /** Format: integer */
+            timestamp: number;
+            /** Format: character varying */
+            salt: string;
+        };
+        auth_user_user_permissions: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Foreign Key to `auth_user.id`.<fk table='auth_user' column='id'/>
+             */
+            user_id: number;
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Foreign Key to `auth_permission.id`.<fk table='auth_permission' column='id'/>
+             */
+            permission_id: number;
+        };
+        social_auth_usersocialauth: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            provider: string;
+            /** Format: character varying */
+            uid: string;
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Foreign Key to `auth_user.id`.<fk table='auth_user' column='id'/>
+             */
+            user_id: number;
+            /** Format: timestamp with time zone */
+            created: string;
+            /** Format: timestamp with time zone */
+            modified: string;
+            /** Format: jsonb */
+            extra_data: unknown;
+        };
+        auth_group_permissions: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Foreign Key to `auth_group.id`.<fk table='auth_group' column='id'/>
+             */
+            group_id: number;
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Foreign Key to `auth_permission.id`.<fk table='auth_permission' column='id'/>
+             */
+            permission_id: number;
+        };
+        tracks_job_applicants: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Foreign Key to `tracks_job.id`.<fk table='tracks_job' column='id'/>
+             */
+            job_id: number;
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Foreign Key to `auth_user.id`.<fk table='auth_user' column='id'/>
+             */
+            user_id: number;
+        };
+        social_auth_code: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
             email: string;
+            /** Format: character varying */
+            code: string;
+            /** Format: boolean */
+            verified: boolean;
+            /** Format: timestamp with time zone */
+            timestamp: string;
         };
-        Application: {
-            /** @example 1 */
+        tracks_job: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
             id: number;
-            company: {
-                /** @example 1 */
-                id?: number;
-                /** @example Google */
-                name?: string;
-                description?: string | null;
-                industry?: string | null;
-            };
-            /** @example Software Engineer */
-            job_title: string;
-            /**
-             * @example APPLIED
-             * @enum {string}
-             */
-            status: "APPLIED" | "OA" | "VO" | "OFFER" | "REJECTED";
-            /**
-             * @description Application source (LinkedIn, email, referral, etc.)
-             * @example LinkedIn
-             */
-            source?: string;
-            notes?: string | null;
-            /** @description Associated email ID for tracking */
-            email_id?: string | null;
-            /** Format: date-time */
-            created_at?: string;
-            /** Format: date-time */
-            updated_at?: string;
-        };
-        ApplicationInput: {
-            company: {
-                /** @example 1 */
-                id: number;
-                /** @example Google */
-                name?: string;
-            };
-            /** @example Software Engineer */
-            job_title: string;
-            /**
-             * @example APPLIED
-             * @enum {string}
-             */
-            status: "APPLIED" | "OA" | "VO" | "OFFER" | "REJECTED";
-            /** @example LinkedIn */
-            source?: string;
-            notes?: string | null;
-            email_id?: string | null;
-        };
-        UserProfile: {
-            id: number;
-            user: components["schemas"]["User"];
-            /** @description Resume file path */
-            resume?: string | null;
-            resume_name?: string | null;
-            /** Format: date-time */
-            resume_updated_at?: string | null;
-            /** Format: uri */
-            resume_url?: string | null;
-        };
-        JobApplication: {
-            /**
-             * @description MongoDB ObjectId
-             * @example 69f90cc9052f5e8cf4ac98f8
-             */
-            _id?: string;
-            company?: {
-                /** @example Attention */
-                name?: string;
-                /** @example AI / Sales Intelligence */
-                industry?: string;
-                /** @example Series A */
-                stage?: string;
-                /** @example $17M */
-                funding?: string;
-                location?: {
-                    city?: string;
-                    state?: string;
-                    neighborhood?: string | null;
-                    /** @enum {string} */
-                    remote_policy?: "remote" | "hybrid" | "on-site";
-                    office_days_required?: number | null;
-                };
-            };
-            role?: {
-                /** @example Full Stack Engineer */
-                title?: string;
-                /** @enum {string} */
-                level?: "entry" | "mid" | "senior";
-                department?: string;
-                /** @enum {string} */
-                type?: "full-time" | "part-time" | "contract" | "internship";
-                salary_range?: {
-                    min?: number | null;
-                    max?: number | null;
-                    currency?: string;
-                };
-            };
-            /** @enum {string} */
-            status?: "resume_submitted" | "screening_scheduled" | "screening_done" | "interview_scheduled" | "interview_done" | "offer_received" | "offer_accepted" | "offer_declined" | "rejected" | "ghosted";
-            /** @example recruiter_outreach */
-            source?: string;
-            recruiter?: {
-                name?: string;
-                /** Format: email */
-                email?: string;
-                agency?: string | null;
-            };
-            timeline?: {
-                /** Format: date-time */
-                date?: string;
-                event?: string;
-                /** @enum {string} */
-                direction?: "inbound" | "outbound";
-                medium?: string;
-                notes?: string;
-            }[];
-            meta?: {
-                /** Format: date-time */
-                created_at?: string;
-                /** Format: date-time */
-                updated_at?: string;
-                next_action?: string;
-                /** Format: date-time */
-                next_action_date?: string;
-                /** @enum {string} */
-                priority?: "low" | "medium" | "high";
-                tags?: string[];
-            };
-        };
-        JobApplicationInput: {
-            company: {
-                name: string;
-                industry?: string;
-                stage?: string;
-                funding?: string;
-                location?: Record<string, never>;
-            };
-            role: {
-                title: string;
-                level?: string;
-                department?: string;
-                type?: string;
-            };
-            /** @example resume_submitted */
+            /** Format: character varying */
+            title: string;
+            /** Format: text */
+            description: string;
+            /** Format: text */
+            requirements: string;
+            /** Format: character varying */
+            location: string;
+            /** Format: character varying */
+            salary_range: string;
+            /** Format: character varying */
+            employment_type: string;
+            /** Format: character varying */
             status: string;
-            source?: string;
-            recruiter?: {
-                name?: string;
-                email?: string;
-            };
-            meta?: {
-                priority?: string;
-                tags?: string[];
-            };
+            /** Format: timestamp with time zone */
+            created_at: string;
+            /** Format: timestamp with time zone */
+            updated_at: string;
+            /** Format: timestamp with time zone */
+            deadline?: string;
+            /** Format: bigint */
+            company_id: number;
         };
-        ErrorResponse: {
-            /** @description Error message */
-            detail: string;
-            /** @description Error code */
-            code?: string;
+        auth_user: {
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            password: string;
+            /** Format: timestamp with time zone */
+            last_login?: string;
+            /** Format: boolean */
+            is_superuser: boolean;
+            /** Format: character varying */
+            username: string;
+            /** Format: character varying */
+            first_name: string;
+            /** Format: character varying */
+            last_name: string;
+            /** Format: character varying */
+            email: string;
+            /** Format: boolean */
+            is_staff: boolean;
+            /** Format: boolean */
+            is_active: boolean;
+            /** Format: timestamp with time zone */
+            date_joined: string;
+        };
+        auth_permission: {
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            name: string;
+            /** Format: integer */
+            content_type_id: number;
+            /** Format: character varying */
+            codename: string;
+        };
+        accounts_userprofile: {
+            /**
+             * Format: bigint
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: character varying */
+            resume?: string;
+            /** Format: character varying */
+            resume_name?: string;
+            /** Format: timestamp with time zone */
+            resume_updated_at: string;
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Foreign Key to `auth_user.id`.<fk table='auth_user' column='id'/>
+             */
+            user_id: number;
+        };
+        applications: {
+            /**
+             * Format: integer
+             * @description Note:
+             *     This is a Primary Key.<pk/>
+             */
+            id: number;
+            /** Format: text */
+            job_title?: string;
+            /** Format: text */
+            job_link?: string;
+            /** Format: text */
+            company_link?: string;
+            /** Format: text */
+            status?: string;
+            /** Format: timestamp with time zone */
+            date_applied?: string;
+            /**
+             * Format: timestamp with time zone
+             * @default now()
+             */
+            created_at: string;
+            /**
+             * Format: timestamp with time zone
+             * @default now()
+             */
+            updated_at: string;
         };
     };
-    responses: {
-        /** @description Bad request - invalid input */
-        BadRequestError: {
-            headers: {
-                [name: string]: unknown;
-            };
+    responses: never;
+    parameters: {
+        /** @description Preference */
+        preferParams: string;
+        /** @description Preference */
+        preferReturn: "return=representation" | "return=minimal" | "return=none";
+        /** @description Preference */
+        preferCount: "count=none";
+        /** @description Preference */
+        preferPost: "return=representation" | "return=minimal" | "return=none" | "resolution=ignore-duplicates" | "resolution=merge-duplicates";
+        /** @description Filtering Columns */
+        select: string;
+        /** @description On Conflict */
+        on_conflict: string;
+        /** @description Ordering */
+        order: string;
+        /** @description Limiting and Pagination */
+        range: string;
+        /** @description Limiting and Pagination */
+        rangeUnit: string;
+        /** @description Limiting and Pagination */
+        offset: string;
+        /** @description Limiting and Pagination */
+        limit: string;
+        "rowFilter.social_auth_partial.id": string;
+        "rowFilter.social_auth_partial.token": string;
+        "rowFilter.social_auth_partial.next_step": string;
+        "rowFilter.social_auth_partial.backend": string;
+        "rowFilter.social_auth_partial.timestamp": string;
+        "rowFilter.social_auth_partial.data": string;
+        "rowFilter.auth_group.id": string;
+        "rowFilter.auth_group.name": string;
+        "rowFilter.tracks_emailthread.id": string;
+        "rowFilter.tracks_emailthread.thread_id": string;
+        "rowFilter.tracks_emailthread.subject": string;
+        "rowFilter.tracks_emailthread.last_updated": string;
+        "rowFilter.tracks_emailthread.application_id": string;
+        "rowFilter.jobgpt_jobposting.id": string;
+        "rowFilter.jobgpt_jobposting.company_name": string;
+        "rowFilter.jobgpt_jobposting.locations": string;
+        "rowFilter.jobgpt_jobposting.title": string;
+        "rowFilter.jobgpt_jobposting.date_posted": string;
+        "rowFilter.jobgpt_jobposting.terms": string;
+        "rowFilter.jobgpt_jobposting.active": string;
+        "rowFilter.jobgpt_jobposting.url": string;
+        "rowFilter.jobgpt_jobposting.is_visible": string;
+        "rowFilter.jobgpt_jobposting.source": string;
+        "rowFilter.jobgpt_jobposting.company_url": string;
+        "rowFilter.jobgpt_jobposting.date_updated": string;
+        "rowFilter.jobgpt_jobposting.sponsorship": string;
+        "rowFilter.tracks_company.id": string;
+        "rowFilter.tracks_company.name": string;
+        "rowFilter.tracks_company.description": string;
+        "rowFilter.tracks_company.industry": string;
+        "rowFilter.tracks_company.website": string;
+        "rowFilter.tracks_company.logo_url": string;
+        "rowFilter.tracks_company.location": string;
+        "rowFilter.tracks_company.created_at": string;
+        "rowFilter.tracks_company.updated_at": string;
+        "rowFilter.profiles.id": string;
+        "rowFilter.profiles.resume": string;
+        "rowFilter.profiles.resume_name": string;
+        "rowFilter.profiles.resume_url": string;
+        "rowFilter.profiles.resume_updated_at": string;
+        "rowFilter.profiles.created_at": string;
+        "rowFilter.profiles.updated_at": string;
+        "rowFilter.social_auth_association.id": string;
+        "rowFilter.social_auth_association.server_url": string;
+        "rowFilter.social_auth_association.handle": string;
+        "rowFilter.social_auth_association.secret": string;
+        "rowFilter.social_auth_association.issued": string;
+        "rowFilter.social_auth_association.lifetime": string;
+        "rowFilter.social_auth_association.assoc_type": string;
+        "rowFilter.auth_user_groups.id": string;
+        "rowFilter.auth_user_groups.user_id": string;
+        "rowFilter.auth_user_groups.group_id": string;
+        "rowFilter.tracks_emailmessage.id": string;
+        "rowFilter.tracks_emailmessage.message_id": string;
+        "rowFilter.tracks_emailmessage.sender": string;
+        "rowFilter.tracks_emailmessage.recipient": string;
+        "rowFilter.tracks_emailmessage.subject": string;
+        "rowFilter.tracks_emailmessage.body": string;
+        "rowFilter.tracks_emailmessage.sent_at": string;
+        "rowFilter.tracks_emailmessage.raw_payload": string;
+        "rowFilter.tracks_emailmessage.thread_id": string;
+        "rowFilter.tracks_applicationrecord.id": string;
+        "rowFilter.tracks_applicationrecord.outcome": string;
+        "rowFilter.tracks_applicationrecord.job_title": string;
+        "rowFilter.tracks_applicationrecord.company_name": string;
+        "rowFilter.tracks_applicationrecord.application_link": string;
+        "rowFilter.tracks_applicationrecord.OA_date": string;
+        "rowFilter.tracks_applicationrecord.VO_date": string;
+        "rowFilter.tracks_applicationrecord.created": string;
+        "rowFilter.tracks_applicationrecord.updated": string;
+        "rowFilter.tracks_applicationrecord.applicant_id": string;
+        "rowFilter.social_auth_nonce.id": string;
+        "rowFilter.social_auth_nonce.server_url": string;
+        "rowFilter.social_auth_nonce.timestamp": string;
+        "rowFilter.social_auth_nonce.salt": string;
+        "rowFilter.auth_user_user_permissions.id": string;
+        "rowFilter.auth_user_user_permissions.user_id": string;
+        "rowFilter.auth_user_user_permissions.permission_id": string;
+        "rowFilter.social_auth_usersocialauth.id": string;
+        "rowFilter.social_auth_usersocialauth.provider": string;
+        "rowFilter.social_auth_usersocialauth.uid": string;
+        "rowFilter.social_auth_usersocialauth.user_id": string;
+        "rowFilter.social_auth_usersocialauth.created": string;
+        "rowFilter.social_auth_usersocialauth.modified": string;
+        "rowFilter.social_auth_usersocialauth.extra_data": string;
+        "rowFilter.auth_group_permissions.id": string;
+        "rowFilter.auth_group_permissions.group_id": string;
+        "rowFilter.auth_group_permissions.permission_id": string;
+        "rowFilter.tracks_job_applicants.id": string;
+        "rowFilter.tracks_job_applicants.job_id": string;
+        "rowFilter.tracks_job_applicants.user_id": string;
+        "rowFilter.social_auth_code.id": string;
+        "rowFilter.social_auth_code.email": string;
+        "rowFilter.social_auth_code.code": string;
+        "rowFilter.social_auth_code.verified": string;
+        "rowFilter.social_auth_code.timestamp": string;
+        "rowFilter.tracks_job.id": string;
+        "rowFilter.tracks_job.title": string;
+        "rowFilter.tracks_job.description": string;
+        "rowFilter.tracks_job.requirements": string;
+        "rowFilter.tracks_job.location": string;
+        "rowFilter.tracks_job.salary_range": string;
+        "rowFilter.tracks_job.employment_type": string;
+        "rowFilter.tracks_job.status": string;
+        "rowFilter.tracks_job.created_at": string;
+        "rowFilter.tracks_job.updated_at": string;
+        "rowFilter.tracks_job.deadline": string;
+        "rowFilter.tracks_job.company_id": string;
+        "rowFilter.auth_user.id": string;
+        "rowFilter.auth_user.password": string;
+        "rowFilter.auth_user.last_login": string;
+        "rowFilter.auth_user.is_superuser": string;
+        "rowFilter.auth_user.username": string;
+        "rowFilter.auth_user.first_name": string;
+        "rowFilter.auth_user.last_name": string;
+        "rowFilter.auth_user.email": string;
+        "rowFilter.auth_user.is_staff": string;
+        "rowFilter.auth_user.is_active": string;
+        "rowFilter.auth_user.date_joined": string;
+        "rowFilter.auth_permission.id": string;
+        "rowFilter.auth_permission.name": string;
+        "rowFilter.auth_permission.content_type_id": string;
+        "rowFilter.auth_permission.codename": string;
+        "rowFilter.accounts_userprofile.id": string;
+        "rowFilter.accounts_userprofile.resume": string;
+        "rowFilter.accounts_userprofile.resume_name": string;
+        "rowFilter.accounts_userprofile.resume_updated_at": string;
+        "rowFilter.accounts_userprofile.user_id": string;
+        "rowFilter.applications.id": string;
+        "rowFilter.applications.job_title": string;
+        "rowFilter.applications.job_link": string;
+        "rowFilter.applications.company_link": string;
+        "rowFilter.applications.status": string;
+        "rowFilter.applications.date_applied": string;
+        "rowFilter.applications.created_at": string;
+        "rowFilter.applications.updated_at": string;
+    };
+    requestBodies: {
+        /** @description tracks_company */
+        tracks_company: {
             content: {
-                "application/json": components["schemas"]["ErrorResponse"];
+                "application/json": components["schemas"]["tracks_company"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_company"];
+                "application/vnd.pgrst.object+json": components["schemas"]["tracks_company"];
+                "text/csv": components["schemas"]["tracks_company"];
             };
         };
-        /** @description Unauthorized - missing or invalid authentication */
-        UnauthorizedError: {
-            headers: {
-                [name: string]: unknown;
-            };
+        /** @description auth_permission */
+        auth_permission: {
             content: {
-                "application/json": components["schemas"]["ErrorResponse"];
+                "application/json": components["schemas"]["auth_permission"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_permission"];
+                "application/vnd.pgrst.object+json": components["schemas"]["auth_permission"];
+                "text/csv": components["schemas"]["auth_permission"];
             };
         };
-        /** @description Resource not found */
-        NotFoundError: {
-            headers: {
-                [name: string]: unknown;
-            };
+        /** @description auth_group_permissions */
+        auth_group_permissions: {
             content: {
-                "application/json": components["schemas"]["ErrorResponse"];
+                "application/json": components["schemas"]["auth_group_permissions"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_group_permissions"];
+                "application/vnd.pgrst.object+json": components["schemas"]["auth_group_permissions"];
+                "text/csv": components["schemas"]["auth_group_permissions"];
+            };
+        };
+        /** @description social_auth_code */
+        social_auth_code: {
+            content: {
+                "application/json": components["schemas"]["social_auth_code"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_code"];
+                "application/vnd.pgrst.object+json": components["schemas"]["social_auth_code"];
+                "text/csv": components["schemas"]["social_auth_code"];
+            };
+        };
+        /** @description social_auth_usersocialauth */
+        social_auth_usersocialauth: {
+            content: {
+                "application/json": components["schemas"]["social_auth_usersocialauth"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_usersocialauth"];
+                "application/vnd.pgrst.object+json": components["schemas"]["social_auth_usersocialauth"];
+                "text/csv": components["schemas"]["social_auth_usersocialauth"];
+            };
+        };
+        /** @description auth_group */
+        auth_group: {
+            content: {
+                "application/json": components["schemas"]["auth_group"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_group"];
+                "application/vnd.pgrst.object+json": components["schemas"]["auth_group"];
+                "text/csv": components["schemas"]["auth_group"];
+            };
+        };
+        /** @description social_auth_nonce */
+        social_auth_nonce: {
+            content: {
+                "application/json": components["schemas"]["social_auth_nonce"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_nonce"];
+                "application/vnd.pgrst.object+json": components["schemas"]["social_auth_nonce"];
+                "text/csv": components["schemas"]["social_auth_nonce"];
+            };
+        };
+        /** @description tracks_applicationrecord */
+        tracks_applicationrecord: {
+            content: {
+                "application/json": components["schemas"]["tracks_applicationrecord"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_applicationrecord"];
+                "application/vnd.pgrst.object+json": components["schemas"]["tracks_applicationrecord"];
+                "text/csv": components["schemas"]["tracks_applicationrecord"];
+            };
+        };
+        /** @description auth_user_groups */
+        auth_user_groups: {
+            content: {
+                "application/json": components["schemas"]["auth_user_groups"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_user_groups"];
+                "application/vnd.pgrst.object+json": components["schemas"]["auth_user_groups"];
+                "text/csv": components["schemas"]["auth_user_groups"];
+            };
+        };
+        /** @description tracks_job_applicants */
+        tracks_job_applicants: {
+            content: {
+                "application/json": components["schemas"]["tracks_job_applicants"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_job_applicants"];
+                "application/vnd.pgrst.object+json": components["schemas"]["tracks_job_applicants"];
+                "text/csv": components["schemas"]["tracks_job_applicants"];
+            };
+        };
+        /** @description accounts_userprofile */
+        accounts_userprofile: {
+            content: {
+                "application/json": components["schemas"]["accounts_userprofile"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["accounts_userprofile"];
+                "application/vnd.pgrst.object+json": components["schemas"]["accounts_userprofile"];
+                "text/csv": components["schemas"]["accounts_userprofile"];
+            };
+        };
+        /** @description jobgpt_jobposting */
+        jobgpt_jobposting: {
+            content: {
+                "application/json": components["schemas"]["jobgpt_jobposting"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["jobgpt_jobposting"];
+                "application/vnd.pgrst.object+json": components["schemas"]["jobgpt_jobposting"];
+                "text/csv": components["schemas"]["jobgpt_jobposting"];
+            };
+        };
+        /** @description social_auth_partial */
+        social_auth_partial: {
+            content: {
+                "application/json": components["schemas"]["social_auth_partial"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_partial"];
+                "application/vnd.pgrst.object+json": components["schemas"]["social_auth_partial"];
+                "text/csv": components["schemas"]["social_auth_partial"];
+            };
+        };
+        /** @description tracks_emailthread */
+        tracks_emailthread: {
+            content: {
+                "application/json": components["schemas"]["tracks_emailthread"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_emailthread"];
+                "application/vnd.pgrst.object+json": components["schemas"]["tracks_emailthread"];
+                "text/csv": components["schemas"]["tracks_emailthread"];
+            };
+        };
+        /** @description profiles */
+        profiles: {
+            content: {
+                "application/json": components["schemas"]["profiles"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["profiles"];
+                "application/vnd.pgrst.object+json": components["schemas"]["profiles"];
+                "text/csv": components["schemas"]["profiles"];
+            };
+        };
+        /** @description social_auth_association */
+        social_auth_association: {
+            content: {
+                "application/json": components["schemas"]["social_auth_association"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["social_auth_association"];
+                "application/vnd.pgrst.object+json": components["schemas"]["social_auth_association"];
+                "text/csv": components["schemas"]["social_auth_association"];
+            };
+        };
+        /** @description tracks_emailmessage */
+        tracks_emailmessage: {
+            content: {
+                "application/json": components["schemas"]["tracks_emailmessage"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_emailmessage"];
+                "application/vnd.pgrst.object+json": components["schemas"]["tracks_emailmessage"];
+                "text/csv": components["schemas"]["tracks_emailmessage"];
+            };
+        };
+        /** @description auth_user_user_permissions */
+        auth_user_user_permissions: {
+            content: {
+                "application/json": components["schemas"]["auth_user_user_permissions"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_user_user_permissions"];
+                "application/vnd.pgrst.object+json": components["schemas"]["auth_user_user_permissions"];
+                "text/csv": components["schemas"]["auth_user_user_permissions"];
+            };
+        };
+        /** @description tracks_job */
+        tracks_job: {
+            content: {
+                "application/json": components["schemas"]["tracks_job"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["tracks_job"];
+                "application/vnd.pgrst.object+json": components["schemas"]["tracks_job"];
+                "text/csv": components["schemas"]["tracks_job"];
+            };
+        };
+        /** @description auth_user */
+        auth_user: {
+            content: {
+                "application/json": components["schemas"]["auth_user"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["auth_user"];
+                "application/vnd.pgrst.object+json": components["schemas"]["auth_user"];
+                "text/csv": components["schemas"]["auth_user"];
+            };
+        };
+        /** @description applications */
+        applications: {
+            content: {
+                "application/json": components["schemas"]["applications"];
+                "application/vnd.pgrst.object+json;nulls=stripped": components["schemas"]["applications"];
+                "application/vnd.pgrst.object+json": components["schemas"]["applications"];
+                "text/csv": components["schemas"]["applications"];
             };
         };
     };
-    parameters: never;
-    requestBodies: never;
     headers: never;
     pathItems: never;
 }
 export type $defs = Record<string, never>;
-export interface operations {
-    loginUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @example john_doe */
-                    username: string;
-                    /**
-                     * Format: password
-                     * @example securepassword123
-                     */
-                    password: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Login successful */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /**
-                         * @description JWT access token
-                         * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                         */
-                        access?: string;
-                        /**
-                         * @description JWT refresh token
-                         * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                         */
-                        refresh?: string;
-                        user?: components["schemas"]["User"];
-                    };
-                };
-            };
-            400: components["responses"]["BadRequestError"];
-            401: components["responses"]["UnauthorizedError"];
-        };
-    };
-    registerUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @example john_doe */
-                    username: string;
-                    /**
-                     * Format: email
-                     * @example john@example.com
-                     */
-                    email: string;
-                    /**
-                     * Format: password
-                     * @example securepassword123
-                     */
-                    password: string;
-                    /**
-                     * Format: password
-                     * @description Password confirmation
-                     * @example securepassword123
-                     */
-                    password2: string;
-                };
-            };
-        };
-        responses: {
-            /** @description User registered successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["User"];
-                };
-            };
-            400: components["responses"]["BadRequestError"];
-        };
-    };
-    refreshToken: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /**
-                     * @description Refresh token
-                     * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                     */
-                    refresh: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Token refreshed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @description New JWT access token */
-                        access?: string;
-                    };
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-        };
-    };
-    getCurrentUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current user information */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["User"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-        };
-    };
-    listApplications: {
-        parameters: {
-            query?: {
-                /** @description Filter by application status */
-                status?: "APPLIED" | "OA" | "VO" | "OFFER" | "REJECTED";
-                /** @description Filter by company ID */
-                company_id?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of applications */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Application"][];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-        };
-    };
-    createApplication: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApplicationInput"];
-            };
-        };
-        responses: {
-            /** @description Application created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Application"];
-                };
-            };
-            400: components["responses"]["BadRequestError"];
-            401: components["responses"]["UnauthorizedError"];
-        };
-    };
-    getApplication: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Application ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Application details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Application"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-            404: components["responses"]["NotFoundError"];
-        };
-    };
-    updateApplication: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Application ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApplicationInput"];
-            };
-        };
-        responses: {
-            /** @description Application updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Application"];
-                };
-            };
-            400: components["responses"]["BadRequestError"];
-            401: components["responses"]["UnauthorizedError"];
-            404: components["responses"]["NotFoundError"];
-        };
-    };
-    deleteApplication: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Application ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Application deleted successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            401: components["responses"]["UnauthorizedError"];
-            404: components["responses"]["NotFoundError"];
-        };
-    };
-    getUserProfile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description User profile */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserProfile"];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-        };
-    };
-    updateUserProfile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /**
-                     * Format: binary
-                     * @description Resume file upload
-                     */
-                    resume?: string;
-                    /** @description Resume name (set to null to delete) */
-                    resume_name?: string | null;
-                };
-                "application/json": {
-                    /** @description Resume file path or null to delete */
-                    resume?: string | null;
-                    resume_name?: string | null;
-                };
-            };
-        };
-        responses: {
-            /** @description Profile updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserProfile"];
-                };
-            };
-            400: components["responses"]["BadRequestError"];
-            401: components["responses"]["UnauthorizedError"];
-        };
-    };
-    listJobApplications: {
-        parameters: {
-            query?: {
-                /** @description Filter by application status */
-                status?: "resume_submitted" | "screening_scheduled" | "screening_done" | "interview_scheduled" | "interview_done" | "offer_received" | "offer_accepted" | "offer_declined" | "rejected" | "ghosted";
-                /** @description Filter by company name */
-                company_name?: string;
-                /** @description Filter by priority level */
-                priority?: "low" | "medium" | "high";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description List of job applications */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JobApplication"][];
-                };
-            };
-            401: components["responses"]["UnauthorizedError"];
-        };
-    };
-    createJobApplication: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["JobApplicationInput"];
-            };
-        };
-        responses: {
-            /** @description Job application created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JobApplication"];
-                };
-            };
-            400: components["responses"]["BadRequestError"];
-            401: components["responses"]["UnauthorizedError"];
-        };
-    };
-}
+export type operations = Record<string, never>;
