@@ -37,7 +37,7 @@ export interface UserProfile {
   username?: string;
   resume_url?: string;
   resume_name?: string;
-  resume: string; // resume file path in storage
+  resume?: string; // resume file path in storage
   resume_updated_at?: string;
   created_at: string;
   updated_at: string;
