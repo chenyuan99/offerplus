@@ -1,18 +1,22 @@
 /**
- * Applications and Storage Service
- * Handles all database operations for job applications and resume storage
+ * Core Application Services
  *
- * For authentication and profile management, use authService instead.
+ * Provides clean separation of concerns across three main domains:
+ * - applicationsService: Job application management (CRUD operations)
+ * - profileService: User profile management (wrapped from authService)
+ * - storageService: Resume file upload/download management
+ *
+ * For authentication operations (sign in, sign up, etc.), use authService instead.
  *
  * @example
  * ```typescript
- * import { applicationsApi, storageService } from '@/services/api';
+ * import { applicationsService, profileService, storageService } from '@/services/api';
  *
- * // List applications
- * const apps = await applicationsApi.list();
+ * // List all applications
+ * const apps = await applicationsService.list();
  *
- * // Create application
- * const newApp = await applicationsApi.create({
+ * // Create new application
+ * const newApp = await applicationsService.create({
  *   job_title: 'Senior Engineer',
  *   company_name: 'Google',
  *   job_link: 'https://google.com/jobs/123',
@@ -21,10 +25,14 @@
  *   date_applied: new Date().toISOString(),
  * });
  *
+ * // Get user profile
+ * const profile = await profileService.getProfile();
+ * console.log('Resume URL:', profile.resume_url);
+ *
  * // Upload resume
  * const file = new File(['resume content'], 'resume.pdf');
  * const result = await storageService.uploadResume(file);
- * console.log('Resume URL:', result.publicUrl);
+ * console.log('Resume uploaded:', result.publicUrl);
  * ```
  */
 
@@ -33,17 +41,18 @@ import type {
   Application,
   ApplicationInsert,
   ApplicationUpdate,
+  UserProfile,
 } from '../types/supabase';
 
 // ============================================================================
-// Applications Service
+// Applications Service - Job Application Management
 // ============================================================================
 
 /**
- * Applications API
- * Type-safe methods for managing job applications
+ * Applications Service
+ * Type-safe CRUD operations for managing job applications
  */
-export const applicationsApi = {
+export const applicationsService = {
   /**
    * Fetch all applications for the current user
    * Ordered by date applied (newest first)
@@ -200,7 +209,7 @@ export const applicationsApi = {
     id: number,
     status: Application['status']
   ): Promise<Application> => {
-    return applicationsApi.update(id, {
+    return applicationsService.update(id, {
       status,
       notes: undefined,
     });
@@ -208,7 +217,51 @@ export const applicationsApi = {
 };
 
 // ============================================================================
-// Storage Service (Resumes)
+// Profile Service - User Profile Management
+// ============================================================================
+
+/**
+ * Profile Service
+ * Manages user profile information and resume metadata
+ *
+ * @example
+ * ```typescript
+ * // Get user profile
+ * const profile = await profileService.getProfile();
+ * console.log('Username:', profile.username);
+ * console.log('Resume URL:', profile.resume_url);
+ *
+ * // Update profile
+ * const updated = await profileService.updateProfile({
+ *   username: 'john_doe',
+ * });
+ * ```
+ */
+export const profileService = {
+  /**
+   * Get the current user's profile
+   * @returns User profile or null if not found
+   */
+  getProfile: async (): Promise<UserProfile | null> => {
+    const { authService } = await import('./authService');
+    return authService.getProfile();
+  },
+
+  /**
+   * Update the current user's profile
+   * @param updates Profile updates
+   * @returns Updated profile
+   */
+  updateProfile: async (
+    updates: Partial<Omit<UserProfile, 'id' | 'created_at' | 'updated_at'>>
+  ) => {
+    const { authService } = await import('./authService');
+    return authService.updateProfile(updates);
+  },
+};
+
+// ============================================================================
+// Storage Service - Resume File Management
 // ============================================================================
 
 interface UploadResult {
@@ -304,11 +357,16 @@ export const storageService = {
 };
 
 // ============================================================================
-// Legacy Support - Alias for backward compatibility
+// Backward Compatibility - Aliases and Deprecated Exports
 // ============================================================================
 
 /**
- * @deprecated Use authService.uploadResume() instead
+ * @deprecated Use applicationsService instead
+ */
+export const applicationsApi = applicationsService;
+
+/**
+ * @deprecated Use profileService instead
  */
 export class ApiService {
   /**
