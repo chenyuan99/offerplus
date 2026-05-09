@@ -64,7 +64,13 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
     setError(null);
 
     try {
-      await applicationsApi.create(formData as Application);
+      const submitData = {
+        ...formData,
+        company_name: (formData as any).company?.name,
+      };
+      delete (submitData as any).company;
+
+      await applicationsApi.create(submitData as Application);
       if (onSuccess) {
         onSuccess();
       } else {
