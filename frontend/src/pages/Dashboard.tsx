@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Plus, Search, BarChart3, ChevronLeft, ChevronRight, Mail } from 'lucide-react';
+import { Plus, Search, BarChart3, ChevronLeft, ChevronRight, Mail, AlertCircle } from 'lucide-react';
 import { ApplicationRecord, ApplicationStatus } from '../types';
 import { supabase } from '../lib/supabase';
 
@@ -12,7 +12,7 @@ export function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [showStats, setShowStats] = useState(false);
+  const [showStats, setShowStats] = useState(true);
   const [syncing, setSyncing] = useState(false);
 
   const location = useLocation();
@@ -29,9 +29,9 @@ export function Dashboard() {
         .from('applications')
         .select('*')
         .order('date_applied', { ascending: false });
-      
+
       if (error) throw error;
-      
+
       setApplications(data || []);
       setError(null);
     } catch (err) {
@@ -45,8 +45,6 @@ export function Dashboard() {
   const syncGmail = async () => {
     setSyncing(true);
     try {
-      // For now, we'll just refresh the applications
-      // In the future, you might want to implement Gmail sync with Supabase Edge Functions
       await fetchApplications();
     } catch (err) {
       setError('Failed to sync with Gmail');
@@ -83,8 +81,11 @@ export function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#861F41] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading applications...</p>
+        </div>
       </div>
     );
   }
@@ -123,199 +124,248 @@ export function Dashboard() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search applications..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+    <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900">Job Applications</h1>
+          <p className="mt-2 text-gray-600">Track and manage your job applications</p>
+        </div>
+
+        {/* Error Alert */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
+            <AlertCircle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
+            <p className="text-red-800">{error}</p>
           </div>
-          
-          <button
-            onClick={() => setShowStats(!showStats)}
-            className="p-2 text-gray-600 hover:text-gray-900"
-            title="Toggle Statistics"
-          >
-            <BarChart3 className="h-5 w-5" />
-          </button>
+        )}
+
+        {/* Stats Section */}
+        {showStats && applications.length > 0 && (
+          <div className="mb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
+              <StatCard label="Total" value={stats.total} color="gray" />
+              <StatCard label="Active" value={stats.active} color="blue" />
+              <StatCard label="Applied" value={stats.applied} color="purple" />
+              <StatCard label="OA" value={stats.oa} color="indigo" />
+              <StatCard label="VO" value={stats.vo} color="yellow" />
+              <StatCard label="Offers" value={stats.offer} color="green" />
+              <StatCard label="Rejected" value={stats.rejected} color="red" />
+            </div>
+          </div>
+        )}
+
+        {/* Toolbar */}
+        <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="w-full sm:flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search by job title or company..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-3 w-full sm:w-auto">
+            <button
+              onClick={() => setShowStats(!showStats)}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              title="Toggle Statistics"
+            >
+              <BarChart3 className="h-5 w-5" />
+              <span className="hidden sm:inline">Stats</span>
+            </button>
+
+            <button
+              onClick={syncGmail}
+              disabled={syncing}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50 transition-colors"
+            >
+              <Mail className="h-5 w-5" />
+              <span className="text-sm font-medium">{syncing ? 'Syncing...' : 'Sync'}</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/add-application')}
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-[#861F41] text-white rounded-md hover:bg-[#621531] transition-colors font-medium"
+            >
+              <Plus className="h-5 w-5" />
+              <span>Add</span>
+            </button>
+          </div>
         </div>
 
-        <div className="flex gap-4">
-          <button
-            onClick={syncGmail}
-            disabled={syncing}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          >
-            <Mail className="h-5 w-5" />
-            {syncing ? 'Syncing...' : 'Sync Gmail'}
-          </button>
-
-          <button
-            onClick={() => navigate('/add-application')}
-            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
-          >
-            <Plus className="h-5 w-5" />
-            Add Application
-          </button>
+        {/* Applications Table */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          {paginatedApplications.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Company & Position
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Applied On
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {paginatedApplications.map((app) => (
+                    <tr key={app.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="flex-shrink-0 h-10 w-10">
+                            <img
+                              className="h-10 w-10 rounded-full object-cover"
+                              src={app.company_link ? (() => {
+                                const hostname = new URL(app.company_link).hostname.replace('www.', '');
+                                const domain = hostname.split('.').slice(-2).join('.');
+                                return `https://img.logo.dev/${domain}`;
+                              })() : 'https://img.logo.dev/company'}
+                              alt="Company"
+                              onError={(e) => {
+                                const svg = `data:image/svg+xml;base64,${btoa(
+                                  `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="%23e5e7eb">
+                                    <rect width="40" height="40" rx="20" />
+                                    <text x="50%" y="50%" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" dy=".3em" fill="%239ca3af">
+                                      ${app.company_link ? new URL(app.company_link).hostname.substring(0, 2).toUpperCase() : 'CO'}
+                                    </text>
+                                  </svg>`
+                                )}`;
+                                (e.target as HTMLImageElement).src = svg;
+                              }}
+                            />
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {app.company_link ? (
+                                <a href={app.company_link} target="_blank" rel="noopener noreferrer" className="hover:text-[#861F41] transition-colors">
+                                  {new URL(app.company_link).hostname.replace('www.', '')}
+                                </a>
+                              ) : 'Company'}
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              {app.job_link ? (
+                                <a href={app.job_link} target="_blank" rel="noopener noreferrer" className="hover:text-[#861F41] transition-colors">
+                                  {app.job_title}
+                                </a>
+                              ) : app.job_title}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(app.status)}`}>
+                          {app.status.replace('_', ' ').charAt(0).toUpperCase() + app.status.replace('_', ' ').slice(1)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {new Date(app.date_applied).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <button
+                          onClick={() => navigate(`/edit/${app.id}`)}
+                          className="text-[#861F41] font-medium hover:text-[#621531] transition-colors"
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="p-12 text-center">
+              <p className="text-gray-600 mb-4">No applications found</p>
+              <button
+                onClick={() => navigate('/add-application')}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#861F41] text-white rounded-md hover:bg-[#621531] transition-colors font-medium"
+              >
+                <Plus className="h-5 w-5" />
+                Add your first application
+              </button>
+            </div>
+          )}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-6 flex justify-between items-center">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 px-4 py-2 text-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed hover:bg-gray-100 rounded-md transition-colors"
+            >
+              <ChevronLeft className="h-5 w-5" />
+              <span>Previous</span>
+            </button>
+
+            <span className="text-sm text-gray-600">
+              Page <span className="font-semibold">{currentPage}</span> of <span className="font-semibold">{totalPages}</span>
+            </span>
+
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-1 px-4 py-2 text-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed hover:bg-gray-100 rounded-md transition-colors"
+            >
+              <span>Next</span>
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
 
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-          {error}
-        </div>
-      )}
+interface StatCardProps {
+  label: string;
+  value: number;
+  color: 'gray' | 'blue' | 'purple' | 'indigo' | 'yellow' | 'green' | 'red';
+}
 
-      {showStats && (
-        <div className="mb-8 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-          <div className="p-4 bg-gray-100 rounded-lg">
-            <div className="text-sm text-gray-600">Total</div>
-            <div className="text-2xl font-semibold">{stats.total}</div>
-          </div>
-          <div className="p-4 bg-blue-100 rounded-lg">
-            <div className="text-sm text-blue-600">Active</div>
-            <div className="text-2xl font-semibold">{stats.active}</div>
-          </div>
-          <div className="p-4 bg-purple-100 rounded-lg">
-            <div className="text-sm text-purple-600">Applied</div>
-            <div className="text-2xl font-semibold">{stats.applied}</div>
-          </div>
-          <div className="p-4 bg-indigo-100 rounded-lg">
-            <div className="text-sm text-indigo-600">OA</div>
-            <div className="text-2xl font-semibold">{stats.oa}</div>
-          </div>
-          <div className="p-4 bg-yellow-100 rounded-lg">
-            <div className="text-sm text-yellow-600">VO</div>
-            <div className="text-2xl font-semibold">{stats.vo}</div>
-          </div>
-          <div className="p-4 bg-green-100 rounded-lg">
-            <div className="text-sm text-green-600">Offers</div>
-            <div className="text-2xl font-semibold">{stats.offer}</div>
-          </div>
-          <div className="p-4 bg-red-100 rounded-lg">
-            <div className="text-sm text-red-600">Rejected</div>
-            <div className="text-2xl font-semibold">{stats.rejected}</div>
-          </div>
-        </div>
-      )}
+function StatCard({ label, value, color }: StatCardProps) {
+  const colorClasses = {
+    gray: 'bg-gray-50 border-gray-200',
+    blue: 'bg-blue-50 border-blue-200',
+    purple: 'bg-purple-50 border-purple-200',
+    indigo: 'bg-indigo-50 border-indigo-200',
+    yellow: 'bg-yellow-50 border-yellow-200',
+    green: 'bg-green-50 border-green-200',
+    red: 'bg-red-50 border-red-200',
+  };
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Company & Position
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Applied On
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {paginatedApplications.map((app) => (
-              <tr key={app.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 h-10 w-10">
-                      <img
-                        className="h-10 w-10 rounded-full"
-                        src={app.company_link ? (() => {
-                          const hostname = new URL(app.company_link).hostname.replace('www.', '');
-                          const domain = hostname.split('.').slice(-2).join('.');
-                          const token = import.meta.env.NEXT_PUBLIC_LOGO_DEV_TOKEN ? `?token=${import.meta.env.NEXT_PUBLIC_LOGO_DEV_TOKEN}` : '';
-                          return `https://img.logo.dev/${domain}${token}`;
-                        })() : 'https://img.logo.dev/company'}
-                        alt="Company"
-                        onError={(e) => {
-                          const svg = `data:image/svg+xml;base64,${btoa(
-                            `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="%23e5e7eb">
-                              <rect width="40" height="40" rx="20" />
-                              <text x="50%" y="50%" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" dy=".3em" fill="%239ca3af">
-                                ${app.company_link ? new URL(app.company_link).hostname.substring(0, 2).toUpperCase() : 'CO'}
-                              </text>
-                            </svg>`
-                          )}`;
-                          (e.target as HTMLImageElement).src = svg;
-                        }}
-                      />
-                    </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">
-                        {app.company_link ? (
-                          <a href={app.company_link} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                            {new URL(app.company_link).hostname.replace('www.', '')}
-                          </a>
-                        ) : 'Company'}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {app.job_link ? (
-                          <a href={app.job_link} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                            {app.job_title}
-                          </a>
-                        ) : app.job_title}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(app.status)}`}>
-                    {app.status.replace('_', ' ')}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {new Date(app.date_applied).toLocaleDateString()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <button
-                    onClick={() => navigate(`/edit/${app.id}`)}
-                    className="text-indigo-600 hover:text-indigo-900"
-                  >
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+  const textClasses = {
+    gray: 'text-gray-700',
+    blue: 'text-blue-700',
+    purple: 'text-purple-700',
+    indigo: 'text-indigo-700',
+    yellow: 'text-yellow-700',
+    green: 'text-green-700',
+    red: 'text-red-700',
+  };
 
-      {totalPages > 1 && (
-        <div className="mt-4 flex justify-between items-center">
-          <button
-            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className="flex items-center gap-1 px-3 py-1 text-gray-600 disabled:text-gray-400"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Previous
-          </button>
-          
-          <span className="text-sm text-gray-600">
-            Page {currentPage} of {totalPages}
-          </span>
-          
-          <button
-            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-            className="flex items-center gap-1 px-3 py-1 text-gray-600 disabled:text-gray-400"
-          >
-            Next
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
-      )}
+  return (
+    <div className={`${colorClasses[color]} border rounded-lg p-4`}>
+      <p className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-1">{label}</p>
+      <p className={`${textClasses[color]} text-2xl font-bold`}>{value}</p>
     </div>
   );
 }
