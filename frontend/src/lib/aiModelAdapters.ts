@@ -54,6 +54,12 @@ export class OpenAIAdapter extends AIModelAdapter {
     };
 
     try {
+      console.log('Making OpenAI API request...', {
+        model: this.mapModelName(model),
+        apiKeyPrefix: this.config.apiKey?.substring(0, 20) + '...',
+        hasApiKey: !!this.config.apiKey
+      });
+
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -67,17 +73,26 @@ export class OpenAIAdapter extends AIModelAdapter {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage = errorData.error?.message || response.statusText;
 
+        console.error('OpenAI API Error Response:', {
+          status: response.status,
+          statusText: response.statusText,
+          errorData: errorData,
+          fullError: errorMessage
+        });
+
         // Provide more specific error messages
         if (response.status === 401) {
-          throw new Error(`OpenAI Authentication Error: Invalid or expired API key. Please check your VITE_OPENAI_API_KEY configuration.`);
+          throw new Error(`OpenAI Authentication Error: Invalid or expired API key. Please check your VITE_OPENAI_API_KEY configuration. Details: ${errorMessage}`);
         } else if (response.status === 429) {
-          throw new Error(`OpenAI Rate Limit: Too many requests. Please try again later.`);
+          throw new Error(`OpenAI Rate Limit: Too many requests. Please try again later. Details: ${errorMessage}`);
         } else if (response.status === 500) {
-          throw new Error(`OpenAI Server Error: The OpenAI API is experiencing issues. Please try again.`);
+          throw new Error(`OpenAI Server Error: The OpenAI API is experiencing issues. Please try again. Details: ${errorMessage}`);
         } else {
           throw new Error(`OpenAI API error (${response.status}): ${errorMessage}`);
         }
       }
+
+      console.log('OpenAI API request successful');
 
       const data = await response.json();
       
