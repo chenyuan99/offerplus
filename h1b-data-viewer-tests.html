@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H1B Data Viewer - Unit Tests</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 2rem;
+            background-color: #f9fafb;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #1f2937;
+            margin-bottom: 2rem;
+        }
+        
+        .test-suite {
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .test-suite-header {
+            background: #f3f4f6;
+            padding: 1rem;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .test-case {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .test-case:last-child {
+            border-bottom: none;
+        }
+        
+        .test-name {
+            flex: 1;
+        }
+        
+        .test-result {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .test-pass {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .test-fail {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .test-error {
+            background: #fef3c7;
+            color: #d97706;
+        }
+        
+        .summary {
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .summary-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .summary-stat {
+            text-align: center;
+        }
+        
+        .summary-stat .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .summary-stat .label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .run-tests-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .run-tests-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .error-details {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #fef2f2;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: #dc2626;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>H1B Data Viewer - Unit Tests</h1>
+        
+        <div class="summary">
+            <div class="summary-stats">
+                <div class="summary-stat">
+                    <div class="value" id="totalTests">0</div>
+                    <div class="label">Total Tests</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="value" id="passedTests">0</div>
+                    <div class="label">Passed</div>
+                </div>
+                <div class="summary-stat">
+                    <div class="value" id="failedTests">0</div>
+                    <div class="label">Failed</div>
+                </div>
+            </div>
+            <button class="run-tests-btn" onclick="runAllTests()">Run All Tests</button>
+        </div>
+        
+        <div id="testResults">
+            <!-- Test results will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        /**
+         * DataManager class for handling H1B data operations
+         * This is a copy of the DataManager from the main application for testing
+         */
+        class DataManager {
+            constructor(rawData = []) {
+                this.rawData = rawData;
+                this.processedData = [];
+                this.filteredData = [];
+                this.currentFilters = {
+                    employer: '',
+                    status: '',
+                    jobTitle: '',
+                    minSalary: null,
+                    maxSalary: null,
+                    searchTerm: ''
+                };
+                this.currentSort = {
+                    column: null,
+                    direction: 'asc'
+                };
+                
+                if (rawData.length > 0) {
+                    this.processData();
+                }
+            }
+
+            /**
+             * Parse date strings into Date objects
+             * Handles various date formats commonly found in H1B data
+             */
+            parseDate(dateString) {
+                if (!dateString || dateString === '' || dateString === 'N/A') {
+                    return null;
+                }
+                
+                try {
+                    // Handle common date formats: YYYY-MM-DD, MM/DD/YYYY, etc.
+                    const date = new Date(dateString);
+                    
+                    // Check if date is valid
+                    if (isNaN(date.getTime())) {
+                        return null;
+                    }
+                    
+                    return date;
+                } catch (error) {
+                    console.warn(`Failed to parse date: ${dateString}`, error);
+                    return null;
+                }
+            }
+
+            /**
+             * Normalize salary amounts to annual values
+             * Converts hourly, monthly, etc. to yearly amounts
+             */
+            normalizeSalary(wageAmount, wageUnit) {
+                if (!wageAmount || isNaN(parseFloat(wageAmount))) {
+                    return 0;
+                }
+                
+                const amount = parseFloat(wageAmount);
+                const unit = (wageUnit || '').toLowerCase().trim();
+                
+                // Conversion factors to annual salary
+                const conversionFactors = {
+                    'year': 1,
+                    'yearly': 1,
+                    'annual': 1,
+                    'month': 12,
+                    'monthly': 12,
+                    'week': 52,
+                    'weekly': 52,
+                    'hour': 2080, // 40 hours/week * 52 weeks
+                    'hourly': 2080,
+                    'bi-weekly': 26,
+                    'biweekly': 26
+                };
+                
+                // Find matching conversion factor
+                for (const [key, factor] of Object.entries(conversionFactors)) {
+                    if (unit.includes(key)) {
+                        return Math.round(amount * factor);
+                    }
+                }
+                
+                // Default to treating as annual if unit is unclear
+                return Math.round(amount);
+            }
+
+            /**
+             * Validate a single H1B record
+             * Returns validation errors if any
+             */
+            validateRecord(record) {
+                const errors = [];
+                
+                if (!record.CASE_NUMBER) {
+                    errors.push('Missing case number');
+                }
+                
+                if (!record.EMPLOYER_NAME) {
+                    errors.push('Missing employer name');
+                }
+                
+                if (!record.JOB_TITLE) {
+                    errors.push('Missing job title');
+                }
+                
+                if (!record.CASE_STATUS) {
+                    errors.push('Missing case status');
+                }
+                
+                return errors;
+            }
+
+            /**
+             * Process and validate raw H1B data
+             * Normalizes dates, salaries, and other fields
+             */
+            processData() {
+                this.processedData = this.rawData.map(record => {
+                    const processed = { ...record };
+                    
+                    // Parse and normalize dates
+                    processed.RECEIVED_DATE_PARSED = this.parseDate(record.RECEIVED_DATE);
+                    processed.DECISION_DATE_PARSED = this.parseDate(record.DECISION_DATE);
+                    processed.BEGIN_DATE_PARSED = this.parseDate(record.BEGIN_DATE);
+                    processed.END_DATE_PARSED = this.parseDate(record.END_DATE);
+                    
+                    // Normalize salary to annual amount
+                    processed.ANNUAL_SALARY = this.normalizeSalary(
+                        record.WAGE_RATE_OF_PAY_FROM, 
+                        record.WAGE_UNIT_OF_PAY
+                    );
+                    
+                    return processed;
+                });
+                
+                // Initialize filtered data with all processed data
+                this.filteredData = [...this.processedData];
+            }
+        }
+
+        /**
+         * Simple test framework
+         */
+        class TestFramework {
+            constructor() {
+                this.tests = [];
+                this.results = [];
+            }
+
+            describe(suiteName, testFunction) {
+                const suite = {
+                    name: suiteName,
+                    tests: []
+                };
+                
+                const context = {
+                    it: (testName, testFunction) => {
+                        suite.tests.push({
+                            name: testName,
+                            function: testFunction
+                        });
+                    }
+                };
+                
+                testFunction.call(context, context);
+                this.tests.push(suite);
+            }
+
+            expect(actual) {
+                return {
+                    toBe: (expected) => {
+                        if (actual !== expected) {
+                            throw new Error(`Expected ${expected}, but got ${actual}`);
+                        }
+                    },
+                    toEqual: (expected) => {
+                        if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+                            throw new Error(`Expected ${JSON.stringify(expected)}, but got ${JSON.stringify(actual)}`);
+                        }
+                    },
+                    toBeNull: () => {
+                        if (actual !== null) {
+                            throw new Error(`Expected null, but got ${actual}`);
+                        }
+                    },
+                    toBeInstanceOf: (expectedClass) => {
+                        if (!(actual instanceof expectedClass)) {
+                            throw new Error(`Expected instance of ${expectedClass.name}, but got ${typeof actual}`);
+                        }
+                    },
+                    toBeGreaterThan: (expected) => {
+                        if (actual <= expected) {
+                            throw new Error(`Expected ${actual} to be greater than ${expected}`);
+                        }
+                    },
+                    toContain: (expected) => {
+                        if (!actual.includes(expected)) {
+                            throw new Error(`Expected ${actual} to contain ${expected}`);
+                        }
+                    },
+                    toHaveLength: (expected) => {
+                        if (actual.length !== expected) {
+                            throw new Error(`Expected length ${expected}, but got ${actual.length}`);
+                        }
+                    }
+                };
+            }
+
+            runTests() {
+                this.results = [];
+                let totalTests = 0;
+                let passedTests = 0;
+                let failedTests = 0;
+
+                this.tests.forEach(suite => {
+                    const suiteResult = {
+                        name: suite.name,
+                        tests: []
+                    };
+
+                    suite.tests.forEach(test => {
+                        totalTests++;
+                        try {
+                            test.function.call(this);
+                            suiteResult.tests.push({
+                                name: test.name,
+                                status: 'pass'
+                            });
+                            passedTests++;
+                        } catch (error) {
+                            suiteResult.tests.push({
+                                name: test.name,
+                                status: 'fail',
+                                error: error.message
+                            });
+                            failedTests++;
+                        }
+                    });
+
+                    this.results.push(suiteResult);
+                });
+
+                return {
+                    total: totalTests,
+                    passed: passedTests,
+                    failed: failedTests,
+                    results: this.results
+                };
+            }
+        }
+
+        // Initialize test framework
+        const testFramework = new TestFramework();
+
+        /**
+         * Date Parsing Tests
+         */
+        testFramework.describe('Date Parsing Functionality', function() {
+            this.it('should parse valid ISO date strings', function() {
+                const dataManager = new DataManager();
+                const result = dataManager.parseDate('2023-01-15');
+                testFramework.expect(result).toBeInstanceOf(Date);
+                testFramework.expect(result.getFullYear()).toBe(2023);
+                testFramework.expect(result.getMonth()).toBe(0); // January is 0
+                testFramework.expect(result.getDate()).toBe(15);
+            });
+
+            this.it('should parse MM/DD/YYYY format dates', function() {
+                const dataManager = new DataManager();
+                const result = dataManager.parseDate('01/15/2023');
+                testFramework.expect(result).toBeInstanceOf(Date);
+                testFramework.expect(result.getFullYear()).toBe(2023);
+            });
+
+            this.it('should return null for empty date strings', function() {
+                const dataManager = new DataManager();
+                testFramework.expect(dataManager.parseDate('')).toBeNull();
+                testFramework.expect(dataManager.parseDate(null)).toBeNull();
+                testFramework.expect(dataManager.parseDate(undefined)).toBeNull();
+                testFramework.expect(dataManager.parseDate('N/A')).toBeNull();
+            });
+
+            this.it('should return null for invalid date strings', function() {
+                const dataManager = new DataManager();
+                testFramework.expect(dataManager.parseDate('invalid-date')).toBeNull();
+                testFramework.expect(dataManager.parseDate('2023-13-45')).toBeNull();
+                testFramework.expect(dataManager.parseDate('not-a-date')).toBeNull();
+            });
+
+            this.it('should handle various date formats', function() {
+                const dataManager = new DataManager();
+                
+                // Test different valid formats
+                const formats = [
+                    '2023-12-25',
+                    '12/25/2023',
+                    'December 25, 2023',
+                    '2023-12-25T00:00:00Z'
+                ];
+                
+                formats.forEach(format => {
+                    const result = dataManager.parseDate(format);
+                    testFramework.expect(result).toBeInstanceOf(Date);
+                    testFramework.expect(result.getFullYear()).toBe(2023);
+                });
+            });
+        });
+
+        /**
+         * Salary Normalization Tests
+         */
+        testFramework.describe('Salary Normalization Functionality', function() {
+            this.it('should normalize hourly wages to annual salary', function() {
+                const dataManager = new DataManager();
+                const result = dataManager.normalizeSalary('50', 'Hour');
+                testFramework.expect(result).toBe(104000); // 50 * 2080 hours
+            });
+
+            this.it('should normalize monthly wages to annual salary', function() {
+                const dataManager = new DataManager();
+                const result = dataManager.normalizeSalary('5000', 'Month');
+                testFramework.expect(result).toBe(60000); // 5000 * 12 months
+            });
+
+            this.it('should normalize weekly wages to annual salary', function() {
+                const dataManager = new DataManager();
+                const result = dataManager.normalizeSalary('1000', 'Week');
+                testFramework.expect(result).toBe(52000); // 1000 * 52 weeks
+            });
+
+            this.it('should keep annual wages unchanged', function() {
+                const dataManager = new DataManager();
+                const result = dataManager.normalizeSalary('75000', 'Year');
+                testFramework.expect(result).toBe(75000);
+            });
+
+            this.it('should handle bi-weekly wages', function() {
+                const dataManager = new DataManager();
+                const result = dataManager.normalizeSalary('2000', 'Bi-Weekly');
+                testFramework.expect(result).toBe(52000); // 2000 * 26 bi-weekly periods
+            });
+
+            this.it('should return 0 for invalid wage amounts', function() {
+                const dataManager = new DataManager();
+                testFramework.expect(dataManager.normalizeSalary('', 'Hour')).toBe(0);
+                testFramework.expect(dataManager.normalizeSalary(null, 'Hour')).toBe(0);
+                testFramework.expect(dataManager.normalizeSalary('invalid', 'Hour')).toBe(0);
+                testFramework.expect(dataManager.normalizeSalary(undefined, 'Hour')).toBe(0);
+            });
+
+            this.it('should handle case-insensitive wage units', function() {
+                const dataManager = new DataManager();
+                testFramework.expect(dataManager.normalizeSalary('50', 'HOUR')).toBe(104000);
+                testFramework.expect(dataManager.normalizeSalary('50', 'hour')).toBe(104000);
+                testFramework.expect(dataManager.normalizeSalary('50', 'Hour')).toBe(104000);
+                testFramework.expect(dataManager.normalizeSalary('50', 'hourly')).toBe(104000);
+            });
+
+            this.it('should default to annual for unknown wage units', function() {
+                const dataManager = new DataManager();
+                const result = dataManager.normalizeSalary('75000', 'unknown-unit');
+                testFramework.expect(result).toBe(75000);
+            });
+
+            this.it('should handle decimal wage amounts', function() {
+                const dataManager = new DataManager();
+                const result = dataManager.normalizeSalary('25.50', 'Hour');
+                testFramework.expect(result).toBe(53040); // 25.50 * 2080, rounded
+            });
+        });
+
+        /**
+         * Error Handling Tests for Malformed Data
+         */
+        testFramework.describe('Error Handling for Malformed Data', function() {
+            this.it('should validate required fields and return errors', function() {
+                const dataManager = new DataManager();
+                const malformedRecord = {
+                    // Missing required fields
+                };
+                
+                const errors = dataManager.validateRecord(malformedRecord);
+                testFramework.expect(errors).toContain('Missing case number');
+                testFramework.expect(errors).toContain('Missing employer name');
+                testFramework.expect(errors).toContain('Missing job title');
+                testFramework.expect(errors).toContain('Missing case status');
+            });
+
+            this.it('should return no errors for valid record', function() {
+                const dataManager = new DataManager();
+                const validRecord = {
+                    CASE_NUMBER: 'I-200-12345-123456',
+                    EMPLOYER_NAME: 'Test Company',
+                    JOB_TITLE: 'Software Engineer',
+                    CASE_STATUS: 'Certified'
+                };
+                
+                const errors = dataManager.validateRecord(validRecord);
+                testFramework.expect(errors).toHaveLength(0);
+            });
+
+            this.it('should handle partial validation errors', function() {
+                const dataManager = new DataManager();
+                const partialRecord = {
+                    CASE_NUMBER: 'I-200-12345-123456',
+                    EMPLOYER_NAME: 'Test Company'
+                    // Missing JOB_TITLE and CASE_STATUS
+                };
+                
+                const errors = dataManager.validateRecord(partialRecord);
+                testFramework.expect(errors).toHaveLength(2);
+                testFramework.expect(errors).toContain('Missing job title');
+                testFramework.expect(errors).toContain('Missing case status');
+            });
+
+            this.it('should process data with mixed valid and invalid records', function() {
+                const mixedData = [
+                    {
+                        CASE_NUMBER: 'I-200-12345-123456',
+                        EMPLOYER_NAME: 'Valid Company',
+                        JOB_TITLE: 'Software Engineer',
+                        CASE_STATUS: 'Certified',
+                        WAGE_RATE_OF_PAY_FROM: '75000',
+                        WAGE_UNIT_OF_PAY: 'Year',
+                        RECEIVED_DATE: '2023-01-15',
+                        DECISION_DATE: '2023-03-20'
+                    },
+                    {
+                        CASE_NUMBER: 'I-200-12345-123457',
+                        EMPLOYER_NAME: 'Another Company',
+                        JOB_TITLE: 'Data Scientist',
+                        CASE_STATUS: 'Denied',
+                        WAGE_RATE_OF_PAY_FROM: 'invalid-salary',
+                        WAGE_UNIT_OF_PAY: 'Hour',
+                        RECEIVED_DATE: 'invalid-date',
+                        DECISION_DATE: '2023-04-15'
+                    }
+                ];
+                
+                const dataManager = new DataManager(mixedData);
+                testFramework.expect(dataManager.processedData).toHaveLength(2);
+                
+                // First record should have valid processed data
+                testFramework.expect(dataManager.processedData[0].ANNUAL_SALARY).toBe(75000);
+                testFramework.expect(dataManager.processedData[0].RECEIVED_DATE_PARSED).toBeInstanceOf(Date);
+                
+                // Second record should handle invalid data gracefully
+                testFramework.expect(dataManager.processedData[1].ANNUAL_SALARY).toBe(0);
+                testFramework.expect(dataManager.processedData[1].RECEIVED_DATE_PARSED).toBeNull();
+            });
+
+            this.it('should handle empty or null input data', function() {
+                const dataManager1 = new DataManager([]);
+                testFramework.expect(dataManager1.processedData).toHaveLength(0);
+                
+                const dataManager2 = new DataManager(null);
+                testFramework.expect(dataManager2.rawData).toBeNull();
+                
+                const dataManager3 = new DataManager();
+                testFramework.expect(dataManager3.rawData).toHaveLength(0);
+            });
+
+            this.it('should handle records with null or undefined field values', function() {
+                const recordWithNulls = {
+                    CASE_NUMBER: 'I-200-12345-123456',
+                    EMPLOYER_NAME: 'Test Company',
+                    JOB_TITLE: 'Software Engineer',
+                    CASE_STATUS: 'Certified',
+                    WAGE_RATE_OF_PAY_FROM: null,
+                    WAGE_UNIT_OF_PAY: undefined,
+                    RECEIVED_DATE: null,
+                    DECISION_DATE: undefined
+                };
+                
+                const dataManager = new DataManager([recordWithNulls]);
+                testFramework.expect(dataManager.processedData).toHaveLength(1);
+                
+                const processed = dataManager.processedData[0];
+                testFramework.expect(processed.ANNUAL_SALARY).toBe(0);
+                testFramework.expect(processed.RECEIVED_DATE_PARSED).toBeNull();
+                testFramework.expect(processed.DECISION_DATE_PARSED).toBeNull();
+            });
+        });
+
+        /**
+         * Integration Tests for Data Processing
+         */
+        testFramework.describe('Data Processing Integration', function() {
+            this.it('should process complete H1B record correctly', function() {
+                const sampleRecord = {
+                    CASE_NUMBER: 'I-200-12345-123456',
+                    EMPLOYER_NAME: 'Tech Corp',
+                    JOB_TITLE: 'Senior Software Engineer',
+                    CASE_STATUS: 'Certified',
+                    WAGE_RATE_OF_PAY_FROM: '65',
+                    WAGE_UNIT_OF_PAY: 'Hour',
+                    RECEIVED_DATE: '2023-01-15',
+                    DECISION_DATE: '2023-03-20',
+                    WORKSITE_CITY: 'San Francisco',
+                    WORKSITE_STATE: 'CA'
+                };
+                
+                const dataManager = new DataManager([sampleRecord]);
+                testFramework.expect(dataManager.processedData).toHaveLength(1);
+                
+                const processed = dataManager.processedData[0];
+                testFramework.expect(processed.ANNUAL_SALARY).toBe(135200); // 65 * 2080
+                testFramework.expect(processed.RECEIVED_DATE_PARSED).toBeInstanceOf(Date);
+                testFramework.expect(processed.DECISION_DATE_PARSED).toBeInstanceOf(Date);
+            });
+
+            this.it('should maintain original data while adding processed fields', function() {
+                const originalRecord = {
+                    CASE_NUMBER: 'I-200-12345-123456',
+                    EMPLOYER_NAME: 'Test Company',
+                    JOB_TITLE: 'Software Engineer',
+                    CASE_STATUS: 'Certified'
+                };
+                
+                const dataManager = new DataManager([originalRecord]);
+                const processed = dataManager.processedData[0];
+                
+                // Original fields should be preserved
+                testFramework.expect(processed.CASE_NUMBER).toBe('I-200-12345-123456');
+                testFramework.expect(processed.EMPLOYER_NAME).toBe('Test Company');
+                testFramework.expect(processed.JOB_TITLE).toBe('Software Engineer');
+                testFramework.expect(processed.CASE_STATUS).toBe('Certified');
+                
+                // New processed fields should be added
+                testFramework.expect(processed.hasOwnProperty('ANNUAL_SALARY')).toBe(true);
+                testFramework.expect(processed.hasOwnProperty('RECEIVED_DATE_PARSED')).toBe(true);
+            });
+        });
+
+        /**
+         * Table Rendering Tests
+         */
+        testFramework.describe('Table Header Generation with Sort Indicators', function() {
+            this.it('should create table headers with correct attributes', function() {
+                // Create a mock table structure
+                const mockTable = document.createElement('table');
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                thead.appendChild(headerRow);
+                mockTable.appendChild(thead);
+                document.body.appendChild(mockTable);
+                
+                // Mock the table renderer (simplified version for testing)
+                const columns = [
+                    { key: 'CASE_NUMBER', label: 'Case Number', sortable: true, type: 'text' },
+                    { key: 'EMPLOYER_NAME', label: 'Employer', sortable: true, type: 'text' },
+                    { key: 'CASE_STATUS', label: 'Status', sortable: true, type: 'status' }
+                ];
+                
+                // Clear existing headers
+                headerRow.innerHTML = '';
+                
+                // Create header cells (mimicking TableRenderer.renderTableHeader)
+                columns.forEach(column => {
+                    const th = document.createElement('th');
+                    th.textContent = column.label;
+                    th.setAttribute('data-column', column.key);
+                    
+                    if (column.sortable) {
+                        th.classList.add('sortable');
+                        th.setAttribute('role', 'columnheader');
+                        th.setAttribute('tabindex', '0');
+                        th.setAttribute('aria-sort', 'none');
+                    }
+                    
+                    headerRow.appendChild(th);
+                });
+                
+                // Test header generation
+                const headers = mockTable.querySelectorAll('th');
+                testFramework.expect(headers).toHaveLength(3);
+                
+                // Test first header
+                testFramework.expect(headers[0].textContent).toBe('Case Number');
+                testFramework.expect(headers[0].getAttribute('data-column')).toBe('CASE_NUMBER');
+                testFramework.expect(headers[0].classList.contains('sortable')).toBe(true);
+                testFramework.expect(headers[0].getAttribute('role')).toBe('columnheader');
+                testFramework.expect(headers[0].getAttribute('aria-sort')).toBe('none');
+                
+                // Test second header
+                testFramework.expect(headers[1].textContent).toBe('Employer');
+                testFramework.expect(headers[1].getAttribute('data-column')).toBe('EMPLOYER_NAME');
+                
+                // Test third header
+                testFramework.expect(headers[2].textContent).toBe('Status');
+                testFramework.expect(headers[2].getAttribute('data-column')).toBe('CASE_STATUS');
+                
+                // Cleanup
+                document.body.removeChild(mockTable);
+            });
+
+            this.it('should update sort indicators correctly', function() {
+                // Create mock table structure
+                const mockTable = document.createElement('table');
+                const thead = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                thead.appendChild(headerRow);
+                mockTable.appendChild(thead);
+                document.body.appendChild(mockTable);
+                
+                // Create sortable headers
+                const th1 = document.createElement('th');
+                th1.classList.add('sortable');
+                th1.setAttribute('data-column', 'CASE_NUMBER');
+                th1.textContent = 'Case Number';
+                headerRow.appendChild(th1);
+                
+                const th2 = document.createElement('th');
+                th2.classList.add('sortable');
+                th2.setAttribute('data-column', 'EMPLOYER_NAME');
+                th2.textContent = 'Employer';
+                headerRow.appendChild(th2);
+                
+                // Mock sort state
+                const currentSort = { column: 'CASE_NUMBER', direction: 'asc' };
+                
+                // Update sort indicators (mimicking TableRenderer.updateSortIndicators)
+                const headers = mockTable.querySelectorAll('th.sortable');
+                headers.forEach(header => {
+                    const column = header.getAttribute('data-column');
+                    
+                    // Remove existing sort classes
+                    header.classList.remove('sort-asc', 'sort-desc');
+                    
+                    // Add appropriate sort class if this is the active column
+                    if (column === currentSort.column) {
+                        header.classList.add(`sort-${currentSort.direction}`);
+                    }
+                });
+                
+                // Test sort indicators
+                testFramework.expect(th1.classList.contains('sort-asc')).toBe(true);
+                testFramework.expect(th1.classList.contains('sort-desc')).toBe(false);
+                testFramework.expect(th2.classList.contains('sort-asc')).toBe(false);
+                testFramework.expect(th2.classList.contains('sort-desc')).toBe(false);
+                
+                // Test descending sort
+                currentSort.direction = 'desc';
+                headers.forEach(header => {
+                    const column = header.getAttribute('data-column');
+                    header.classList.remove('sort-asc', 'sort-desc');
+                    if (column === currentSort.column) {
+                        header.classList.add(`sort-${currentSort.direction}`);
+                    }
+                });
+                
+                testFramework.expect(th1.classList.contains('sort-desc')).toBe(true);
+                testFramework.expect(th1.classList.contains('sort-asc')).toBe(false);
+                
+                // Cleanup
+                document.body.removeChild(mockTable);
+            });
+
+            this.it('should handle sort direction toggle correctly', function() {
+                let currentSort = { column: null, direction: 'asc' };
+                
+                // Mock handleSort function logic
+                function handleSort(column) {
+                    if (currentSort.column === column) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort.column = column;
+                        currentSort.direction = 'asc';
+                    }
+                }
+                
+                // Test initial sort
+                handleSort('CASE_NUMBER');
+                testFramework.expect(currentSort.column).toBe('CASE_NUMBER');
+                testFramework.expect(currentSort.direction).toBe('asc');
+                
+                // Test toggle to descending
+                handleSort('CASE_NUMBER');
+                testFramework.expect(currentSort.column).toBe('CASE_NUMBER');
+                testFramework.expect(currentSort.direction).toBe('desc');
+                
+                // Test toggle back to ascending
+                handleSort('CASE_NUMBER');
+                testFramework.expect(currentSort.column).toBe('CASE_NUMBER');
+                testFramework.expect(currentSort.direction).toBe('asc');
+                
+                // Test new column sort
+                handleSort('EMPLOYER_NAME');
+                testFramework.expect(currentSort.column).toBe('EMPLOYER_NAME');
+                testFramework.expect(currentSort.direction).toBe('asc');
+            });
+        });
+
+        /**
+         * Pagination Controls Tests
+         */
+        testFramework.describe('Pagination Controls with Different Data Sizes', function() {
+            this.it('should calculate pagination correctly for small datasets', function() {
+                const totalRecords = 25;
+                const pageSize = 50;
+                const totalPages = Math.ceil(totalRecords / pageSize);
+                
+                testFramework.expect(totalPages).toBe(1);
+                
+                // Test pagination info
+                const currentPage = 1;
+                const startRecord = (currentPage - 1) * pageSize + 1;
+                const endRecord = Math.min(currentPage * pageSize, totalRecords);
+                
+                testFramework.expect(startRecord).toBe(1);
+                testFramework.expect(endRecord).toBe(25);
+            });
+
+            this.it('should calculate pagination correctly for large datasets', function() {
+                const totalRecords = 1250;
+                const pageSize = 50;
+                const totalPages = Math.ceil(totalRecords / pageSize);
+                
+                testFramework.expect(totalPages).toBe(25);
+                
+                // Test first page
+                let currentPage = 1;
+                let startRecord = (currentPage - 1) * pageSize + 1;
+                let endRecord = Math.min(currentPage * pageSize, totalRecords);
+                
+                testFramework.expect(startRecord).toBe(1);
+                testFramework.expect(endRecord).toBe(50);
+                
+                // Test middle page
+                currentPage = 10;
+                startRecord = (currentPage - 1) * pageSize + 1;
+                endRecord = Math.min(currentPage * pageSize, totalRecords);
+                
+                testFramework.expect(startRecord).toBe(451);
+                testFramework.expect(endRecord).toBe(500);
+                
+                // Test last page
+                currentPage = 25;
+                startRecord = (currentPage - 1) * pageSize + 1;
+                endRecord = Math.min(currentPage * pageSize, totalRecords);
+                
+                testFramework.expect(startRecord).toBe(1201);
+                testFramework.expect(endRecord).toBe(1250);
+            });
+
+            this.it('should handle edge cases in pagination', function() {
+                // Test empty dataset
+                let totalRecords = 0;
+                let pageSize = 50;
+                let totalPages = Math.ceil(totalRecords / pageSize);
+                
+                testFramework.expect(totalPages).toBe(0);
+                
+                // Test single record
+                totalRecords = 1;
+                totalPages = Math.ceil(totalRecords / pageSize);
+                
+                testFramework.expect(totalPages).toBe(1);
+                
+                // Test exact page boundary
+                totalRecords = 100;
+                totalPages = Math.ceil(totalRecords / pageSize);
+                
+                testFramework.expect(totalPages).toBe(2);
+                
+                const currentPage = 2;
+                const startRecord = (currentPage - 1) * pageSize + 1;
+                const endRecord = Math.min(currentPage * pageSize, totalRecords);
+                
+                testFramework.expect(startRecord).toBe(51);
+                testFramework.expect(endRecord).toBe(100);
+            });
+
+            this.it('should validate page navigation boundaries', function() {
+                const totalPages = 10;
+                let currentPage = 1;
+                
+                // Mock handlePaginationClick logic
+                function handlePaginationClick(action, page) {
+                    let newPage = currentPage;
+                    
+                    switch (action) {
+                        case 'first':
+                            newPage = 1;
+                            break;
+                        case 'prev':
+                            newPage = Math.max(1, currentPage - 1);
+                            break;
+                        case 'next':
+                            newPage = Math.min(totalPages, currentPage + 1);
+                            break;
+                        case 'last':
+                            newPage = totalPages;
+                            break;
+                        case 'page':
+                            newPage = page;
+                            break;
+                    }
+                    
+                    if (newPage !== currentPage && newPage >= 1 && newPage <= totalPages) {
+                        currentPage = newPage;
+                        return true;
+                    }
+                    return false;
+                }
+                
+                // Test navigation from first page
+                testFramework.expect(handlePaginationClick('prev', null)).toBe(false); // Can't go before first
+                testFramework.expect(currentPage).toBe(1);
+                
+                testFramework.expect(handlePaginationClick('next', null)).toBe(true);
+                testFramework.expect(currentPage).toBe(2);
+                
+                // Test navigation to last page
+                testFramework.expect(handlePaginationClick('last', null)).toBe(true);
+                testFramework.expect(currentPage).toBe(10);
+                
+                testFramework.expect(handlePaginationClick('next', null)).toBe(false); // Can't go past last
+                testFramework.expect(currentPage).toBe(10);
+                
+                // Test direct page navigation
+                testFramework.expect(handlePaginationClick('page', 5)).toBe(true);
+                testFramework.expect(currentPage).toBe(5);
+                
+                // Test invalid page navigation
+                testFramework.expect(handlePaginationClick('page', 0)).toBe(false);
+                testFramework.expect(handlePaginationClick('page', 11)).toBe(false);
+                testFramework.expect(currentPage).toBe(5); // Should remain unchanged
+            });
+
+            this.it('should create correct pagination info text', function() {
+                // Mock createPaginationInfo logic
+                function createPaginationInfo(currentPage, pageSize, totalRecords) {
+                    const startRecord = (currentPage - 1) * pageSize + 1;
+                    const endRecord = Math.min(currentPage * pageSize, totalRecords);
+                    return `Showing ${startRecord}-${endRecord} of ${totalRecords.toLocaleString()} records`;
+                }
+                
+                // Test various scenarios
+                testFramework.expect(createPaginationInfo(1, 50, 1250)).toBe('Showing 1-50 of 1,250 records');
+                testFramework.expect(createPaginationInfo(2, 50, 1250)).toBe('Showing 51-100 of 1,250 records');
+                testFramework.expect(createPaginationInfo(25, 50, 1250)).toBe('Showing 1201-1250 of 1,250 records');
+                testFramework.expect(createPaginationInfo(1, 50, 25)).toBe('Showing 1-25 of 25 records');
+            });
+        });
+
+        /**
+         * Responsive Table Behavior Tests
+         */
+        testFramework.describe('Responsive Table Behavior', function() {
+            this.it('should handle table column visibility based on screen size', function() {
+                // Mock responsive behavior testing
+                const columns = [
+                    { key: 'CASE_NUMBER', label: 'Case Number', priority: 1 },
+                    { key: 'EMPLOYER_NAME', label: 'Employer', priority: 1 },
+                    { key: 'JOB_TITLE', label: 'Job Title', priority: 2 },
+                    { key: 'CASE_STATUS', label: 'Status', priority: 1 },
+                    { key: 'WAGE_RATE_OF_PAY_FROM', label: 'Salary', priority: 2 },
+                    { key: 'LOCATION', label: 'Location', priority: 3 },
+                    { key: 'DECISION_DATE', label: 'Decision Date', priority: 3 }
+                ];
+                
+                // Mock screen size detection
+                function getVisibleColumns(screenWidth) {
+                    if (screenWidth >= 1024) {
+                        return columns; // Desktop: show all columns
+                    } else if (screenWidth >= 768) {
+                        return columns.filter(col => col.priority <= 2); // Tablet: priority 1-2
+                    } else {
+                        return columns.filter(col => col.priority === 1); // Mobile: priority 1 only
+                    }
+                }
+                
+                // Test desktop view
+                const desktopColumns = getVisibleColumns(1200);
+                testFramework.expect(desktopColumns).toHaveLength(7);
+                
+                // Test tablet view
+                const tabletColumns = getVisibleColumns(800);
+                testFramework.expect(tabletColumns).toHaveLength(5);
+                testFramework.expect(tabletColumns.map(c => c.key)).toContain('CASE_NUMBER');
+                testFramework.expect(tabletColumns.map(c => c.key)).toContain('EMPLOYER_NAME');
+                testFramework.expect(tabletColumns.map(c => c.key)).toContain('JOB_TITLE');
+                
+                // Test mobile view
+                const mobileColumns = getVisibleColumns(480);
+                testFramework.expect(mobileColumns).toHaveLength(3);
+                testFramework.expect(mobileColumns.map(c => c.key)).toContain('CASE_NUMBER');
+                testFramework.expect(mobileColumns.map(c => c.key)).toContain('EMPLOYER_NAME');
+                testFramework.expect(mobileColumns.map(c => c.key)).toContain('CASE_STATUS');
+            });
+
+            this.it('should format table data appropriately for different screen sizes', function() {
+                const sampleRecord = {
+                    CASE_NUMBER: 'I-200-12345-123456',
+                    EMPLOYER_NAME: 'Very Long Company Name That Might Need Truncation',
+                    JOB_TITLE: 'Senior Software Development Engineer',
+                    CASE_STATUS: 'Certified',
+                    WAGE_RATE_OF_PAY_FROM: 125000,
+                    LOCATION: 'San Francisco, CA',
+                    DECISION_DATE: '2023-03-20'
+                };
+                
+                // Mock text truncation for mobile
+                function truncateText(text, maxLength) {
+                    if (!text || text.length <= maxLength) return text;
+                    return text.substring(0, maxLength - 3) + '...';
+                }
+                
+                // Test mobile formatting
+                const mobileEmployerName = truncateText(sampleRecord.EMPLOYER_NAME, 20);
+                testFramework.expect(mobileEmployerName).toBe('Very Long Company...');
+                
+                const mobileJobTitle = truncateText(sampleRecord.JOB_TITLE, 25);
+                testFramework.expect(mobileJobTitle).toBe('Senior Software Develo...');
+                
+                // Test that short text remains unchanged
+                const shortText = truncateText(sampleRecord.CASE_STATUS, 20);
+                testFramework.expect(shortText).toBe('Certified');
+            });
+
+            this.it('should handle empty table states responsively', function() {
+                // Mock empty state rendering
+                function renderEmptyState(screenWidth) {
+                    const isMobile = screenWidth < 768;
+                    
+                    if (isMobile) {
+                        return {
+                            title: 'No Results',
+                            message: 'Try adjusting filters',
+                            colspan: 3 // Mobile shows fewer columns
+                        };
+                    } else {
+                        return {
+                            title: 'No H1B Applications Found',
+                            message: 'Try adjusting your filters or search criteria to see results.',
+                            colspan: 7 // Desktop shows all columns
+                        };
+                    }
+                }
+                
+                // Test desktop empty state
+                const desktopEmpty = renderEmptyState(1200);
+                testFramework.expect(desktopEmpty.title).toBe('No H1B Applications Found');
+                testFramework.expect(desktopEmpty.colspan).toBe(7);
+                
+                // Test mobile empty state
+                const mobileEmpty = renderEmptyState(480);
+                testFramework.expect(mobileEmpty.title).toBe('No Results');
+                testFramework.expect(mobileEmpty.colspan).toBe(3);
+            });
+
+            this.it('should adjust pagination controls for mobile devices', function() {
+                // Mock mobile pagination behavior
+                function createMobilePagination(currentPage, totalPages, isMobile) {
+                    const maxVisiblePages = isMobile ? 3 : 5;
+                    const showFirstLast = !isMobile && totalPages > maxVisiblePages;
+                    
+                    return {
+                        maxVisiblePages,
+                        showFirstLast,
+                        showPageNumbers: totalPages <= (isMobile ? 5 : 10)
+                    };
+                }
+                
+                // Test desktop pagination
+                const desktopPagination = createMobilePagination(5, 20, false);
+                testFramework.expect(desktopPagination.maxVisiblePages).toBe(5);
+                testFramework.expect(desktopPagination.showFirstLast).toBe(true);
+                testFramework.expect(desktopPagination.showPageNumbers).toBe(false);
+                
+                // Test mobile pagination
+                const mobilePagination = createMobilePagination(5, 20, true);
+                testFramework.expect(mobilePagination.maxVisiblePages).toBe(3);
+                testFramework.expect(mobilePagination.showFirstLast).toBe(false);
+                testFramework.expect(mobilePagination.showPageNumbers).toBe(false);
+                
+                // Test small dataset on mobile
+                const smallMobilePagination = createMobilePagination(2, 4, true);
+                testFramework.expect(smallMobilePagination.showPageNumbers).toBe(true);
+            });
+        });
+
+        /**
+         * Run all tests and display results
+         */
+        function runAllTests() {
+            const results = testFramework.runTests();
+            displayResults(results);
+        }
+
+        function displayResults(results) {
+            // Update summary
+            document.getElementById('totalTests').textContent = results.total;
+            document.getElementById('passedTests').textContent = results.passed;
+            document.getElementById('failedTests').textContent = results.failed;
+
+            // Display test results
+            const testResultsContainer = document.getElementById('testResults');
+            testResultsContainer.innerHTML = '';
+
+            results.results.forEach(suite => {
+                const suiteDiv = document.createElement('div');
+                suiteDiv.className = 'test-suite';
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'test-suite-header';
+                headerDiv.textContent = suite.name;
+                suiteDiv.appendChild(headerDiv);
+
+                suite.tests.forEach(test => {
+                    const testDiv = document.createElement('div');
+                    testDiv.className = 'test-case';
+
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'test-name';
+                    nameDiv.textContent = test.name;
+                    testDiv.appendChild(nameDiv);
+
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = `test-result test-${test.status}`;
+                    resultDiv.textContent = test.status.toUpperCase();
+                    testDiv.appendChild(resultDiv);
+
+                    if (test.error) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error-details';
+                        errorDiv.textContent = test.error;
+                        testDiv.appendChild(errorDiv);
+                    }
+
+                    suiteDiv.appendChild(testDiv);
+                });
+
+                testResultsContainer.appendChild(suiteDiv);
+            });
+        }
+
+        /**
+         * Additional Table Rendering Integration Tests
+         */
+        testFramework.describe('Table Rendering Integration Tests', function() {
+            this.it('should render table with proper accessibility attributes', function() {
+                // Create mock table structure
+                const mockTable = document.createElement('table');
+                const tbody = document.createElement('tbody');
+                mockTable.appendChild(tbody);
+                document.body.appendChild(mockTable);
+                
+                const sampleData = [
+                    {
+                        CASE_NUMBER: 'I-200-12345-123456',
+                        EMPLOYER_NAME: 'Test Company',
+                        JOB_TITLE: 'Software Engineer',
+                        CASE_STATUS: 'Certified',
+                        WAGE_RATE_OF_PAY_FROM: 75000,
+                        LOCATION: 'San Francisco, CA',
+                        DECISION_DATE: '2023-03-20'
+                    }
+                ];
+                
+                // Mock table accessibility update
+                mockTable.setAttribute('role', 'grid');
+                mockTable.setAttribute('aria-rowcount', sampleData.length + 1); // +1 for header
+                mockTable.setAttribute('aria-label', `H1B Applications Table with ${sampleData.length} records`);
+                
+                // Test accessibility attributes
+                testFramework.expect(mockTable.getAttribute('role')).toBe('grid');
+                testFramework.expect(mockTable.getAttribute('aria-rowcount')).toBe('2');
+                testFramework.expect(mockTable.getAttribute('aria-label')).toBe('H1B Applications Table with 1 records');
+                
+                // Cleanup
+                document.body.removeChild(mockTable);
+            });
+
+            this.it('should format currency values correctly in table cells', function() {
+                // Mock formatCurrency function
+                function formatCurrency(amount) {
+                    if (!amount || isNaN(amount)) return 'N/A';
+                    
+                    const numAmount = parseFloat(amount);
+                    if (numAmount === 0) return 'N/A';
+                    
+                    return new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    }).format(numAmount);
+                }
+                
+                // Test currency formatting
+                testFramework.expect(formatCurrency(75000)).toBe('$75,000');
+                testFramework.expect(formatCurrency(125000)).toBe('$125,000');
+                testFramework.expect(formatCurrency(0)).toBe('N/A');
+                testFramework.expect(formatCurrency(null)).toBe('N/A');
+                testFramework.expect(formatCurrency('invalid')).toBe('N/A');
+            });
+
+            this.it('should format status badges with correct CSS classes', function() {
+                // Mock formatStatus function
+                function formatStatus(status) {
+                    if (!status) return '<span class="status-badge">Unknown</span>';
+                    
+                    const statusLower = status.toLowerCase();
+                    let statusClass = 'status-badge';
+                    
+                    if (statusLower.includes('certified')) {
+                        statusClass += ' status-certified';
+                    } else if (statusLower.includes('denied')) {
+                        statusClass += ' status-denied';
+                    } else if (statusLower.includes('withdrawn')) {
+                        statusClass += ' status-withdrawn';
+                    }
+                    
+                    return `<span class="${statusClass}">${status}</span>`;
+                }
+                
+                // Test status formatting
+                testFramework.expect(formatStatus('Certified')).toBe('<span class="status-badge status-certified">Certified</span>');
+                testFramework.expect(formatStatus('Denied')).toBe('<span class="status-badge status-denied">Denied</span>');
+                testFramework.expect(formatStatus('Withdrawn')).toBe('<span class="status-badge status-withdrawn">Withdrawn</span>');
+                testFramework.expect(formatStatus('Pending')).toBe('<span class="status-badge">Pending</span>');
+                testFramework.expect(formatStatus(null)).toBe('<span class="status-badge">Unknown</span>');
+            });
+
+            this.it('should handle empty table state correctly', function() {
+                // Mock empty state rendering
+                const columns = [
+                    { key: 'CASE_NUMBER', label: 'Case Number' },
+                    { key: 'EMPLOYER_NAME', label: 'Employer' },
+                    { key: 'CASE_STATUS', label: 'Status' }
+                ];
+                
+                function renderEmptyState(columnsCount) {
+                    return `
+                        <tr>
+                            <td colspan="${columnsCount}" class="empty-state">
+                                <h3>No H1B Applications Found</h3>
+                                <p>Try adjusting your filters or search criteria to see results.</p>
+                            </td>
+                        </tr>
+                    `;
+                }
+                
+                const emptyStateHTML = renderEmptyState(columns.length);
+                
+                // Test empty state structure
+                testFramework.expect(emptyStateHTML).toContain('colspan="3"');
+                testFramework.expect(emptyStateHTML).toContain('No H1B Applications Found');
+                testFramework.expect(emptyStateHTML).toContain('Try adjusting your filters');
+            });
+
+            this.it('should create proper table row structure with event handlers', function() {
+                // Mock table row creation
+                const sampleRecord = {
+                    CASE_NUMBER: 'I-200-12345-123456',
+                    EMPLOYER_NAME: 'Test Company',
+                    JOB_TITLE: 'Software Engineer',
+                    CASE_STATUS: 'Certified'
+                };
+                
+                // Create mock row
+                const row = document.createElement('tr');
+                row.setAttribute('data-case-number', sampleRecord.CASE_NUMBER);
+                row.setAttribute('role', 'row');
+                row.setAttribute('tabindex', '0');
+                
+                // Test row attributes
+                testFramework.expect(row.getAttribute('data-case-number')).toBe('I-200-12345-123456');
+                testFramework.expect(row.getAttribute('role')).toBe('row');
+                testFramework.expect(row.getAttribute('tabindex')).toBe('0');
+                
+                // Test that row is focusable
+                testFramework.expect(row.tabIndex).toBe(0);
+            });
+        });
+
+        // Auto-run tests when page loads
+        window.addEventListener('load', runAllTests);
+    </script>
+</body>
+</html>

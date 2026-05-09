@@ -229,22 +229,26 @@ export function Dashboard() {
                 <td className="px-6 py-4">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-10 w-10">
-                      <img 
-                        className="h-10 w-10 rounded-full" 
-                        src={`https://logo.clearbit.com/${app.company_link ? new URL(app.company_link).hostname.replace('www.', '') : 'company'}.com`} 
+                      <img
+                        className="h-10 w-10 rounded-full"
+                        src={app.company_link ? (() => {
+                          const hostname = new URL(app.company_link).hostname.replace('www.', '');
+                          const domain = hostname.split('.').slice(-2).join('.');
+                          const token = import.meta.env.NEXT_PUBLIC_LOGO_DEV_TOKEN ? `?token=${import.meta.env.NEXT_PUBLIC_LOGO_DEV_TOKEN}` : '';
+                          return `https://img.logo.dev/${domain}${token}`;
+                        })() : 'https://img.logo.dev/company'}
                         alt="Company"
                         onError={(e) => {
-                          // Use a base64-encoded SVG as fallback
                           const svg = `data:image/svg+xml;base64,${btoa(
                             `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="%23e5e7eb">
                               <rect width="40" height="40" rx="20" />
-                              <text x="50%" y="50%" font-family="Arial" font-size="16" text-anchor="middle" dy=".3em" fill="%239ca3af">
+                              <text x="50%" y="50%" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" dy=".3em" fill="%239ca3af">
                                 ${app.company_link ? new URL(app.company_link).hostname.substring(0, 2).toUpperCase() : 'CO'}
                               </text>
                             </svg>`
                           )}`;
                           (e.target as HTMLImageElement).src = svg;
-                        }} 
+                        }}
                       />
                     </div>
                     <div className="ml-4">

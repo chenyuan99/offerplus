@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { authService } from './auth';
+import { supabase } from '../lib/supabase';
+import type { paths } from '../types/api';
 
 // const API_URL = import.meta.env.VITE_API_URL || 'https://offerplus.io';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
@@ -41,22 +43,9 @@ api.interceptors.response.use(
   }
 );
 
-export interface Application {
-  id?: number;
-  company: {
-    id: number;
-    name: string;
-    description?: string;
-    industry?: string;
-  };
-  job_title: string;
-  status: 'APPLIED' | 'OA' | 'VO' | 'OFFER' | 'REJECTED';
-  source: string;
-  notes?: string;
-  email_id?: string;
-  created_at?: string;
-  updated_at?: string;
-}
+// Auto-generated from OpenAPI spec
+export type Application = paths['/api/applications/']['get']['responses']['200']['content']['application/json'][number];
+export type ApplicationInput = paths['/api/applications/']['post']['requestBody']['content']['application/json'];
 
 // Auth API endpoints
 export const authApi = {
@@ -69,54 +58,164 @@ export const authApi = {
     api.post('/api/auth/refresh/', { refresh }),
 };
 
-// Application API endpoints
+// Application API endpoints (using Supabase)
 export const applicationsApi = {
-  list: () => api.get<Application[]>('/api/applications/'),
-  create: (data: Application) => api.post<Application>('/api/applications/', data),
-  get: (id: number) => api.get<Application>(`/api/applications/${id}/`),
-  update: (id: number, data: Application) => api.put<Application>(`/api/applications/${id}/`, data),
-  delete: (id: number) => api.delete(`/api/applications/${id}/`),
+  list: async () => {
+    const { data, error } = await supabase
+      .from('applications')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return { data: data || [] };
+  },
+  create: async (data: Application) => {
+    const { data: result, error } = await supabase
+      .from('applications')
+      .insert([data])
+      .select();
+    if (error) throw error;
+    return { data: result?.[0] };
+  },
+  get: async (id: number) => {
+    const { data, error } = await supabase
+      .from('applications')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (error) throw error;
+    return { data };
+  },
+  update: async (id: number, data: Application) => {
+    const { data: result, error } = await supabase
+      .from('applications')
+      .update(data)
+      .eq('id', id)
+      .select();
+    if (error) throw error;
+    return { data: result?.[0] };
+  },
+  delete: async (id: number) => {
+    const { error } = await supabase
+      .from('applications')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return { data: null };
+  },
 };
 
-export interface UserProfile {
-  id: number;
-  user: {
-    id: number;
-    username: string;
-    email: string;
-  };
-  resume: string | null;
-  resume_name: string | null;
-  resume_updated_at: string | null;
-  resume_url: string | null;
-}
+// Auto-generated from OpenAPI spec
+export type UserProfile = paths['/api/profile/']['get']['responses']['200']['content']['application/json'];
 
 class ApiService {
   async getUserProfile(): Promise<UserProfile> {
-    const response = await api.get('/api/profile/');
-    return response.data;
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+      throw new Error('Not authenticated');
+    }
+
+    // Try to get profile from database
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    // If profile doesn't exist, create a basic one from auth user
+    let profile = profileData;
+    if (profileError && (profileError.code === 'PGRST116' || profileError.code === 'PGRST205')) {
+      // Profile doesn't exist or table not in schema cache, use defaults
+      profile = {
+        id: user.id,
+        resume: null,
+        resume_name: null,
+        resume_updated_at: null,
+        resume_url: null,
+      };
+    } else if (profileError) {
+      throw profileError;
+    }
+
+    return {
+      id: profile.id,
+      user: {
+        id: user.id,
+        username: user.user_metadata?.username || user.email?.split('@')[0] || 'user',
+        email: user.email || '',
+      },
+      resume: profile.resume || null,
+      resume_name: profile.resume_name || null,
+      resume_updated_at: profile.resume_updated_at || null,
+      resume_url: profile.resume_url || null,
+    };
   }
 
   async uploadResume(file: File): Promise<UserProfile> {
-    const formData = new FormData();
-    formData.append('resume', file);
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+      throw new Error('Not authenticated');
+    }
 
-    const response = await api.patch('/api/profile/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    // Upload file to Supabase storage
+    const fileExt = file.name.split('.').pop()?.toLowerCase();
+    const timestamp = new Date().getTime();
+    const randomString = Math.random().toString(36).substring(2, 15);
+    const fileName = `${timestamp}-${randomString}.${fileExt}`;
+    const filePath = `${user.id}/${fileName}`;
 
-    return response.data;
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('resumes')
+      .upload(filePath, file, { upsert: false });
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('resumes')
+      .getPublicUrl(uploadData.path);
+
+    // Update profile in database
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .upsert({
+        id: user.id,
+        resume: uploadData.path,
+        resume_name: file.name,
+        resume_updated_at: new Date().toISOString(),
+        resume_url: publicUrl,
+      });
+
+    if (updateError) throw updateError;
+
+    return await this.getUserProfile();
   }
 
   async deleteResume(): Promise<UserProfile> {
-    const response = await api.patch('/api/profile/', {
-      resume: null,
-      resume_name: null,
-    });
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+      throw new Error('Not authenticated');
+    }
 
-    return response.data;
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('resume')
+      .eq('id', user.id)
+      .single();
+
+    if (profileData?.resume) {
+      await supabase.storage.from('resumes').remove([profileData.resume]);
+    }
+
+    await supabase
+      .from('profiles')
+      .update({
+        resume: null,
+        resume_name: null,
+        resume_url: null,
+        resume_updated_at: new Date().toISOString(),
+      })
+      .eq('id', user.id);
+
+    return this.getUserProfile();
   }
 }
 

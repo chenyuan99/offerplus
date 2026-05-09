@@ -46,7 +46,7 @@ export function Companies() {
 
         // Get application counts per company
         const { data: applicationsData, error: appsError } = await supabase
-          .from('tracks_applicationrecord')
+          .from('applications')
           .select('company_id')
           .not('company_id', 'is', null)
           .returns<Array<{ company_id: string }>>();

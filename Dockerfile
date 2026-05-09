@@ -1,14 +1,16 @@
-# Stage 1: Build frontend
-FROM node:20-slim as frontend-builder
+# Frontend-only Dockerfile for OfferPlus
+# This is now primarily used for building the frontend application
+
+FROM node:20-slim as builder
 
 # Set working directory
-WORKDIR /app/frontend
+WORKDIR /app
 
-# Copy frontend package files
+# Copy package files
 COPY frontend/package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci --only=production
 
 # Copy frontend source code
 COPY frontend/ ./
@@ -16,52 +18,17 @@ COPY frontend/ ./
 # Build frontend
 RUN npm run build
 
-# Stage 2: Python application with frontend assets
-FROM python:3.12-slim
+# Production stage - serve with nginx
+FROM nginx:alpine
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-ENV NODE_ENV production
+# Copy built assets from builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    libpq-dev \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+# Copy nginx configuration if it exists
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf 2>/dev/null || echo "No custom nginx config found"
 
-# Set the working directory
-WORKDIR /app
+# Expose port 80
+EXPOSE 80
 
-# Copy the requirements file
-COPY requirements.txt ./
-
-# Install Python dependencies
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the built frontend assets
-COPY --from=frontend-builder /app/frontend/dist /app/frontend/dist
-
-# Copy the rest of the application code
-COPY . .
-
-# Create directory for static files
-RUN mkdir -p /app/staticfiles
-
-# Collect static files
-RUN python manage.py collectstatic --noinput
-
-# Expose the port the app runs on
-EXPOSE 8000
-
-# Add startup script
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
-
-# Set the entrypoint
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
-# Default command
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "offer_plus.wsgi:application"]
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

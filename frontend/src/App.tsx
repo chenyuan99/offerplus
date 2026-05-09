@@ -14,6 +14,7 @@ import EditApplication from './pages/EditApplication';
 import { Privacy } from './pages/Privacy';
 import { Terms } from './pages/Terms';
 import { H1B } from './pages/H1B';
+import { Rice } from './pages/Rice';
 import { Hardware } from './pages/Hardware';
 import { Internship as InternshipPage } from './pages/Internship';
 import { Navbar } from './components/Navbar';
@@ -98,6 +99,7 @@ function AppContent() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/h1b" element={<H1B />} />
+              <Route path="/Rice" element={<Rice />} />
             <Route path="/hardware" element={<Hardware />} />
 
             {/* Protected routes */}
