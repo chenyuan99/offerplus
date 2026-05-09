@@ -16,7 +16,9 @@
     "generate:api-types": "openapi-typescript ../backend/openapi.yaml -o src/types/api.ts",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
-    "upload:applications": "tsx scripts/uploadApplications.ts"
+    "upload:applications": "tsx scripts/uploadApplications.ts",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@supabase/auth-ui-react": "^0.4.7",
@@ -65,7 +67,17 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
     "vite": "^6.4.2",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "storybook": "^10.3.6",
+    "@storybook/react-vite": "^10.3.6",
+    "@chromatic-com/storybook": "^5.1.2",
+    "@storybook/addon-vitest": "^10.3.6",
+    "@storybook/addon-a11y": "^10.3.6",
+    "@storybook/addon-docs": "^10.3.6",
+    "@storybook/addon-onboarding": "^10.3.6",
+    "eslint-plugin-storybook": "^10.3.6",
+    "playwright": "^1.59.1",
+    "@vitest/browser": "^3.2.4"
   },
   "engines": {
     "node": ">=18.0.0"
