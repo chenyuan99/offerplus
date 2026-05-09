@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, Search, BarChart3, ChevronLeft, ChevronRight, Mail, AlertCircle } from 'lucide-react';
 import { ApplicationRecord, ApplicationStatus } from '../types';
 import { supabase } from '../lib/supabase';
+import { getCompanyLogo, getCompanyDomain } from '../utils/companyLogo';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -225,28 +226,7 @@ export function Dashboard() {
                     <tr key={app.id} className="hover:bg-gray-50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10">
-                            <img
-                              className="h-10 w-10 rounded-full object-cover"
-                              src={app.company_link ? (() => {
-                                const hostname = new URL(app.company_link).hostname.replace('www.', '');
-                                const domain = hostname.split('.').slice(-2).join('.');
-                                return `https://img.logo.dev/${domain}`;
-                              })() : 'https://img.logo.dev/company'}
-                              alt="Company"
-                              onError={(e) => {
-                                const svg = `data:image/svg+xml;base64,${btoa(
-                                  `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="%23e5e7eb">
-                                    <rect width="40" height="40" rx="20" />
-                                    <text x="50%" y="50%" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" dy=".3em" fill="%239ca3af">
-                                      ${app.company_link ? new URL(app.company_link).hostname.substring(0, 2).toUpperCase() : 'CO'}
-                                    </text>
-                                  </svg>`
-                                )}`;
-                                (e.target as HTMLImageElement).src = svg;
-                              }}
-                            />
-                          </div>
+                          <CompanyLogo companyLink={app.company_link} />
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">
                               {app.company_link ? (
@@ -331,6 +311,43 @@ export function Dashboard() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+interface CompanyLogoProps {
+  companyLink: string;
+}
+
+function CompanyLogo({ companyLink }: CompanyLogoProps) {
+  const [imageError, setImageError] = useState(false);
+
+  if (!companyLink) {
+    return (
+      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+        <span className="text-xs font-semibold text-gray-600">CO</span>
+      </div>
+    );
+  }
+
+  const domain = getCompanyDomain(new URL(companyLink).hostname);
+  const initials = new URL(companyLink).hostname.substring(0, 2).toUpperCase();
+  const logoUrl = getCompanyLogo(domain, 40);
+
+  return (
+    <div className="flex-shrink-0 h-10 w-10">
+      {!imageError ? (
+        <img
+          className="h-10 w-10 rounded-full object-cover bg-gray-100"
+          src={logoUrl}
+          alt="Company logo"
+          onError={() => setImageError(true)}
+        />
+      ) : (
+        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+          <span className="text-xs font-semibold text-gray-600">{initials}</span>
+        </div>
+      )}
     </div>
   );
 }
