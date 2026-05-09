@@ -65,7 +65,18 @@ export class OpenAIAdapter extends AIModelAdapter {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || response.statusText}`);
+        const errorMessage = errorData.error?.message || response.statusText;
+
+        // Provide more specific error messages
+        if (response.status === 401) {
+          throw new Error(`OpenAI Authentication Error: Invalid or expired API key. Please check your VITE_OPENAI_API_KEY configuration.`);
+        } else if (response.status === 429) {
+          throw new Error(`OpenAI Rate Limit: Too many requests. Please try again later.`);
+        } else if (response.status === 500) {
+          throw new Error(`OpenAI Server Error: The OpenAI API is experiencing issues. Please try again.`);
+        } else {
+          throw new Error(`OpenAI API error (${response.status}): ${errorMessage}`);
+        }
       }
 
       const data = await response.json();
@@ -93,7 +104,15 @@ export class OpenAIAdapter extends AIModelAdapter {
   }
 
   validateConfig(): boolean {
-    return !!(this.config.apiKey && this.config.apiKey.startsWith('sk-'));
+    if (!this.config.apiKey) {
+      console.error('OpenAI API key is missing');
+      return false;
+    }
+    if (!this.config.apiKey.startsWith('sk-')) {
+      console.error('OpenAI API key has invalid format. Should start with "sk-"');
+      return false;
+    }
+    return true;
   }
 
   getDefaultConfig(): Partial<AIModelConfig> {
