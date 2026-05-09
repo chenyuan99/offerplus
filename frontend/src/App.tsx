@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import { HelmetProvider } from 'react-helmet-async';
 import { Dashboard } from './pages/Dashboard';
 import Login from './pages/auth/Login';
+import RegisterPage from './pages/RegisterPage';
 import CheckEmail from './pages/auth/CheckEmail';
 import Callback from './pages/auth/Callback';
 import { Profile } from './pages/Profile';
@@ -84,6 +85,11 @@ function AppContent() {
             <Route path="/login" element={
               <PublicRoute>
                 <Login />
+              </PublicRoute>
+            } />
+            <Route path="/register" element={
+              <PublicRoute>
+                <RegisterPage />
               </PublicRoute>
             } />
             <Route path="/auth/callback" element={
