@@ -81,22 +81,14 @@ export const PROMPT_DATA: PromptTemplateData = {
         mode: "why_company",
         name: "Company Research and Interest",
         description: "Help craft compelling responses based on company research",
-        systemPrompt: "You are JobGPT, a career advisor specializing in helping candidates articulate their interest in specific companies. Your role is to help users craft compelling \"Why do you want to work at this company?\" responses that demonstrate genuine interest, research, and alignment with company values. Focus on specific, authentic reasons rather than generic statements.",
-        userTemplate: `Based on the company "{companyName}", help me craft a compelling response to "Why do you want to work at {companyName}?"
-
-User input: {userInput}
-
-Please structure your response to include:
-1. Specific aspects of the company's mission, values, or culture that resonate with me
-2. Recent company achievements, products, or initiatives that interest me
-3. How my skills and career goals align with the company's direction
-4. What unique value I can bring to the organization
-
-Keep the response authentic, specific, and around 150-200 words. Avoid generic statements that could apply to any company.`,
+        systemPrompt: "You are JobGPT, an expert career advisor specializing in crafting compelling 'Why do you want to work here?' responses. Create authentic, memorable, specific answers that demonstrate deep interest. Include: personal connection or first impression, researched facts about history and achievements, 2-3 compelling reasons, values and goals alignment, specific products/innovations, market impact, and genuine personality.",
+        userTemplate: "Help me craft a compelling response to 'Why do you want to work at {companyName}?' Company: {companyName}. About me: {userInput}. Please create a response that: 1) Opens with how I discovered or became interested in {companyName}. 2) Includes specific facts about {companyName}'s achievements and market position. 3) Presents 2-3 reasons: career growth/innovation, values alignment, and specific products/impact. 4) Mentions {companyName}'s competitive advantages. 5) Shows enthusiasm and commitment. Make it authentic, passionate, and specific - 280-320 words for an interview.",
         variables: ["companyName", "userInput"],
         modelOptimizations: {
-          "gpt-4": { maxTokens: 300, temperature: 0.7 },
-          "gpt-3.5-turbo": { maxTokens: 250, temperature: 0.8 }
+          "gpt-5-mini": { maxTokens: 700, temperature: 0.75 },
+          "gpt-4": { maxTokens: 600, temperature: 0.8 },
+          "gpt-4-turbo": { maxTokens: 650, temperature: 0.8 },
+          "gpt-3.5-turbo": { maxTokens: 500, temperature: 0.85 }
         }
       },
       {
@@ -104,19 +96,15 @@ Keep the response authentic, specific, and around 150-200 words. Avoid generic s
         mode: "why_company",
         name: "Company Values Alignment",
         description: "Focus on company culture and values alignment",
-        systemPrompt: "You are JobGPT, a career advisor specializing in helping candidates articulate their interest in specific companies. Your role is to help users craft compelling \"Why do you want to work at this company?\" responses that demonstrate genuine interest, research, and alignment with company values. Focus on specific, authentic reasons rather than generic statements.",
-        userTemplate: `I'm preparing for an interview with {companyName}. Help me articulate why I'm specifically interested in this company.
-
-User input: {userInput}
-
-Focus on:
-- Company culture and values alignment
-- Specific products, services, or initiatives that excite me
-- Growth opportunities and learning potential
-- How my background makes me a good fit
-
-Please provide a structured response that sounds genuine and well-researched.`,
-        variables: ["companyName", "userInput"]
+        systemPrompt: "You are JobGPT, an expert at helping candidates articulate authentic alignment between personal values and company mission. Create responses that demonstrate deep cultural fit by identifying shared values, showing understanding of company culture with specific examples, demonstrating knowledge of company initiatives, connecting personal growth to company opportunities, and showing genuine enthusiasm. Be authentic, specific, and avoid generic corporate jargon.",
+        userTemplate: "Help me create a compelling response about why I want to work at {companyName}, focusing on values alignment. Company: {companyName}. About me: {userInput}. Create a response that: 1) Demonstrates my understanding of {companyName}'s core values and mission. 2) Explains how my personal values align with {companyName}'s culture. 3) Highlights specific company initiatives or products that inspire me. 4) Shows how {companyName} fits my career growth and learning goals. 5) Conveys genuine passion for {companyName}'s work and impact. 6) Explains why I'd be a great cultural fit. Make it authentic, specific - 250-300 words.",
+        variables: ["companyName", "userInput"],
+        modelOptimizations: {
+          "gpt-5-mini": { maxTokens: 600, temperature: 0.75 },
+          "gpt-4": { maxTokens: 500, temperature: 0.8 },
+          "gpt-4-turbo": { maxTokens: 550, temperature: 0.8 },
+          "gpt-3.5-turbo": { maxTokens: 450, temperature: 0.85 }
+        }
       }
     ],
     
@@ -219,6 +207,12 @@ Please provide:
   },
   
   modelConfigurations: {
+    "gpt-5-mini": {
+      maxTokens: 800,
+      temperature: 0.7,
+      topP: 0.9,
+      frequencyPenalty: 0.1
+    },
     "gpt-4": {
       maxTokens: 500,
       temperature: 0.7,

@@ -45,18 +45,20 @@ export const jobgptService = {
 
       // Format prompt
       const formattedPrompt = PromptManager.formatPrompt(template, context);
-      
+
       // Make API request
       const response = await AIModelManager.makeRequest(formattedPrompt, model);
-      
+
       const processingTime = Date.now() - startTime;
-      
+
       return {
         response: response.content,
         mode,
         model,
         templateUsed: template.id,
         processingTime,
+        systemPrompt: formattedPrompt.systemPrompt,
+        userPrompt: formattedPrompt.userPrompt,
         usage: response.usage
       };
       

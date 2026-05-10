@@ -42,16 +42,26 @@ export class OpenAIAdapter extends AIModelAdapter {
       throw new Error('Invalid OpenAI configuration');
     }
 
-    const requestBody = {
-      model: this.mapModelName(model),
+    const mappedModel = this.mapModelName(model);
+    const isGpt5Model = mappedModel.startsWith('gpt-5');
+
+    const requestBody: any = {
+      model: mappedModel,
       messages: [
         { role: 'system', content: prompt.systemPrompt },
         { role: 'user', content: prompt.userPrompt }
       ],
-      max_tokens: prompt.modelConfig.maxTokens,
-      temperature: prompt.modelConfig.temperature,
       stream: false
     };
+
+    // gpt-5 models use max_completion_tokens, older models use max_tokens
+    if (isGpt5Model) {
+      requestBody.max_completion_tokens = prompt.modelConfig.maxTokens;
+      // gpt-5-mini only supports temperature=1 (default)
+    } else {
+      requestBody.max_tokens = prompt.modelConfig.maxTokens;
+      requestBody.temperature = prompt.modelConfig.temperature;
+    }
 
     try {
       console.log('Making OpenAI API request...', {
@@ -82,7 +92,7 @@ export class OpenAIAdapter extends AIModelAdapter {
 
         // Provide more specific error messages
         if (response.status === 401) {
-          throw new Error(`OpenAI Authentication Error: Invalid or expired API key. Please check your VITE_OPENAI_API_KEY configuration. Details: ${errorMessage}`);
+          throw new Error(`OpenAI Authentication Error: Invalid or expired API key. Please check your NEXT_PUBLIC_OPENAI_API_KEY configuration. Details: ${errorMessage}`);
         } else if (response.status === 429) {
           throw new Error(`OpenAI Rate Limit: Too many requests. Please try again later. Details: ${errorMessage}`);
         } else if (response.status === 500) {
@@ -119,12 +129,21 @@ export class OpenAIAdapter extends AIModelAdapter {
   }
 
   validateConfig(): boolean {
+    console.log('Validating OpenAI config:', {
+      hasApiKey: !!this.config.apiKey,
+      apiKeyLength: this.config.apiKey?.length,
+      apiKeyPrefix: this.config.apiKey?.substring(0, 10),
+      apiKeyValue: this.config.apiKey
+    });
+
     if (!this.config.apiKey) {
       console.error('OpenAI API key is missing');
       return false;
     }
     if (!this.config.apiKey.startsWith('sk-')) {
-      console.error('OpenAI API key has invalid format. Should start with "sk-"');
+      console.error('OpenAI API key has invalid format. Should start with "sk-"', {
+        received: this.config.apiKey
+      });
       return false;
     }
     return true;
@@ -141,14 +160,16 @@ export class OpenAIAdapter extends AIModelAdapter {
   private mapModelName(model: AIModel): string {
     // Map our internal model names to OpenAI API model names
     switch (model) {
+      case 'gpt-5-mini':
+        return 'gpt-5-mini';
       case 'gpt-3.5-turbo':
         return 'gpt-3.5-turbo';
       case 'gpt-4':
         return 'gpt-4';
       case 'gpt-4-turbo':
-        return 'gpt-4-turbo-preview';
+        return 'gpt-4-turbo';
       default:
-        return 'gpt-3.5-turbo'; // fallback
+        return 'gpt-5-mini'; // fallback
     }
   }
 }
@@ -195,7 +216,14 @@ export class AIModelManager {
 
     try {
       // Initialize OpenAI adapter if API key is available
-      const openaiKey = import.meta.env.VITE_OPENAI_API_KEY;
+      const openaiKey = import.meta.env.NEXT_PUBLIC_OPENAI_API_KEY;
+      console.log('AIModelManager.initialize - Environment variables:', {
+        hasOpenaiKey: !!openaiKey,
+        openaiKeyLength: openaiKey?.length,
+        openaiKeyPrefix: openaiKey?.substring(0, 10),
+        allEnv: import.meta.env
+      });
+
       if (openaiKey) {
         const openaiAdapter = new OpenAIAdapter({ apiKey: openaiKey });
         this.adapters.set('openai', openaiAdapter);
@@ -281,12 +309,50 @@ export class AIModelManager {
 
   static getAvailableModels(): AIModel[] {
     const models: AIModel[] = [];
-    
+
     if (this.adapters.has('openai')) {
-      models.push('gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo');
+      models.push('gpt-5-mini', 'gpt-3.5-turbo', 'gpt-4', 'gpt-4-turbo');
     }
-    
+
     return models;
+  }
+
+  static async fetchOpenAIModels(): Promise<string[]> {
+    const adapter = this.getAdapter('gpt-3.5-turbo');
+    if (!(adapter instanceof OpenAIAdapter)) {
+      throw new Error('OpenAI adapter not available');
+    }
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/models', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${adapter.config.apiKey}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch models: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      // Filter for chat-capable models (GPT models)
+      const chatModels = data.data
+        .filter((model: any) =>
+          model.id.includes('gpt') &&
+          !model.id.includes('embedding') &&
+          !model.id.includes('vision') &&
+          !model.id.includes('instruct')
+        )
+        .map((model: any) => model.id)
+        .sort();
+
+      return chatModels;
+    } catch (error) {
+      console.error('Error fetching OpenAI models:', error);
+      throw error;
+    }
   }
 
   private static async withRetry<T>(

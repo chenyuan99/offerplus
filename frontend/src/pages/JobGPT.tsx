@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FileText, Upload, ThumbsUp, AlertCircle, Zap } from 'lucide-react';
 import { jobgptService } from '../services/jobgptService';
+import { AIModelManager } from '../lib/aiModelAdapters';
 import { JobGPTMode, JobGPTState, AIModel } from '../types/jobgpt';
 
 const initialState: JobGPTState = {
   mode: 'why_company',
-  model: 'gpt-3.5-turbo',
+  model: 'gpt-5-mini',
   isLoading: false,
   error: null,
   input: '',
@@ -14,22 +15,40 @@ const initialState: JobGPTState = {
 
 // Define model options with display names
 interface ModelOption {
-  value: AIModel;
+  value: string;
   label: string;
 }
-
-const MODEL_OPTIONS: ModelOption[] = [
-  { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' },
-  { value: 'gpt-4', label: 'GPT-4' },
-  { value: 'gpt-4-turbo', label: 'GPT-4 Turbo' }
-];
-
-// Extract just the model values for use in other parts of the code
-const MODELS: AIModel[] = MODEL_OPTIONS.map(option => option.value);
 
 export function JobGPT() {
   const [state, setState] = useState<JobGPTState>(initialState);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [modelOptions, setModelOptions] = useState<ModelOption[]>([
+    { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' }
+  ]);
+  const [showPrompts, setShowPrompts] = useState(false);
+
+  useEffect(() => {
+    const loadAvailableModels = async () => {
+      try {
+        const models = await AIModelManager.fetchOpenAIModels();
+        const options = models.map(model => ({
+          value: model,
+          label: model.replace(/-/g, ' ').replace(/^./, str => str.toUpperCase())
+        }));
+        setModelOptions(options);
+
+        // If current model is not available, switch to first available
+        if (!models.includes(state.model)) {
+          setState(prev => ({ ...prev, model: models[0] as AIModel }));
+        }
+      } catch (error) {
+        console.error('Failed to load available models:', error);
+        // Fall back to default models on error
+      }
+    };
+
+    loadAvailableModels();
+  }, []);
 
   const handleModeChange = (mode: JobGPTMode) => {
     setState({ ...state, mode, input: '', output: '', error: null });
@@ -53,13 +72,23 @@ export function JobGPT() {
 
     try {
       const response = await jobgptService.generatePrompt(state.input, state.mode, state.model);
-      setState({
-        ...state,
-        isLoading: false,
-        output: response.response,
-        lastResponse: response
+      console.log('JobGPT response received:', {
+        hasResponse: !!response.response,
+        responseLength: response.response?.length,
+        response: response
+      });
+      setState(prevState => {
+        const newState = {
+          ...prevState,
+          isLoading: false,
+          output: response.response,
+          lastResponse: response
+        };
+        console.log('State updated:', newState);
+        return newState;
       });
     } catch (error: any) {
+      console.error('JobGPT error:', error);
       setState({ ...state, isLoading: false, error: error.message });
     }
   };
@@ -139,7 +168,7 @@ export function JobGPT() {
               value={state.model}
               onChange={(e) => handleModelChange(e.target.value as AIModel)}
             >
-              {MODEL_OPTIONS.map(model => (
+              {modelOptions.map(model => (
                 <option key={model.value} value={model.value}>
                   {model.label}
                 </option>
@@ -190,7 +219,7 @@ export function JobGPT() {
             </button>
             {state.isLoading && (
               <span className="text-sm text-gray-600">
-                Using {MODEL_OPTIONS.find(option => option.value === state.model)?.label || state.model}
+                Using {modelOptions.find(option => option.value === state.model)?.label || state.model}
               </span>
             )}
           </div>
@@ -199,11 +228,46 @@ export function JobGPT() {
         {/* Output Section */}
         {state.output && (
           <div className="bg-white rounded-lg shadow p-6">
+            {/* Prompts Section */}
+            {(state.lastResponse?.systemPrompt || state.lastResponse?.userPrompt) && (
+              <div className="mb-6 border-b border-gray-200 pb-4">
+                <button
+                  onClick={() => setShowPrompts(!showPrompts)}
+                  className="flex items-center justify-between w-full text-left hover:text-[#861F41] transition-colors"
+                >
+                  <h3 className="text-sm font-medium text-gray-700">View Prompts</h3>
+                  <span className={`transform transition-transform ${showPrompts ? 'rotate-180' : ''}`}>
+                    ▼
+                  </span>
+                </button>
+                {showPrompts && (
+                  <div className="mt-4 space-y-4">
+                    {state.lastResponse?.systemPrompt && (
+                      <div>
+                        <h4 className="text-xs font-semibold text-gray-600 mb-2">System Prompt</h4>
+                        <div className="bg-gray-50 rounded p-3 text-sm text-gray-700 whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-200">
+                          {state.lastResponse.systemPrompt}
+                        </div>
+                      </div>
+                    )}
+                    {state.lastResponse?.userPrompt && (
+                      <div>
+                        <h4 className="text-xs font-semibold text-gray-600 mb-2">User Prompt</h4>
+                        <div className="bg-gray-50 rounded p-3 text-sm text-gray-700 whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-200">
+                          {state.lastResponse.userPrompt}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="mb-4">
               <h2 className="text-lg font-semibold text-gray-900 mb-3">Generated Response</h2>
               <div className="flex items-center flex-wrap gap-2">
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-[#861F41]/10 text-[#861F41]">
-                  {MODEL_OPTIONS.find(option => option.value === state.model)?.label || state.model}
+                  {modelOptions.find(option => option.value === state.model)?.label || state.model}
                 </span>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700">
                   {state.mode === 'why_company' ? 'Why Company' :
