@@ -102,18 +102,21 @@ export class OpenAIAdapter extends AIModelAdapter {
         }
       }
 
-      console.log('OpenAI API request successful');
+      const debugMode = import.meta.env.NEXT_PUBLIC_DEBUG === 'true';
+      if (debugMode) console.log('OpenAI API request successful');
 
       const data = await response.json();
 
-      console.log('[OpenAI Response]', {
-        hasChoices: !!data.choices,
-        choicesLength: data.choices?.length,
-        finishReason: data.choices?.[0]?.finish_reason,
-        contentLength: data.choices?.[0]?.message?.content?.length,
-        content: data.choices?.[0]?.message?.content?.substring(0, 100),
-        fullResponse: data
-      });
+      if (debugMode) {
+        console.log('[OpenAI Response]', {
+          hasChoices: !!data.choices,
+          choicesLength: data.choices?.length,
+          finishReason: data.choices?.[0]?.finish_reason,
+          contentLength: data.choices?.[0]?.message?.content?.length,
+          content: data.choices?.[0]?.message?.content?.substring(0, 100),
+          fullResponse: data
+        });
+      }
 
       if (!data.choices || data.choices.length === 0) {
         throw new Error('No response from OpenAI API');

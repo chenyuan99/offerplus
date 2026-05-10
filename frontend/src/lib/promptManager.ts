@@ -83,7 +83,8 @@ export class PromptManager {
 
     if (templateId) {
       const template = this.templateCache.get(templateId);
-      console.log(`[PromptManager] Looking for template '${templateId}':`, { found: !!template, cacheSize: this.templateCache.size });
+      const debugMode = import.meta.env.NEXT_PUBLIC_DEBUG === 'true';
+      if (debugMode) console.log(`[PromptManager] Looking for template '${templateId}':`, { found: !!template, cacheSize: this.templateCache.size });
       if (!template) {
         throw new PromptManagerError(
           PromptManagerErrorType.TEMPLATE_NOT_FOUND,
@@ -101,7 +102,8 @@ export class PromptManager {
 
     // Get default template for mode
     const template = PromptTemplateUtils.getDefaultTemplate(mode);
-    console.log(`[PromptManager] Getting default template for mode '${mode}':`, { templateId: template.id });
+    const debugMode = import.meta.env.NEXT_PUBLIC_DEBUG === 'true';
+    if (debugMode) console.log(`[PromptManager] Getting default template for mode '${mode}':`, { templateId: template.id });
     return template;
   }
 
@@ -136,12 +138,15 @@ export class PromptManager {
       // Get model configuration
       const modelConfig = this.getModelConfig(template, context.model);
 
-      console.log(`[PromptManager] formatPrompt result:`, {
-        templateId: template.id,
-        systemPromptLength: template.systemPrompt.length,
-        userPromptLength: userPrompt.length,
-        userPromptPreview: userPrompt.substring(0, 100)
-      });
+      const debugMode = import.meta.env.NEXT_PUBLIC_DEBUG === 'true';
+      if (debugMode) {
+        console.log(`[PromptManager] formatPrompt result:`, {
+          templateId: template.id,
+          systemPromptLength: template.systemPrompt.length,
+          userPromptLength: userPrompt.length,
+          userPromptPreview: userPrompt.substring(0, 100)
+        });
+      }
 
       return {
         systemPrompt: template.systemPrompt,
@@ -332,7 +337,8 @@ export class PromptManager {
       }
     }
 
-    console.log(`[PromptManager] Variables prepared:`, { templateId: template.id, variables, requiredVars: template.variables });
+    const debugMode = import.meta.env.NEXT_PUBLIC_DEBUG === 'true';
+    if (debugMode) console.log(`[PromptManager] Variables prepared:`, { templateId: template.id, variables, requiredVars: template.variables });
     return variables;
   }
 
