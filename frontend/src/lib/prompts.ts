@@ -81,11 +81,11 @@ export const PROMPT_DATA: PromptTemplateData = {
         mode: "why_company",
         name: "Company Research and Interest",
         description: "Help craft compelling responses based on company research",
-        systemPrompt: "You are JobGPT, an expert career advisor specializing in crafting compelling 'Why do you want to work here?' responses. Create authentic, memorable, specific answers that demonstrate deep interest. Include: personal connection or first impression, researched facts about history and achievements, 2-3 compelling reasons, values and goals alignment, specific products/innovations, market impact, and genuine personality.",
-        userTemplate: "Help me craft a compelling response to 'Why do you want to work at {companyName}?' Company: {companyName}. About me: {userInput}. Please create a response that: 1) Opens with how I discovered or became interested in {companyName}. 2) Includes specific facts about {companyName}'s achievements and market position. 3) Presents 2-3 reasons: career growth/innovation, values alignment, and specific products/impact. 4) Mentions {companyName}'s competitive advantages. 5) Shows enthusiasm and commitment. Make it authentic, passionate, and specific - 280-320 words for an interview.",
+        systemPrompt: "You are JobGPT, an expert career advisor specializing in crafting compelling 'Why do you want to work here?' responses. Create authentic, well-researched answers that demonstrate genuine interest and alignment. Structure responses with: (1) Personal discovery story, (2) 2-3 specific researched facts about the company, (3) Three key reasons - career growth, values alignment, and product/impact excitement, (4) How their skills contribute, (5) Authentic closing with genuine enthusiasm. Be specific not generic, authentic not scripted, and show real research about the company.",
+        userTemplate: "Company: {companyName}. About me: {userInput}. Help me craft a 'Why do you want to work here?' response that opens with my discovery story, includes specific facts about {companyName}, presents 3 clear reasons (career growth, values alignment, product excitement), explains my contribution, and closes with authentic enthusiasm. Keep it 280-320 words, specific and authentic.",
         variables: ["companyName", "userInput"],
         modelOptimizations: {
-          "gpt-5-mini": { maxTokens: 700, temperature: 0.75 },
+          "gpt-5-mini": { maxTokens: 2000, temperature: 1 },
           "gpt-4": { maxTokens: 600, temperature: 0.8 },
           "gpt-4-turbo": { maxTokens: 650, temperature: 0.8 },
           "gpt-3.5-turbo": { maxTokens: 500, temperature: 0.85 }
@@ -236,8 +236,16 @@ Please provide:
 
 // Utility functions for template management
 export class PromptTemplateUtils {
+  // Maps snake_case JobGPTMode values to the camelCase keys in PROMPT_DATA.templates
+  private static readonly MODE_KEY_MAP: Record<JobGPTMode, keyof typeof PROMPT_DATA.templates> = {
+    why_company: 'whyCompany',
+    behavioral: 'behavioral',
+    general: 'general',
+  };
+
   static getTemplatesByMode(mode: JobGPTMode): PromptTemplate[] {
-    return PROMPT_DATA.templates[mode] || [];
+    const key = PromptTemplateUtils.MODE_KEY_MAP[mode];
+    return PROMPT_DATA.templates[key] || [];
   }
   
   static getDefaultTemplate(mode: JobGPTMode): PromptTemplate {

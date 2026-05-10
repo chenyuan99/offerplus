@@ -105,13 +105,22 @@ export class OpenAIAdapter extends AIModelAdapter {
       console.log('OpenAI API request successful');
 
       const data = await response.json();
-      
+
+      console.log('[OpenAI Response]', {
+        hasChoices: !!data.choices,
+        choicesLength: data.choices?.length,
+        finishReason: data.choices?.[0]?.finish_reason,
+        contentLength: data.choices?.[0]?.message?.content?.length,
+        content: data.choices?.[0]?.message?.content?.substring(0, 100),
+        fullResponse: data
+      });
+
       if (!data.choices || data.choices.length === 0) {
         throw new Error('No response from OpenAI API');
       }
 
       return {
-        content: data.choices[0].message.content,
+        content: data.choices[0].message.content ?? '',
         model: data.model,
         usage: data.usage ? {
           promptTokens: data.usage.prompt_tokens,

@@ -83,6 +83,7 @@ export class PromptManager {
 
     if (templateId) {
       const template = this.templateCache.get(templateId);
+      console.log(`[PromptManager] Looking for template '${templateId}':`, { found: !!template, cacheSize: this.templateCache.size });
       if (!template) {
         throw new PromptManagerError(
           PromptManagerErrorType.TEMPLATE_NOT_FOUND,
@@ -99,7 +100,9 @@ export class PromptManager {
     }
 
     // Get default template for mode
-    return PromptTemplateUtils.getDefaultTemplate(mode);
+    const template = PromptTemplateUtils.getDefaultTemplate(mode);
+    console.log(`[PromptManager] Getting default template for mode '${mode}':`, { templateId: template.id });
+    return template;
   }
 
   /**
@@ -126,13 +129,20 @@ export class PromptManager {
 
       // Prepare variables for substitution
       const variables = this.prepareVariables(template, context);
-      
+
       // Substitute variables in user template
       const userPrompt = this.substituteVariables(template.userTemplate, variables);
-      
+
       // Get model configuration
       const modelConfig = this.getModelConfig(template, context.model);
-      
+
+      console.log(`[PromptManager] formatPrompt result:`, {
+        templateId: template.id,
+        systemPromptLength: template.systemPrompt.length,
+        userPromptLength: userPrompt.length,
+        userPromptPreview: userPrompt.substring(0, 100)
+      });
+
       return {
         systemPrompt: template.systemPrompt,
         userPrompt,
@@ -322,6 +332,7 @@ export class PromptManager {
       }
     }
 
+    console.log(`[PromptManager] Variables prepared:`, { templateId: template.id, variables, requiredVars: template.variables });
     return variables;
   }
 

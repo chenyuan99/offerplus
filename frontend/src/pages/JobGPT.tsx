@@ -22,6 +22,8 @@ interface ModelOption {
 export function JobGPT() {
   const [state, setState] = useState<JobGPTState>(initialState);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [companyName, setCompanyName] = useState('');
+  const [userBackground, setUserBackground] = useState('');
   const [modelOptions, setModelOptions] = useState<ModelOption[]>([
     { value: 'gpt-3.5-turbo', label: 'GPT-3.5 Turbo' }
   ]);
@@ -52,6 +54,8 @@ export function JobGPT() {
 
   const handleModeChange = (mode: JobGPTMode) => {
     setState({ ...state, mode, input: '', output: '', error: null });
+    setCompanyName('');
+    setUserBackground('');
   };
 
   const handleModelChange = (model: AIModel) => {
@@ -63,15 +67,30 @@ export function JobGPT() {
   };
 
   const handleSubmit = async () => {
-    if (!state.input.trim()) {
-      setState({ ...state, error: 'Please enter some text' });
-      return;
+    let inputText = '';
+
+    if (state.mode === 'why_company') {
+      if (!companyName.trim() || !userBackground.trim()) {
+        setState({ ...state, error: 'Please enter both company name and your background' });
+        return;
+      }
+      // For why_company mode, pass user background as the main input
+      // The template will extract companyName and use userBackground
+      inputText = `Company: ${companyName}\nAbout me: ${userBackground}`;
+    } else {
+      if (!state.input.trim()) {
+        setState({ ...state, error: 'Please enter some text' });
+        return;
+      }
+      inputText = state.input;
     }
 
     setState({ ...state, isLoading: true, error: null });
 
     try {
-      const response = await jobgptService.generatePrompt(state.input, state.mode, state.model);
+      const response = await jobgptService.generatePrompt(inputText, state.mode, state.model, {
+        companyName: state.mode === 'why_company' ? companyName : undefined
+      });
       console.log('JobGPT response received:', {
         hasResponse: !!response.response,
         responseLength: response.response?.length,
@@ -176,19 +195,49 @@ export function JobGPT() {
             </select>
           </div>
 
-          {/* Input Textarea */}
-          <div className="mb-6">
-            <label htmlFor="input" className="block text-sm font-medium text-gray-700 mb-2">
-              {state.mode === 'why_company' ? 'Company Name' : state.mode === 'behavioral' ? 'Question' : 'Your Prompt'}
-            </label>
-            <textarea
-              id="input"
-              className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] resize-none"
-              placeholder={getPlaceholder(state.mode)}
-              value={state.input}
-              onChange={handleInputChange}
-            />
-          </div>
+          {/* Input Fields */}
+          {state.mode === 'why_company' ? (
+            <div className="mb-6 space-y-4">
+              <div>
+                <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                  Company Name
+                </label>
+                <input
+                  id="company"
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                  placeholder="e.g., Google, Stripe, Microsoft"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="background" className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Background & Experience
+                </label>
+                <textarea
+                  id="background"
+                  className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] resize-none"
+                  placeholder="Your skills, experience, and what excites you about this type of work..."
+                  value={userBackground}
+                  onChange={(e) => setUserBackground(e.target.value)}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="mb-6">
+              <label htmlFor="input" className="block text-sm font-medium text-gray-700 mb-2">
+                {state.mode === 'behavioral' ? 'Question' : 'Your Prompt'}
+              </label>
+              <textarea
+                id="input"
+                className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] resize-none"
+                placeholder={getPlaceholder(state.mode)}
+                value={state.input}
+                onChange={handleInputChange}
+              />
+            </div>
+          )}
 
           {/* Error Alert */}
           {state.error && (
@@ -300,6 +349,7 @@ export function JobGPT() {
                 </div>
               </div>
             )}
+
           </div>
         )}
       </div>

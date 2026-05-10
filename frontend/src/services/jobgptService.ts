@@ -12,34 +12,49 @@ interface ResumeUploadResponse {
 
 export const jobgptService = {
   generatePrompt: async (
-    input: string, 
-    mode: JobGPTMode, 
+    input: string,
+    mode: JobGPTMode,
     model: AIModel,
     additionalContext?: any
   ): Promise<JobGPTResponse> => {
     const startTime = Date.now();
-    
+
     try {
+      // For why_company mode, parse the "Company: X\nAbout me: Y" format
+      let userInput = input;
+      let extractedAdditionalContext: any = additionalContext || {};
+
+      if (mode === 'why_company' && input.includes('Company:') && input.includes('About me:')) {
+        const companyMatch = input.match(/Company:\s*(.+?)(?:\n|$)/);
+        const backgroundMatch = input.match(/About me:\s*(.+?)$/s);
+
+        if (companyMatch && backgroundMatch) {
+          extractedAdditionalContext.companyName = companyMatch[1].trim();
+          userInput = backgroundMatch[1].trim();
+        }
+      }
+
       // Validate input
-      const validation = PromptManager.validateInput(input, mode);
+      const validation = PromptManager.validateInput(userInput, mode);
       if (!validation.valid) {
         throw new Error(`Invalid input: ${validation.errors.join(', ')}`);
       }
 
       // Get appropriate template
-      const template = PromptManager.getTemplate(mode);
-      
+      const templateId = mode === 'why_company' ? 'company-research-interest' : undefined;
+      const template = PromptManager.getTemplate(mode, templateId);
+
       // Extract context from input
-      const extractedContext = PromptManager.extractContext(input, mode);
-      
+      const extractedContext = PromptManager.extractContext(userInput, mode);
+
       // Prepare context
       const context = {
-        userInput: input,
+        userInput,
         mode,
         model,
         additionalContext: {
           ...extractedContext,
-          ...additionalContext
+          ...extractedAdditionalContext
         }
       };
 
