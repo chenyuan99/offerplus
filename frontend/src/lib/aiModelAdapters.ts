@@ -63,8 +63,11 @@ export class OpenAIAdapter extends AIModelAdapter {
       requestBody.temperature = prompt.modelConfig.temperature;
     }
 
+    const debugMode = import.meta.env.NEXT_PUBLIC_DEBUG === 'true';
+
     try {
-      console.log('Making OpenAI API request...', {
+
+      if (debugMode) console.log('[DEBUG] Making OpenAI API request...', {
         model: this.mapModelName(model),
         apiKeyPrefix: this.config.apiKey?.substring(0, 20) + '...',
         hasApiKey: !!this.config.apiKey
@@ -102,7 +105,6 @@ export class OpenAIAdapter extends AIModelAdapter {
         }
       }
 
-      const debugMode = import.meta.env.NEXT_PUBLIC_DEBUG === 'true';
       if (debugMode) console.log('OpenAI API request successful');
 
       const data = await response.json();
