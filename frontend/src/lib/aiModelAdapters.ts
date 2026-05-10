@@ -129,12 +129,16 @@ export class OpenAIAdapter extends AIModelAdapter {
   }
 
   validateConfig(): boolean {
-    console.log('Validating OpenAI config:', {
+    const debugMode = import.meta.env.NEXT_PUBLIC_DEBUG === 'true';
+    const logData: any = {
       hasApiKey: !!this.config.apiKey,
       apiKeyLength: this.config.apiKey?.length,
-      apiKeyPrefix: this.config.apiKey?.substring(0, 10),
-      apiKeyValue: this.config.apiKey
-    });
+      apiKeyPrefix: this.config.apiKey?.substring(0, 10)
+    };
+    if (debugMode) {
+      logData.apiKeyValue = this.config.apiKey;
+    }
+    console.log('Validating OpenAI config:', logData);
 
     if (!this.config.apiKey) {
       console.error('OpenAI API key is missing');
@@ -217,12 +221,16 @@ export class AIModelManager {
     try {
       // Initialize OpenAI adapter if API key is available
       const openaiKey = import.meta.env.NEXT_PUBLIC_OPENAI_API_KEY;
-      console.log('AIModelManager.initialize - Environment variables:', {
+      const debugMode = import.meta.env.NEXT_PUBLIC_DEBUG === 'true';
+      const logData: any = {
         hasOpenaiKey: !!openaiKey,
         openaiKeyLength: openaiKey?.length,
-        openaiKeyPrefix: openaiKey?.substring(0, 10),
-        allEnv: import.meta.env
-      });
+        openaiKeyPrefix: openaiKey?.substring(0, 10)
+      };
+      if (debugMode) {
+        logData.allEnv = import.meta.env;
+      }
+      console.log('AIModelManager.initialize - Environment variables:', logData);
 
       if (openaiKey) {
         const openaiAdapter = new OpenAIAdapter({ apiKey: openaiKey });
