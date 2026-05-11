@@ -5,6 +5,7 @@
 An Offer seeker powered by GPT.
 
 [![](https://dcbadge.limes.pink/api/server/X24GHUwtHW?style=flat)](https://discord.gg/X24GHUwtHW?style=flat)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/chenyuan99/offerplus)
 
 ## Table of Contents
 
