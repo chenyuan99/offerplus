@@ -4,7 +4,7 @@ charset-normalizer>=3.4.7
 idna>=3.13
 openai>=0.27.8
 pillow>=10.2.0
-python-dotenv>=1.0.0
+python-dotenv>=1.2.2
 requests>=2.25.1
 supabase
 tqdm==4.67.3
