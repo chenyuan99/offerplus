@@ -62,9 +62,9 @@ struct LoginView: View {
                 .disabled(isLoading || email.isEmpty || password.isEmpty)
 
                 HStack {
-                    Rectangle().frame(height: 1).foregroundStyle(.separator)
+                    Rectangle().frame(height: 1).foregroundStyle(Color(UIColor.separator))
                     Text("or").font(.caption).foregroundStyle(.secondary)
-                    Rectangle().frame(height: 1).foregroundStyle(.separator)
+                    Rectangle().frame(height: 1).foregroundStyle(Color(UIColor.separator))
                 }
 
                 Button {
@@ -85,7 +85,7 @@ struct LoginView: View {
                     .padding()
                     .background(.regularMaterial)
                     .cornerRadius(12)
-                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(.separator))
+                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color(UIColor.separator)))
                 }
                 .disabled(isGoogleLoading)
             }
