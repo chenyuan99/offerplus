@@ -13,6 +13,7 @@
 		29BBF8811A5BB08846772177 /* AddApplicationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C675841E7B976CF671EC3AA3 /* AddApplicationView.swift */; };
 		378FA00C229D0C2A7721FCEA /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = A642A47A0A5B2D08F06BE664 /* Application.swift */; };
 		3D336E4AB7483B23C34EA874 /* OffersPlusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6542AD1883C1FFC269BE616 /* OffersPlusApp.swift */; };
+		5AED3C2CA41FAE817C831F77 /* OffersPlusWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 85CBFB43CF2860974AFA1EE9 /* OffersPlusWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5CE77D65DA444A387C1FD21A /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A829BC7AE9931C78582C132 /* DashboardView.swift */; };
 		6568E2A5BEBC2E5D181E1A1D /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = DEED3968ACE71F66AC3D61FC /* Supabase */; };
 		7FC8A95B15BAAA0BBB62DC96 /* ApplicationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BF8BFAE92B290A8DD3EF9A /* ApplicationRow.swift */; };
@@ -20,19 +21,51 @@
 		9102FC9756B16209AA3BD397 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423635F35E676C7931983DDD /* StatsView.swift */; };
 		918496B4E56BA6892170186B /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D6A8F8911F914EC28FCF9E /* DashboardViewModel.swift */; };
 		97955071F08416D370B7D0A3 /* ApplicationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D34DD0D1005B660AA1A441 /* ApplicationDetailView.swift */; };
+		9B3F313A7E77EBCEAA3E2328 /* OffersPlusWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0AC939A884E5123A5C9D94 /* OffersPlusWidgetBundle.swift */; };
 		DE4F0F338E5F60D0B69138C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E16891E282D5685F3F03B48C /* Assets.xcassets */; };
+		ED05587B4FA17F851DB7EBE4 /* OffersPlusWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AFBB7257D4477ADC30C301 /* OffersPlusWidget.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		95455681F3CFE461E970B329 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 34953CC327428A7806C4AFAE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FBC3B875D0811FDFB3849501;
+			remoteInfo = OffersPlusWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E68D288C0963EA3CEEAF48A5 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5AED3C2CA41FAE817C831F77 /* OffersPlusWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		00AFBB7257D4477ADC30C301 /* OffersPlusWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffersPlusWidget.swift; sourceTree = "<group>"; };
 		04D6A8F8911F914EC28FCF9E /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
 		36885AA464B8B5A1A7306FC7 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		423635F35E676C7931983DDD /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		52D60D33B61028981F119185 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6137F718DD6913E3526AC7B1 /* OffersPlus.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OffersPlus.entitlements; sourceTree = "<group>"; };
 		644C90518A25000688CB9875 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		68BF8BFAE92B290A8DD3EF9A /* ApplicationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationRow.swift; sourceTree = "<group>"; };
+		6A0AC939A884E5123A5C9D94 /* OffersPlusWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffersPlusWidgetBundle.swift; sourceTree = "<group>"; };
 		6A829BC7AE9931C78582C132 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		85CBFB43CF2860974AFA1EE9 /* OffersPlusWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OffersPlusWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		89ED6618444517F21E4852ED /* OffersPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffersPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		92073922C13354A45DAE93E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		95D34DD0D1005B660AA1A441 /* ApplicationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationDetailView.swift; sourceTree = "<group>"; };
+		9B6A5609F4F4F67A659F3D77 /* OffersPlusWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OffersPlusWidget.entitlements; sourceTree = "<group>"; };
 		A642A47A0A5B2D08F06BE664 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		A6542AD1883C1FFC269BE616 /* OffersPlusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffersPlusApp.swift; sourceTree = "<group>"; };
 		C675841E7B976CF671EC3AA3 /* AddApplicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddApplicationView.swift; sourceTree = "<group>"; };
@@ -53,6 +86,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07FB7DAACC3B5E9E2B4A1168 /* OffersPlusWidget */ = {
+			isa = PBXGroup;
+			children = (
+				92073922C13354A45DAE93E0 /* Info.plist */,
+				9B6A5609F4F4F67A659F3D77 /* OffersPlusWidget.entitlements */,
+				00AFBB7257D4477ADC30C301 /* OffersPlusWidget.swift */,
+				6A0AC939A884E5123A5C9D94 /* OffersPlusWidgetBundle.swift */,
+			);
+			path = OffersPlusWidget;
+			sourceTree = "<group>";
+		};
 		4084E89458547AA564D2D3F8 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -75,6 +119,7 @@
 				E16891E282D5685F3F03B48C /* Assets.xcassets */,
 				F58365299E7E79C7A71FB8BF /* Config.swift */,
 				52D60D33B61028981F119185 /* Info.plist */,
+				6137F718DD6913E3526AC7B1 /* OffersPlus.entitlements */,
 				A6542AD1883C1FFC269BE616 /* OffersPlusApp.swift */,
 				A8356F1CDA24B1B6501EA30C /* Models */,
 				F8E85CAFBE807767D37C3828 /* Services */,
@@ -126,6 +171,7 @@
 			isa = PBXGroup;
 			children = (
 				4ED72FC8577BDF8196912657 /* OffersPlus */,
+				07FB7DAACC3B5E9E2B4A1168 /* OffersPlusWidget */,
 				F759A887DF4C6CFF46A882C5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -142,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				89ED6618444517F21E4852ED /* OffersPlus.app */,
+				85CBFB43CF2860974AFA1EE9 /* OffersPlusWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -164,10 +211,12 @@
 				F62699604E15700B3DD886E4 /* Sources */,
 				DABC3B231EDD3A76A5A91122 /* Resources */,
 				7A46185E2DDE85E252FFC895 /* Frameworks */,
+				E68D288C0963EA3CEEAF48A5 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D142A867CF143F5EB3D6AEE5 /* PBXTargetDependency */,
 			);
 			name = OffersPlus;
 			packageProductDependencies = (
@@ -176,6 +225,23 @@
 			productName = OffersPlus;
 			productReference = 89ED6618444517F21E4852ED /* OffersPlus.app */;
 			productType = "com.apple.product-type.application";
+		};
+		FBC3B875D0811FDFB3849501 /* OffersPlusWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B686E68357E7C818EE6C47FB /* Build configuration list for PBXNativeTarget "OffersPlusWidget" */;
+			buildPhases = (
+				53755D55FD375222A863285C /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OffersPlusWidget;
+			packageProductDependencies = (
+			);
+			productName = OffersPlusWidget;
+			productReference = 85CBFB43CF2860974AFA1EE9 /* OffersPlusWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -204,6 +270,7 @@
 			projectRoot = "";
 			targets = (
 				9D2B2B00E09DF6868487ECC7 /* OffersPlus */,
+				FBC3B875D0811FDFB3849501 /* OffersPlusWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -220,6 +287,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		53755D55FD375222A863285C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED05587B4FA17F851DB7EBE4 /* OffersPlusWidget.swift in Sources */,
+				9B3F313A7E77EBCEAA3E2328 /* OffersPlusWidgetBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F62699604E15700B3DD886E4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -241,7 +317,35 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		D142A867CF143F5EB3D6AEE5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FBC3B875D0811FDFB3849501 /* OffersPlusWidget */;
+			targetProxy = 95455681F3CFE461E970B329 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		0B38E789235E28464DF1FF8B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OffersPlusWidget/OffersPlusWidget.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 982H87JFFG;
+				INFOPLIST_FILE = OffersPlusWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.riseworks.offersplus.widget;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		1F52A3EB3E15DD77F32681D0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -298,10 +402,31 @@
 			};
 			name = Release;
 		};
+		27D757845554B5AF7566BF35 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OffersPlusWidget/OffersPlusWidget.entitlements;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 982H87JFFG;
+				INFOPLIST_FILE = OffersPlusWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.riseworks.offersplus.widget;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		6DC3EDC7ABF374621066F5F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = OffersPlus/OffersPlus.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 982H87JFFG;
@@ -322,6 +447,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = OffersPlus/OffersPlus.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 982H87JFFG;
@@ -418,6 +544,15 @@
 			buildConfigurations = (
 				6DC3EDC7ABF374621066F5F6 /* Debug */,
 				9CB8CB30AC9B0693D86DEA10 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B686E68357E7C818EE6C47FB /* Build configuration list for PBXNativeTarget "OffersPlusWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0B38E789235E28464DF1FF8B /* Debug */,
+				27D757845554B5AF7566BF35 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
