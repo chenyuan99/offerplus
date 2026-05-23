@@ -8,21 +8,24 @@ struct OffersPlusWidgetBundle: WidgetBundle {
     }
 }
 
-#Preview("Small", as: .systemSmall) {
-    OffersPlusWidget()
-} timeline: {
-    ActiveApplicationsEntry.placeholder
-    ActiveApplicationsEntry(date: .now, apps: [], isSignedIn: true)
-}
+struct OffersPlusWidget_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            OffersPlusWidgetEntryView(entry: .placeholder)
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+                .previewDisplayName("Small")
 
-#Preview("Medium", as: .systemMedium) {
-    OffersPlusWidget()
-} timeline: {
-    ActiveApplicationsEntry.placeholder
-}
+            OffersPlusWidgetEntryView(entry: .placeholder)
+                .previewContext(WidgetPreviewContext(family: .systemMedium))
+                .previewDisplayName("Medium")
 
-#Preview("Large", as: .systemLarge) {
-    OffersPlusWidget()
-} timeline: {
-    ActiveApplicationsEntry.placeholder
+            OffersPlusWidgetEntryView(entry: .placeholder)
+                .previewContext(WidgetPreviewContext(family: .systemLarge))
+                .previewDisplayName("Large")
+
+            OffersPlusWidgetEntryView(entry: ActiveApplicationsEntry(date: .now, apps: [], isSignedIn: true))
+                .previewContext(WidgetPreviewContext(family: .systemSmall))
+                .previewDisplayName("Small — Empty")
+        }
+    }
 }
