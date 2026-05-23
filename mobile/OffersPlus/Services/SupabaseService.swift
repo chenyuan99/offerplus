@@ -4,7 +4,10 @@ import Supabase
 
 let supabase = SupabaseClient(
     supabaseURL: Config.supabaseURL,
-    supabaseKey: Config.supabaseAnonKey
+    supabaseKey: Config.supabaseAnonKey,
+    options: SupabaseClientOptions(
+        auth: .init(emitLocalSessionAsInitialSession: true)
+    )
 )
 
 // MARK: - Auth State
