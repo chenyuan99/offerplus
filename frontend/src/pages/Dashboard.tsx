@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, Search, BarChart3, ChevronLeft, ChevronRight, Mail, AlertCircle } from 'lucide-react';
 import { ApplicationRecord, ApplicationStatus } from '../types';
 import { supabase } from '../lib/supabase';
-import { getCompanyLogo, getCompanyDomain } from '../utils/companyLogo';
+import { getCompanyLogo, getCompanyDomain, extractCompanyNameFromUrl } from '../utils/companyLogo';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -231,7 +231,7 @@ export function Dashboard() {
                             <div className="text-sm font-medium text-gray-900">
                               {app.company_link ? (
                                 <a href={app.company_link} target="_blank" rel="noopener noreferrer" className="hover:text-[#861F41] transition-colors">
-                                  {app.company_name || new URL(app.company_link).hostname.replace('www.', '')}
+                                  {app.company_name || extractCompanyNameFromUrl(app.company_link)}
                                 </a>
                               ) : app.company_name || 'Company'}
                             </div>
