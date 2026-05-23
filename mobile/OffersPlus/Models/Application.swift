@@ -51,7 +51,7 @@ enum ApplicationStatus: String, Codable, CaseIterable, Identifiable {
 
 struct Application: Codable, Identifiable {
     let id: Int
-    let user_id: String
+    let user_id: String?
     var job_title: String
     var company_name: String?
     var job_link: String?
