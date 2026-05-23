@@ -3,6 +3,7 @@ import { uploadResume } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import { supabase, type User } from '../lib/supabase';
 import { Download, Upload } from 'lucide-react';
+import { ApiKeyManager } from '../components/ApiKeyManager';
 
 interface UserMetadata {
   first_name?: string;
@@ -352,6 +353,11 @@ export function Profile() {
               <p className="text-sm text-gray-500 mt-1">Upload a file using the button above</p>
             </div>
           )}
+        </div>
+
+        {/* Agent API Keys */}
+        <div className="bg-white rounded-lg shadow p-6 mt-6">
+          <ApiKeyManager />
         </div>
       </div>
     </div>
