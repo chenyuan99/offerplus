@@ -71,10 +71,10 @@ export function ApiKeyManager() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-medium text-gray-900">Agent API Keys</h3>
-          <p className="text-sm text-gray-500">Allow external AI agents to read and update your applications.</p>
+          <h2 className="text-xl font-semibold text-gray-900">Agent API Keys</h2>
+          <p className="text-sm text-gray-500 mt-1">Allow external AI agents to read and update your applications.</p>
         </div>
         <button
           onClick={() => setShowForm(true)}
