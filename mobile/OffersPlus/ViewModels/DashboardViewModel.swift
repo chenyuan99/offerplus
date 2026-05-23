@@ -1,4 +1,5 @@
 import Foundation
+import WidgetKit
 
 @MainActor
 class DashboardViewModel: ObservableObject {
@@ -35,10 +36,27 @@ class DashboardViewModel: ObservableObject {
         error = nil
         do {
             applications = try await ApplicationService.shared.fetchAll()
+            cacheActiveApplicationsForWidget()
         } catch {
             self.error = error.localizedDescription
         }
         isLoading = false
+    }
+
+    private func cacheActiveApplicationsForWidget() {
+        struct Slim: Encodable {
+            let id: Int
+            let company_name: String?
+            let job_title: String
+            let status: String
+        }
+        let active = applications
+            .filter { [.oa, .vo, .interview].contains($0.status) }
+            .map { Slim(id: $0.id, company_name: $0.company_name, job_title: $0.job_title, status: $0.status.rawValue) }
+        if let data = try? JSONEncoder().encode(active) {
+            UserDefaults(suiteName: "group.com.riseworks.offersplus")?.set(data, forKey: "activeApplications")
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 
     func delete(_ application: Application) async {

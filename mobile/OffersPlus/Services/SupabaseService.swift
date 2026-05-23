@@ -1,6 +1,7 @@
 import Foundation
 import AuthenticationServices
 import Supabase
+import WidgetKit
 
 let supabase = SupabaseClient(
     supabaseURL: Config.supabaseURL,
@@ -21,7 +22,22 @@ class AuthState: ObservableObject {
         for await state in supabase.auth.authStateChanges {
             isAuthenticated = state.session != nil
             isLoading = false
+            syncCredentialsToWidget(session: state.session)
         }
+    }
+
+    private func syncCredentialsToWidget(session: Session?) {
+        let defaults = UserDefaults(suiteName: "group.com.riseworks.offersplus")
+        if let session {
+            defaults?.set(Config.supabaseURL.absoluteString, forKey: "supabaseURL")
+            defaults?.set(Config.supabaseAnonKey,             forKey: "anonKey")
+            defaults?.set(session.accessToken,                forKey: "accessToken")
+            defaults?.set(true,                               forKey: "isSignedIn")
+        } else {
+            defaults?.removeObject(forKey: "accessToken")
+            defaults?.set(false, forKey: "isSignedIn")
+        }
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func signIn(email: String, password: String) async throws {
