@@ -31,7 +31,8 @@ class AuthState: ObservableObject {
     func signInWithGoogle() async throws {
         try await supabase.auth.signInWithOAuth(
             provider: .google,
-            redirectTo: URL(string: "com.riseworks.offersplus://login-callback")
+            redirectTo: URL(string: "com.riseworks.offersplus://login-callback"),
+            queryParams: [("prompt", "select_account")]
         ) { url in
             try await withCheckedThrowingContinuation { continuation in
                 let session = ASWebAuthenticationSession(
