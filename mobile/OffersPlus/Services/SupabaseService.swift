@@ -18,7 +18,7 @@ class AuthState: ObservableObject {
     @Published var isLoading = true
 
     func initialize() async {
-        for await state in await supabase.auth.authStateChanges {
+        for await state in supabase.auth.authStateChanges {
             isAuthenticated = state.session != nil
             isLoading = false
         }
