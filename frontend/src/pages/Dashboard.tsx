@@ -231,9 +231,9 @@ export function Dashboard() {
                             <div className="text-sm font-medium text-gray-900">
                               {app.company_link ? (
                                 <a href={app.company_link} target="_blank" rel="noopener noreferrer" className="hover:text-[#861F41] transition-colors">
-                                  {new URL(app.company_link).hostname.replace('www.', '')}
+                                  {app.company_name || new URL(app.company_link).hostname.replace('www.', '')}
                                 </a>
-                              ) : 'Company'}
+                              ) : app.company_name || 'Company'}
                             </div>
                             <div className="text-sm text-gray-600">
                               {app.job_link ? (
