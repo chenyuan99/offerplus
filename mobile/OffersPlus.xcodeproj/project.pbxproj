@@ -61,8 +61,8 @@
 		68BF8BFAE92B290A8DD3EF9A /* ApplicationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationRow.swift; sourceTree = "<group>"; };
 		6A0AC939A884E5123A5C9D94 /* OffersPlusWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffersPlusWidgetBundle.swift; sourceTree = "<group>"; };
 		6A829BC7AE9931C78582C132 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-		85CBFB43CF2860974AFA1EE9 /* OffersPlusWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OffersPlusWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		89ED6618444517F21E4852ED /* OffersPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OffersPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		85CBFB43CF2860974AFA1EE9 /* OffersPlusWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = OffersPlusWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		89ED6618444517F21E4852ED /* OffersPlus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = OffersPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		92073922C13354A45DAE93E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		95D34DD0D1005B660AA1A441 /* ApplicationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationDetailView.swift; sourceTree = "<group>"; };
 		9B6A5609F4F4F67A659F3D77 /* OffersPlusWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OffersPlusWidget.entitlements; sourceTree = "<group>"; };
@@ -251,6 +251,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = 1A112A86EE3233884F1B0B2C /* Build configuration list for PBXProject "OffersPlus" */;
 			developmentRegion = en;
@@ -331,7 +333,6 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = OffersPlusWidget/OffersPlusWidget.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 982H87JFFG;
 				INFOPLIST_FILE = OffersPlusWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -407,7 +408,6 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = OffersPlusWidget/OffersPlusWidget.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 982H87JFFG;
 				INFOPLIST_FILE = OffersPlusWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -429,7 +429,6 @@
 				CODE_SIGN_ENTITLEMENTS = OffersPlus/OffersPlus.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 982H87JFFG;
 				INFOPLIST_FILE = OffersPlus/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -450,7 +449,6 @@
 				CODE_SIGN_ENTITLEMENTS = OffersPlus/OffersPlus.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 982H87JFFG;
 				INFOPLIST_FILE = OffersPlus/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
