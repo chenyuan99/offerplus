@@ -20,6 +20,7 @@
 		9102FC9756B16209AA3BD397 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 423635F35E676C7931983DDD /* StatsView.swift */; };
 		918496B4E56BA6892170186B /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D6A8F8911F914EC28FCF9E /* DashboardViewModel.swift */; };
 		97955071F08416D370B7D0A3 /* ApplicationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95D34DD0D1005B660AA1A441 /* ApplicationDetailView.swift */; };
+		DE4F0F338E5F60D0B69138C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E16891E282D5685F3F03B48C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,7 @@
 		A642A47A0A5B2D08F06BE664 /* Application.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		A6542AD1883C1FFC269BE616 /* OffersPlusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OffersPlusApp.swift; sourceTree = "<group>"; };
 		C675841E7B976CF671EC3AA3 /* AddApplicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddApplicationView.swift; sourceTree = "<group>"; };
+		E16891E282D5685F3F03B48C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EDE5466A5F0B637FDEAD2626 /* CompanyNameExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyNameExtractor.swift; sourceTree = "<group>"; };
 		F58365299E7E79C7A71FB8BF /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -70,6 +72,7 @@
 		4ED72FC8577BDF8196912657 /* OffersPlus */ = {
 			isa = PBXGroup;
 			children = (
+				E16891E282D5685F3F03B48C /* Assets.xcassets */,
 				F58365299E7E79C7A71FB8BF /* Config.swift */,
 				52D60D33B61028981F119185 /* Info.plist */,
 				A6542AD1883C1FFC269BE616 /* OffersPlusApp.swift */,
@@ -159,6 +162,7 @@
 			buildConfigurationList = A6884E8B8E52F8609E5625AB /* Build configuration list for PBXNativeTarget "OffersPlus" */;
 			buildPhases = (
 				F62699604E15700B3DD886E4 /* Sources */,
+				DABC3B231EDD3A76A5A91122 /* Resources */,
 				7A46185E2DDE85E252FFC895 /* Frameworks */,
 			);
 			buildRules = (
@@ -180,7 +184,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2650;
+				LastUpgradeCheck = 1500;
 			};
 			buildConfigurationList = 1A112A86EE3233884F1B0B2C /* Build configuration list for PBXProject "OffersPlus" */;
 			developmentRegion = en;
@@ -203,6 +207,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DABC3B231EDD3A76A5A91122 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DE4F0F338E5F60D0B69138C4 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F62699604E15700B3DD886E4 /* Sources */ = {
@@ -262,10 +277,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 982H87JFFG;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -279,7 +292,6 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -292,6 +304,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 982H87JFFG;
 				INFOPLIST_FILE = OffersPlus/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -311,6 +324,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 982H87JFFG;
 				INFOPLIST_FILE = OffersPlus/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -359,10 +373,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 982H87JFFG;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -383,7 +395,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
