@@ -1,4 +1,5 @@
 import Foundation
+import AuthenticationServices
 import Supabase
 
 let supabase = SupabaseClient(
@@ -24,8 +25,46 @@ class AuthState: ObservableObject {
         try await supabase.auth.signIn(email: email, password: password)
     }
 
+    func signInWithGoogle() async throws {
+        try await supabase.auth.signInWithOAuth(
+            provider: .google,
+            redirectTo: URL(string: "com.riseworks.offersplus://login-callback")
+        ) { url in
+            try await withCheckedThrowingContinuation { continuation in
+                let session = ASWebAuthenticationSession(
+                    url: url,
+                    callbackURLScheme: "com.riseworks.offersplus"
+                ) { callbackURL, error in
+                    if let error = error {
+                        continuation.resume(throwing: error)
+                    } else if let callbackURL = callbackURL {
+                        continuation.resume(returning: callbackURL)
+                    } else {
+                        continuation.resume(throwing: URLError(.badServerResponse))
+                    }
+                }
+                session.prefersEphemeralWebBrowserSession = false
+                session.presentationContextProvider = PresentationContextProvider.shared
+                session.start()
+            }
+        }
+    }
+
     func signOut() async throws {
         try await supabase.auth.signOut()
+    }
+}
+
+// MARK: - ASWebAuthenticationSession presentation context
+
+private final class PresentationContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
+    static let shared = PresentationContextProvider()
+
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow } ?? ASPresentationAnchor()
     }
 }
 

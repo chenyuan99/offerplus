@@ -1,3 +1,4 @@
+import AuthenticationServices
 import SwiftUI
 
 struct LoginView: View {
@@ -5,6 +6,7 @@ struct LoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var isLoading = false
+    @State private var isGoogleLoading = false
     @State private var error: String?
 
     var body: some View {
@@ -58,6 +60,34 @@ struct LoginView: View {
                     .cornerRadius(12)
                 }
                 .disabled(isLoading || email.isEmpty || password.isEmpty)
+
+                HStack {
+                    Rectangle().frame(height: 1).foregroundStyle(.separator)
+                    Text("or").font(.caption).foregroundStyle(.secondary)
+                    Rectangle().frame(height: 1).foregroundStyle(.separator)
+                }
+
+                Button {
+                    Task { await signInWithGoogle() }
+                } label: {
+                    HStack(spacing: 10) {
+                        if isGoogleLoading {
+                            ProgressView()
+                        } else {
+                            Image(systemName: "globe")
+                                .foregroundStyle(.blue)
+                            Text("Continue with Google")
+                                .fontWeight(.medium)
+                                .foregroundStyle(.primary)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(.regularMaterial)
+                    .cornerRadius(12)
+                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(.separator))
+                }
+                .disabled(isGoogleLoading)
             }
             .padding(.horizontal)
 
@@ -75,5 +105,19 @@ struct LoginView: View {
             self.error = error.localizedDescription
         }
         isLoading = false
+    }
+
+    private func signInWithGoogle() async {
+        isGoogleLoading = true
+        error = nil
+        do {
+            try await authState.signInWithGoogle()
+        } catch {
+            // ASWebAuthenticationSession cancellation is not an error worth showing
+            if (error as? ASWebAuthenticationSessionError)?.code != .canceledLogin {
+                self.error = error.localizedDescription
+            }
+        }
+        isGoogleLoading = false
     }
 }
