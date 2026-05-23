@@ -1,5 +1,3 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, content-type',
@@ -17,6 +15,21 @@ async function hashToken(token: string): Promise<string> {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
 }
 
+function db(path: string, method = 'GET', body?: unknown, extraHeaders?: Record<string, string>) {
+  const url = `${Deno.env.get('SUPABASE_URL')}/rest/v1${path}`
+  return fetch(url, {
+    method,
+    headers: {
+      'apikey': Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
+      'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      ...extraHeaders,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  })
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
 
@@ -27,23 +40,14 @@ Deno.serve(async (req) => {
   const token = auth.slice(7)
   const keyHash = await hashToken(token)
 
-  const admin = createClient(
-    Deno.env.get('SUPABASE_URL')!,
-    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-  )
+  const keyRes = await db(`/api_keys?key_hash=eq.${keyHash}&select=id,user_id&limit=1`)
+  const keys = await keyRes.json()
+  if (!keys?.length) return json({ error: 'Invalid token' }, 401)
 
-  const { data: apiKey } = await admin
-    .from('api_keys')
-    .select('id, user_id')
-    .eq('key_hash', keyHash)
-    .single()
-
-  if (!apiKey) return json({ error: 'Invalid token' }, 401)
+  const { id: keyId, user_id: userId } = keys[0]
 
   // Fire-and-forget last_used update
-  admin.from('api_keys').update({ last_used_at: new Date().toISOString() }).eq('id', apiKey.id)
-
-  const userId: string = apiKey.user_id
+  db(`/api_keys?id=eq.${keyId}`, 'PATCH', { last_used_at: new Date().toISOString() })
 
   // --- Route ---
   const url = new URL(req.url)
@@ -54,68 +58,57 @@ Deno.serve(async (req) => {
   if (path === '/applications' && req.method === 'GET') {
     const search = url.searchParams.get('search')
     const status = url.searchParams.get('status')
-    const limit = parseInt(url.searchParams.get('limit') ?? '100')
+    const limit = url.searchParams.get('limit') ?? '100'
 
-    let q = admin
-      .from('applications')
-      .select('id, job_title, company_name, company_link, job_link, status, date_applied, notes')
-      .order('date_applied', { ascending: false })
-      .limit(limit)
+    let qs = `user_id=eq.${userId}&order=date_applied.desc&limit=${limit}`
+    qs += `&select=id,job_title,company_name,company_link,job_link,status,date_applied,notes`
+    if (status) qs += `&status=eq.${status}`
+    if (search) {
+      const enc = encodeURIComponent(`company_name.ilike.*${search}*,job_title.ilike.*${search}*`)
+      qs += `&or=(${enc})`
+    }
 
-    if (search) q = q.or(`company_name.ilike.%${search}%,job_title.ilike.%${search}%`)
-    if (status) q = q.eq('status', status)
-
-    const { data, error } = await q
-    if (error) return json({ error: error.message }, 500)
+    const res = await db(`/applications?${qs}`)
+    const data = await res.json()
+    if (!res.ok) return json({ error: data }, 500)
     return json(data)
   }
 
   // POST /applications
   if (path === '/applications' && req.method === 'POST') {
     const body = await req.json()
-    const { data, error } = await admin
-      .from('applications')
-      .insert({ ...body, user_id: userId })
-      .select()
-      .single()
-    if (error) return json({ error: error.message }, 500)
-    return json(data, 201)
+    const res = await db('/applications', 'POST', { ...body, user_id: userId })
+    const data = await res.json()
+    if (!res.ok) return json({ error: data }, 500)
+    return json(Array.isArray(data) ? data[0] : data, 201)
   }
 
   // PATCH /applications/:id
   if (idMatch && req.method === 'PATCH') {
-    const id = parseInt(idMatch[1])
+    const id = idMatch[1]
     const body = await req.json()
 
-    // Only allow safe fields to be updated by agents
     const allowed = ['status', 'notes', 'job_title', 'company_name', 'date_applied']
     const update = Object.fromEntries(
       Object.entries(body).filter(([k]) => allowed.includes(k))
     )
 
-    const { data, error } = await admin
-      .from('applications')
-      .update(update)
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) return json({ error: error.message }, 500)
-    if (!data) return json({ error: 'Not found' }, 404)
-    return json(data)
+    const res = await db(`/applications?id=eq.${id}&user_id=eq.${userId}`, 'PATCH', update)
+    const data = await res.json()
+    if (!res.ok) return json({ error: data }, 500)
+    const row = Array.isArray(data) ? data[0] : data
+    if (!row) return json({ error: 'Not found' }, 404)
+    return json(row)
   }
 
   // GET /applications/:id
   if (idMatch && req.method === 'GET') {
-    const id = parseInt(idMatch[1])
-    const { data, error } = await admin
-      .from('applications')
-      .select('*')
-      .eq('id', id)
-      .single()
-    if (error) return json({ error: error.message }, 500)
-    if (!data) return json({ error: 'Not found' }, 404)
-    return json(data)
+    const id = idMatch[1]
+    const res = await db(`/applications?id=eq.${id}&user_id=eq.${userId}&limit=1`)
+    const data = await res.json()
+    if (!res.ok) return json({ error: data }, 500)
+    if (!data?.length) return json({ error: 'Not found' }, 404)
+    return json(data[0])
   }
 
   return json({ error: 'Not found' }, 404)
