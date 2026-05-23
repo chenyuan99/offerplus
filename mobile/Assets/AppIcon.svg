@@ -1,0 +1,18 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9B2335"/>
+      <stop offset="100%" stop-color="#5A1020"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background (iOS clips to rounded rect automatically) -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- Subtle ring -->
+  <circle cx="512" cy="512" r="290" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="36"/>
+
+  <!-- Plus sign -->
+  <rect x="268" y="448" width="488" height="128" rx="64" fill="white"/>
+  <rect x="448" y="268" width="128" height="488" rx="64" fill="white"/>
+</svg>

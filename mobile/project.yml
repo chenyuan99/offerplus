@@ -14,7 +14,10 @@ targets:
   OffersPlus:
     type: application
     platform: iOS
-    sources: OffersPlus
+    sources:
+      - OffersPlus
+    resources:
+      - OffersPlus/Assets.xcassets
     dependencies:
       - package: Supabase
     settings:
