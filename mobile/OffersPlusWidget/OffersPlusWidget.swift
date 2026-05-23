@@ -421,8 +421,12 @@ struct OffersPlusWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ActiveApplicationsProvider()) { entry in
-            OffersPlusWidgetEntryView(entry: entry)
-                .containerBackground(.background, for: .widget)
+            if #available(iOS 17.0, *) {
+                OffersPlusWidgetEntryView(entry: entry)
+                    .containerBackground(.background, for: .widget)
+            } else {
+                OffersPlusWidgetEntryView(entry: entry)
+            }
         }
         .configurationDisplayName("Active Applications")
         .description("Track your OA, VO, and Interview applications at a glance.")
