@@ -277,7 +277,7 @@ def verify_upload(supabase: Client):
             print(f"\nSample records:")
             for i, record in enumerate(sample_result.data[:3]):
                 print(
-                    f"  {i+1}. Case: {record.get('case_number')}, Employer: {record.get('employer_name')}, Status: {record.get('case_status')}")
+                    f"  {i+1}. Case: [REDACTED], Employer: [REDACTED], Status: {record.get('case_status')}")
 
         # Get statistics
         stats_result = supabase.table(
