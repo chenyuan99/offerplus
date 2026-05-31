@@ -9,7 +9,7 @@ on storage.objects for insert
 with check (
     bucket_id = 'resumes'
     and auth.role() = 'authenticated'
-    and (storage.foldername(name))[1] = auth.uid()
+    and (storage.foldername(name))[1] = auth.uid()::text
 );
 
 -- Allow users to read their own files
@@ -29,7 +29,7 @@ on storage.objects for delete
 using (
     bucket_id = 'resumes'
     and auth.role() = 'authenticated'
-    and (storage.foldername(name))[1] = auth.uid()
+    and (storage.foldername(name))[1] = auth.uid()::text
 );
 
 -- Enable RLS
