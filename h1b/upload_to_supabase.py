@@ -270,14 +270,11 @@ def verify_upload(supabase: Client):
             result, 'count') else len(result.data)
         print(f"Total records in database: {total_count}")
 
-        # Get sample records
+        # Confirm records exist without logging individual record details
         sample_result = supabase.table(
-            'h1b_applications').select('*').limit(5).execute()
+            'h1b_applications').select('id').limit(5).execute()
         if sample_result.data:
-            print(f"\nSample records:")
-            for i, record in enumerate(sample_result.data[:3]):
-                print(
-                    f"  {i+1}. Case: {record.get('case_number')}, Employer: {record.get('employer_name')}, Status: {record.get('case_status')}")
+            print(f"\nSample check: {len(sample_result.data)} record(s) accessible.")
 
         # Get statistics
         stats_result = supabase.table(
