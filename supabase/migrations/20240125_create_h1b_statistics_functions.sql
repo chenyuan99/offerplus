@@ -322,18 +322,43 @@ BEGIN
 END;
 $$;
 
--- Create indexes for better performance
-CREATE INDEX IF NOT EXISTS idx_h1b_records_employer_name ON h1b_records(employer_name);
-CREATE INDEX IF NOT EXISTS idx_h1b_records_case_status ON h1b_records(case_status);
-CREATE INDEX IF NOT EXISTS idx_h1b_records_job_title ON h1b_records(job_title);
-CREATE INDEX IF NOT EXISTS idx_h1b_records_salary ON h1b_records(wage_rate_of_pay_from, wage_rate_of_pay_to);
-CREATE INDEX IF NOT EXISTS idx_h1b_records_received_date ON h1b_records(received_date);
-CREATE INDEX IF NOT EXISTS idx_h1b_records_worksite_state ON h1b_records(worksite_state);
-CREATE INDEX IF NOT EXISTS idx_h1b_records_employer_state ON h1b_records(employer_state);
+-- Create indexes and policies only if h1b_records table exists.
+-- On fresh deployments the table is h1b_applications; this file is
+-- superseded by 20240125_create_h1b_statistics_functions_updated.sql.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_name = 'h1b_records'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_h1b_records_employer_name ON h1b_records(employer_name);
+    CREATE INDEX IF NOT EXISTS idx_h1b_records_case_status ON h1b_records(case_status);
+    CREATE INDEX IF NOT EXISTS idx_h1b_records_job_title ON h1b_records(job_title);
+    CREATE INDEX IF NOT EXISTS idx_h1b_records_salary ON h1b_records(wage_rate_of_pay_from, wage_rate_of_pay_to);
+    CREATE INDEX IF NOT EXISTS idx_h1b_records_received_date ON h1b_records(received_date);
+    CREATE INDEX IF NOT EXISTS idx_h1b_records_worksite_state ON h1b_records(worksite_state);
+    CREATE INDEX IF NOT EXISTS idx_h1b_records_employer_state ON h1b_records(employer_state);
+    CREATE INDEX IF NOT EXISTS idx_h1b_records_employer_status ON h1b_records(employer_name, case_status);
+    CREATE INDEX IF NOT EXISTS idx_h1b_records_job_salary ON h1b_records(job_title, wage_rate_of_pay_from);
 
--- Create composite indexes for common filter combinations
-CREATE INDEX IF NOT EXISTS idx_h1b_records_employer_status ON h1b_records(employer_name, case_status);
-CREATE INDEX IF NOT EXISTS idx_h1b_records_job_salary ON h1b_records(job_title, wage_rate_of_pay_from);
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_class c
+      JOIN pg_namespace n ON n.oid = c.relnamespace
+      WHERE c.relname = 'h1b_records' AND n.nspname = 'public' AND c.relrowsecurity = true
+    ) THEN
+      ALTER TABLE h1b_records ENABLE ROW LEVEL SECURITY;
+    END IF;
+
+    IF NOT EXISTS (
+      SELECT 1 FROM pg_policies
+      WHERE tablename = 'h1b_records' AND policyname = 'h1b_records_read_policy'
+    ) THEN
+      CREATE POLICY h1b_records_read_policy ON h1b_records
+        FOR SELECT TO authenticated
+        USING (true);
+    END IF;
+  END IF;
+END $$;
 
 -- Grant execute permissions to authenticated users
 GRANT EXECUTE ON FUNCTION get_h1b_statistics TO authenticated;
@@ -341,26 +366,3 @@ GRANT EXECUTE ON FUNCTION get_top_h1b_employers TO authenticated;
 GRANT EXECUTE ON FUNCTION get_h1b_salary_by_job_title TO authenticated;
 GRANT EXECUTE ON FUNCTION get_h1b_trends TO authenticated;
 GRANT EXECUTE ON FUNCTION get_h1b_statistics_by_state TO authenticated;
-
--- Create RLS policies if they don't exist
-DO $$
-BEGIN
-  -- Enable RLS on h1b_records table if not already enabled
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_class c 
-    JOIN pg_namespace n ON n.oid = c.relnamespace 
-    WHERE c.relname = 'h1b_records' AND n.nspname = 'public' AND c.relrowsecurity = true
-  ) THEN
-    ALTER TABLE h1b_records ENABLE ROW LEVEL SECURITY;
-  END IF;
-  
-  -- Create policy to allow read access to all authenticated users
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_policies 
-    WHERE tablename = 'h1b_records' AND policyname = 'h1b_records_read_policy'
-  ) THEN
-    CREATE POLICY h1b_records_read_policy ON h1b_records
-      FOR SELECT TO authenticated
-      USING (true);
-  END IF;
-END $$;
