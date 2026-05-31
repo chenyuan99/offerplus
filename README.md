@@ -5,6 +5,8 @@
 An Offer seeker powered by GPT.
 
 [![](https://dcbadge.limes.pink/api/server/X24GHUwtHW?style=flat)](https://discord.gg/X24GHUwtHW?style=flat)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/chenyuan99/offerplus)
+[![Powered by Supabase](https://img.shields.io/badge/Powered%20by-Supabase-3ecf8e?style=flat&logo=supabase)](https://supabase.com)
 
 ## Table of Contents
 
@@ -12,6 +14,8 @@ An Offer seeker powered by GPT.
 - [Team](#team)
 - [ATS Parsing](#ats-parsing)
 - [Data Vendors](#data-vendors)
+- [Project Structure](#project-structure)
+- [Development](#development)
 - [License](#license)
 - [Reference](#reference)
 - [Acknowledgement](#acknowledgement)
@@ -35,6 +39,45 @@ Offer+ is an AI-powered job offer seeker that helps users find job opportunities
 2. Internship
 3. [icc.fyi](https://icc.fyi)
 4. [USCIS](https://www.uscis.gov/)
+
+## Project Structure
+
+```
+offerplus/
+├── backend/                 # Backend services
+├── frontend/               # React frontend application
+├── h1b/                    # H1B data processing
+├── supabase/              # Supabase configuration and scripts
+│   ├── migrations/        # Database migrations
+│   ├── scripts/           # Utility scripts
+│   │   ├── test_supabase_storage.py
+│   │   └── upload_to_supabase.py
+│   └── config.toml
+├── docs/                  # Documentation
+├── scripts/               # General utility scripts
+└── templates/             # Document templates
+```
+
+## Development
+
+### Supabase Setup
+
+The project uses Supabase for backend services. Utility scripts are located in `supabase/scripts/`:
+
+- **test_supabase_storage.py**: Test Supabase Storage connection and operations
+- **upload_to_supabase.py**: Upload H1B data to Supabase database
+
+### Running Supabase Scripts
+
+```bash
+# Test Supabase Storage connection
+python supabase/scripts/test_supabase_storage.py
+
+# Upload H1B data
+python supabase/scripts/upload_to_supabase.py
+```
+
+Make sure to set up your `.env` file with the required Supabase credentials before running these scripts.
 
 ## License
 

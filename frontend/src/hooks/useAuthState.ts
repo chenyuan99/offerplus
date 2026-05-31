@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import { supabaseAuthService, AuthUser } from '../services/supabaseAuth';
+import { authService, type AuthUser } from '../services/authService';
 
 export function useAuthState() {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -12,7 +12,7 @@ export function useAuthState() {
   const checkUser = useCallback(async () => {
     try {
       setLoading(true);
-      const currentUser = await supabaseAuthService.getCurrentUser();
+      const currentUser = await authService.getCurrentUser();
       setUser(currentUser);
     } catch (error) {
       console.error('Auth check error:', error);
@@ -48,10 +48,10 @@ export function useAuthState() {
   const signIn = async (email: string, password: string) => {
     try {
       setError(null);
-      const { user, error } = await supabaseAuthService.signIn(email, password);
-      
+      const { data, error } = await authService.signIn({ email, password });
+
       if (error) throw error;
-      setUser(user);
+      setUser(data?.user || null);
     } catch (error) {
       console.error('Sign in error:', error);
       setError(error instanceof Error ? error.message : 'Failed to sign in');
@@ -62,10 +62,10 @@ export function useAuthState() {
   const signUp = async (email: string, password: string) => {
     try {
       setError(null);
-      const { user, error } = await supabaseAuthService.signUp(email, password);
-      
+      const { data, error } = await authService.signUp({ email, password });
+
       if (error) throw error;
-      setUser(user);
+      setUser(data?.user || null);
     } catch (error) {
       console.error('Sign up error:', error);
       setError(error instanceof Error ? error.message : 'Failed to sign up');
@@ -76,8 +76,8 @@ export function useAuthState() {
   const signInWithProvider = async (provider: 'google' | 'github') => {
     try {
       setError(null);
-      const { error } = await supabaseAuthService.signInWithProvider(provider);
-      
+      const { error } = await authService.signInWithProvider(provider);
+
       if (error) throw error;
     } catch (error) {
       console.error('Provider sign in error:', error);
@@ -89,8 +89,8 @@ export function useAuthState() {
   const signOut = async () => {
     try {
       setError(null);
-      const { error } = await supabaseAuthService.signOut();
-      
+      const { error } = await authService.signOut();
+
       if (error) throw error;
       setUser(null);
     } catch (error) {
@@ -103,8 +103,8 @@ export function useAuthState() {
   const resetPassword = async (email: string) => {
     try {
       setError(null);
-      const { error } = await supabaseAuthService.resetPassword(email);
-      
+      const { error } = await authService.resetPassword(email);
+
       if (error) throw error;
     } catch (error) {
       console.error('Password reset error:', error);
@@ -116,8 +116,8 @@ export function useAuthState() {
   const updatePassword = async (newPassword: string) => {
     try {
       setError(null);
-      const { error } = await supabaseAuthService.updatePassword(newPassword);
-      
+      const { error } = await authService.updatePassword(newPassword);
+
       if (error) throw error;
     } catch (error) {
       console.error('Password update error:', error);

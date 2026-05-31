@@ -3,12 +3,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import { HelmetProvider } from 'react-helmet-async';
 import { Dashboard } from './pages/Dashboard';
 import Login from './pages/auth/Login';
+import RegisterPage from './pages/RegisterPage';
 import CheckEmail from './pages/auth/CheckEmail';
 import Callback from './pages/auth/Callback';
 import { Profile } from './pages/Profile';
 import { Companies } from './pages/Companies';
 import { CompanyDetail } from './pages/CompanyDetail';
 import { JobGPT } from './pages/JobGPT';
+import { JobPostings } from './pages/JobPostings';
 import { AddApplication } from './pages/AddApplication';
 import EditApplication from './pages/EditApplication';
 import { Privacy } from './pages/Privacy';
@@ -86,6 +88,11 @@ function AppContent() {
                 <Login />
               </PublicRoute>
             } />
+            <Route path="/register" element={
+              <PublicRoute>
+                <RegisterPage />
+              </PublicRoute>
+            } />
             <Route path="/auth/callback" element={
               <PublicRoute>
                 <Callback />
@@ -128,7 +135,7 @@ function AppContent() {
               }
             />
             <Route
-              path="/companies/:id"
+              path="/company/:companyName"
               element={
                 <ProtectedRoute>
                   <CompanyDetail />
@@ -140,6 +147,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <JobGPT />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/job-postings"
+              element={
+                <ProtectedRoute>
+                  <JobPostings />
                 </ProtectedRoute>
               }
             />

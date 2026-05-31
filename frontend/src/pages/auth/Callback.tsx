@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../services/supabaseAuth';
+import { authService } from '../../services/authService';
 
 const AuthCallback = () => {
   const navigate = useNavigate();
@@ -10,6 +10,7 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuth = async () => {
       try {
+        const supabase = authService.getSupabaseClient();
         // Parse hash fragment (OAuth tokens are in #access_token=...)
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);

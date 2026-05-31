@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
-import { getCompanyLogo } from '../utils/companyLogo';
+import { getCompanyLogo, getCompanyDomain } from '../utils/companyLogo';
 
 interface CompanyLogoProps {
   companyName: string;
+  companyLink?: string;
   size?: number;
   className?: string;
 }
 
-export function CompanyLogo({ companyName, size = 40, className = '' }: CompanyLogoProps) {
+export function CompanyLogo({ companyName, companyLink, size = 40, className = '' }: CompanyLogoProps) {
   const [hasError, setHasError] = useState(false);
-  const logoUrl = getCompanyLogo(companyName, size);
+
+  let domain = companyName.toLowerCase();
+  if (companyLink) {
+    try {
+      domain = getCompanyDomain(new URL(companyLink).hostname);
+    } catch {
+      domain = companyName.toLowerCase();
+    }
+  }
+
+  const logoUrl = getCompanyLogo(domain, size);
 
   const handleError = () => {
     setHasError(true);
@@ -17,7 +28,7 @@ export function CompanyLogo({ companyName, size = 40, className = '' }: CompanyL
 
   if (hasError) {
     return (
-      <div 
+      <div
         className={`rounded-full bg-gray-100 flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
       >

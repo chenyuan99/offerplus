@@ -81,22 +81,14 @@ export const PROMPT_DATA: PromptTemplateData = {
         mode: "why_company",
         name: "Company Research and Interest",
         description: "Help craft compelling responses based on company research",
-        systemPrompt: "You are JobGPT, a career advisor specializing in helping candidates articulate their interest in specific companies. Your role is to help users craft compelling \"Why do you want to work at this company?\" responses that demonstrate genuine interest, research, and alignment with company values. Focus on specific, authentic reasons rather than generic statements.",
-        userTemplate: `Based on the company "{companyName}", help me craft a compelling response to "Why do you want to work at {companyName}?"
-
-User input: {userInput}
-
-Please structure your response to include:
-1. Specific aspects of the company's mission, values, or culture that resonate with me
-2. Recent company achievements, products, or initiatives that interest me
-3. How my skills and career goals align with the company's direction
-4. What unique value I can bring to the organization
-
-Keep the response authentic, specific, and around 150-200 words. Avoid generic statements that could apply to any company.`,
+        systemPrompt: "You are JobGPT, an expert career advisor specializing in crafting compelling 'Why do you want to work here?' responses. Create authentic, well-researched answers that demonstrate genuine interest and alignment. Structure responses with: (1) Personal discovery story, (2) 2-3 specific researched facts about the company, (3) Three key reasons - career growth, values alignment, and product/impact excitement, (4) How their skills contribute, (5) Authentic closing with genuine enthusiasm. Be specific not generic, authentic not scripted, and show real research about the company.",
+        userTemplate: "Company: {companyName}. About me: {userInput}. Help me craft a 'Why do you want to work here?' response that opens with my discovery story, includes specific facts about {companyName}, presents 3 clear reasons (career growth, values alignment, product excitement), explains my contribution, and closes with authentic enthusiasm. Keep it 280-320 words, specific and authentic.",
         variables: ["companyName", "userInput"],
         modelOptimizations: {
-          "gpt-4": { maxTokens: 300, temperature: 0.7 },
-          "gpt-3.5-turbo": { maxTokens: 250, temperature: 0.8 }
+          "gpt-5-mini": { maxTokens: 2000, temperature: 1 },
+          "gpt-4": { maxTokens: 600, temperature: 0.8 },
+          "gpt-4-turbo": { maxTokens: 650, temperature: 0.8 },
+          "gpt-3.5-turbo": { maxTokens: 500, temperature: 0.85 }
         }
       },
       {
@@ -104,19 +96,15 @@ Keep the response authentic, specific, and around 150-200 words. Avoid generic s
         mode: "why_company",
         name: "Company Values Alignment",
         description: "Focus on company culture and values alignment",
-        systemPrompt: "You are JobGPT, a career advisor specializing in helping candidates articulate their interest in specific companies. Your role is to help users craft compelling \"Why do you want to work at this company?\" responses that demonstrate genuine interest, research, and alignment with company values. Focus on specific, authentic reasons rather than generic statements.",
-        userTemplate: `I'm preparing for an interview with {companyName}. Help me articulate why I'm specifically interested in this company.
-
-User input: {userInput}
-
-Focus on:
-- Company culture and values alignment
-- Specific products, services, or initiatives that excite me
-- Growth opportunities and learning potential
-- How my background makes me a good fit
-
-Please provide a structured response that sounds genuine and well-researched.`,
-        variables: ["companyName", "userInput"]
+        systemPrompt: "You are JobGPT, an expert at helping candidates articulate authentic alignment between personal values and company mission. Create responses that demonstrate deep cultural fit by identifying shared values, showing understanding of company culture with specific examples, demonstrating knowledge of company initiatives, connecting personal growth to company opportunities, and showing genuine enthusiasm. Be authentic, specific, and avoid generic corporate jargon.",
+        userTemplate: "Help me create a compelling response about why I want to work at {companyName}, focusing on values alignment. Company: {companyName}. About me: {userInput}. Create a response that: 1) Demonstrates my understanding of {companyName}'s core values and mission. 2) Explains how my personal values align with {companyName}'s culture. 3) Highlights specific company initiatives or products that inspire me. 4) Shows how {companyName} fits my career growth and learning goals. 5) Conveys genuine passion for {companyName}'s work and impact. 6) Explains why I'd be a great cultural fit. Make it authentic, specific - 250-300 words.",
+        variables: ["companyName", "userInput"],
+        modelOptimizations: {
+          "gpt-5-mini": { maxTokens: 600, temperature: 0.75 },
+          "gpt-4": { maxTokens: 500, temperature: 0.8 },
+          "gpt-4-turbo": { maxTokens: 550, temperature: 0.8 },
+          "gpt-3.5-turbo": { maxTokens: 450, temperature: 0.85 }
+        }
       }
     ],
     
@@ -219,6 +207,12 @@ Please provide:
   },
   
   modelConfigurations: {
+    "gpt-5-mini": {
+      maxTokens: 800,
+      temperature: 0.7,
+      topP: 0.9,
+      frequencyPenalty: 0.1
+    },
     "gpt-4": {
       maxTokens: 500,
       temperature: 0.7,
@@ -242,8 +236,16 @@ Please provide:
 
 // Utility functions for template management
 export class PromptTemplateUtils {
+  // Maps snake_case JobGPTMode values to the camelCase keys in PROMPT_DATA.templates
+  private static readonly MODE_KEY_MAP: Record<JobGPTMode, keyof typeof PROMPT_DATA.templates> = {
+    why_company: 'whyCompany',
+    behavioral: 'behavioral',
+    general: 'general',
+  };
+
   static getTemplatesByMode(mode: JobGPTMode): PromptTemplate[] {
-    return PROMPT_DATA.templates[mode] || [];
+    const key = PromptTemplateUtils.MODE_KEY_MAP[mode];
+    return PROMPT_DATA.templates[key] || [];
   }
   
   static getDefaultTemplate(mode: JobGPTMode): PromptTemplate {

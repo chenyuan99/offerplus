@@ -1,5 +1,5 @@
 export type JobGPTMode = 'why_company' | 'behavioral' | 'general';
-export type AIModel = 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-turbo';
+export type AIModel = 'gpt-5-mini' | 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-turbo';
 
 export interface JobGPTResponse {
   response: string;
@@ -7,6 +7,8 @@ export interface JobGPTResponse {
   model: AIModel;
   templateUsed: string;
   processingTime: number;
+  systemPrompt?: string;
+  userPrompt?: string;
   usage?: {
     promptTokens: number;
     completionTokens: number;

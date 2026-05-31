@@ -1,0 +1,55 @@
+name: OffersPlus
+options:
+  bundleIdPrefix: com.riseworks
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15"
+
+packages:
+  Supabase:
+    url: https://github.com/supabase/supabase-swift
+    from: 2.0.0
+
+targets:
+  OffersPlus:
+    type: application
+    platform: iOS
+    sources:
+      - OffersPlus
+    resources:
+      - OffersPlus/Assets.xcassets
+    dependencies:
+      - package: Supabase
+      - target: OffersPlusWidget
+    entitlements:
+      path: OffersPlus/OffersPlus.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.riseworks.offersplus
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.riseworks.offersplus
+        SWIFT_VERSION: "5.9"
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: OffersPlus/Info.plist
+
+  OffersPlusWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - OffersPlusWidget
+    resources:
+      - OffersPlus/Assets.xcassets
+    entitlements:
+      path: OffersPlusWidget/OffersPlusWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.riseworks.offersplus
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.riseworks.offersplus.widget
+        SWIFT_VERSION: "5.9"
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_FILE: OffersPlusWidget/Info.plist

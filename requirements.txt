@@ -1,15 +1,16 @@
 # Core dependencies
-certifi>=2024.7.4
-charset-normalizer>=3.1.0
-idna>=2.10
+certifi>=2026.4.22
+charset-normalizer>=3.4.7
+idna>=3.13
 openai>=0.27.8
 pillow>=10.2.0
 python-dotenv>=1.0.0
 requests>=2.25.1
 supabase
-tqdm==4.66.3
+tqdm==4.67.3
 typing_extensions>=4.6.3
-urllib3>=1.26.0
+urllib3>=2.6.3
+yarl==1.17.2
 
 # Development dependencies
 pytest>=7.0.0
