@@ -12,7 +12,7 @@ export default function FeatureCard({ icon: Icon, title, description }: FeatureC
     <div className="relative p-6 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-shadow duration-300">
       <div>
         <span className="inline-flex items-center justify-center p-3 bg-indigo-50 rounded-md">
-          <Icon className="h-6 w-6 text-indigo-600" aria-hidden="true" aria-label={`${title} icon`} />
+          <Icon className="h-6 w-6 text-indigo-600" role="img" aria-hidden="true" aria-label={`${title} icon`} />
         </span>
       </div>
       <div className="mt-4">
