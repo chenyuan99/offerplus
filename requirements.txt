@@ -2,7 +2,7 @@
 certifi>=2026.4.22
 charset-normalizer>=3.4.7
 idna>=3.13
-openai>=0.27.8
+openai>=2.44.0
 pillow>=10.2.0
 python-dotenv>=1.2.2
 requests>=2.34.2
