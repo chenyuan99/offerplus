@@ -118,6 +118,13 @@ OfferPlus is a modern job application tracking system built with React, TypeScri
 - User dropdown with auth actions
 - Navigation links with active states
 
+#### Footer
+- Simple site-wide footer, rendered below the main content area
+
+### H1B Data Viewer
+
+A dedicated set of components for exploring H1B visa application data (`src/components/h1b/`), including `H1BViewer`, `H1BFilters`, `H1BStatistics`, `H1BTable`, and `H1BExportButton`. See `src/components/h1b/README.md` for details on this feature area.
+
 ## Layout Patterns
 
 ### Page Layout
@@ -307,32 +314,27 @@ Not currently implemented but ready for future expansion:
 
 ## Status Badges
 
-### Badge Colors
-- **Applied**: Blue (`bg-blue-100 text-blue-800`)
-- **Interview**: Green (`bg-green-100 text-green-800`)
-- **Rejected**: Red (`bg-red-100 text-red-800`)
-- **Pending**: Yellow (`bg-yellow-100 text-yellow-800`)
-- **Accepted**: Green (`bg-emerald-100 text-emerald-800`)
+Application status is `'applied' | 'in_progress' | 'rejected' | 'offer' | 'accepted' | 'oa' | 'vo'` (`src/types.ts`). Badge color mapping currently differs slightly by screen — worth consolidating into a shared helper:
+
+- **Dashboard** (`getStatusColor` in `src/pages/Dashboard.tsx`): `offer` → green, `rejected` → red, `vo` → yellow, `oa` → blue, everything else → gray.
+- **JobList** (`getStatusColor` in `src/components/JobList.tsx`): `Applied` → blue, `In Progress` → yellow, `Rejected` → red, `Offer` → green, `Accepted` → purple.
 
 ```tsx
-<span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-  Interview
+<span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+  offer
 </span>
 ```
 
 ## Storybook
 
-All components have Storybook stories demonstrating:
-- Default states
-- All variants and sizes
-- Edge cases
-- Responsive layouts
-- Multiple usage examples
+Stories currently exist for `Navbar`, `SearchBar`, `CompanyLogo`, `FeatureCard`, `LoadingSpinner`, and the top-level pages (`Pages.stories.tsx`), demonstrating default states, variants, and responsive layouts. Most other components (forms, H1B viewer, auth) don't have stories yet — see Future Enhancements.
 
 Run Storybook with: `npm run storybook`
 
 ## Future Enhancements
 
+- [ ] Consolidate status badge color logic into a shared helper/component (currently duplicated with slightly different mappings in Dashboard and JobList)
+- [ ] Extend Storybook coverage to forms, H1B viewer, and auth components
 - [ ] Dark mode support
 - [ ] Additional animation patterns
 - [ ] Toast notification system
