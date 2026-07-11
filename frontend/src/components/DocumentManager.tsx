@@ -88,7 +88,11 @@ export function DocumentManager() {
 
       <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+          <label htmlFor="document-type" className="sr-only">
+            Document type
+          </label>
           <select
+            id="document-type"
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value as DocumentType)}
             disabled={isUploading}
@@ -100,7 +104,11 @@ export function DocumentManager() {
               </option>
             ))}
           </select>
+          <label htmlFor="document-file" className="sr-only">
+            Choose a file to upload
+          </label>
           <input
+            id="document-file"
             type="file"
             onChange={handleFileChange}
             disabled={isUploading}
