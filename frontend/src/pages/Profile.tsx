@@ -62,6 +62,8 @@ export function Profile() {
   const [isUploading, setIsUploading] = useState(false);
   const [resumeInfo, setResumeInfo] = useState<ResumeInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDownloadingMarkdown, setIsDownloadingMarkdown] = useState(false);
+  const [markdownError, setMarkdownError] = useState<string | null>(null);
 
   const getUsername = (userEmail: string | undefined) => {
     return userEmail ? userEmail.split('@')[0] : 'user';
@@ -205,13 +207,47 @@ export function Profile() {
     }
   };
 
+  const handleDownloadMarkdown = async () => {
+    setMarkdownError(null);
+    setIsDownloadingMarkdown(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('profile-markdown');
+      if (error) throw error;
+
+      const blob = new Blob([data as string], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'profile.md';
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setMarkdownError(error instanceof Error ? error.message : 'Failed to generate profile.md');
+    } finally {
+      setIsDownloadingMarkdown(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">My Profile</h1>
-          <p className="mt-2 text-gray-600">Manage your account settings and resume</p>
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900">My Profile</h1>
+            <p className="mt-2 text-gray-600">Manage your account settings and resume</p>
+          </div>
+          <div>
+            <button
+              onClick={handleDownloadMarkdown}
+              disabled={isDownloadingMarkdown}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#861F41] bg-[#861F41]/10 rounded-md hover:bg-[#861F41]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <Download className="h-4 w-4" />
+              {isDownloadingMarkdown ? 'Generating...' : 'Download profile.md'}
+            </button>
+            {markdownError && <p className="mt-1 text-xs text-red-600">{markdownError}</p>}
+          </div>
         </div>
 
         {/* Account Information Card */}
