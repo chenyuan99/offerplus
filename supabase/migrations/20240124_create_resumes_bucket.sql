@@ -35,5 +35,7 @@ using (
     and (storage.foldername(name))[1] = auth.uid()::text
 );
 
--- Enable RLS
-alter table storage.objects enable row level security;
+-- Note: RLS is already enabled on storage.objects by default in every Supabase
+-- project. Re-enabling it here fails with "must be owner of table objects"
+-- because storage.objects is owned by supabase_storage_admin, not the role
+-- migrations run as.
