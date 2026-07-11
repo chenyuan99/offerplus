@@ -5,9 +5,10 @@ import { AIModelManager, AIModelError } from '../lib/aiModelAdapters';
 
 interface ResumeUploadResponse {
   success: boolean;
-  filePath?: string;
-  message?: string;
-  // Add other response properties as needed
+  text?: string;
+  textLength?: number;
+  truncated?: boolean;
+  error?: string;
 }
 
 export const jobgptService = {
@@ -130,31 +131,34 @@ export const jobgptService = {
     }
   },
 
-  uploadResume: async (file: File) => {
+  uploadResume: async (file: File): Promise<ResumeUploadResponse> => {
     try {
-      // First upload the file to Supabase Storage
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error('Please log in to upload a resume');
+
+      // Files must live under `<user.id>/...` to satisfy the resumes bucket's RLS policies
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `resumes/${fileName}`;
-      
+      const filePath = `${user.id}/${fileName}`;
+
       const { error: uploadError } = await supabase.storage
         .from('resumes')
         .upload(filePath, file);
-      
+
       if (uploadError) throw uploadError;
-      
+
       // Get the public URL
       const { data: { publicUrl } } = supabase.storage
         .from('resumes')
         .getPublicUrl(filePath);
-      
-      // Call the Edge Function to process the resume
+
+      // Call the Edge Function to extract and persist the resume's text
       const { data, error } = await supabase.functions.invoke('process-resume', {
         body: { filePath: publicUrl }
       });
-      
+
       if (error) throw error;
-      return data;
+      return data as ResumeUploadResponse;
     } catch (error) {
       console.error('Error uploading resume:', error);
       throw error;
