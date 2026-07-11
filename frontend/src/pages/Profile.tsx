@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase, type User } from '../lib/supabase';
 import { Download, Upload } from 'lucide-react';
 import { ApiKeyManager } from '../components/ApiKeyManager';
+import { DocumentManager } from '../components/DocumentManager';
 import type { ImportedProfile } from '../types/profile';
 
 interface UserMetadata {
@@ -458,6 +459,11 @@ export function Profile() {
               <p className="text-sm text-gray-500 mt-1">Upload a file using the button above</p>
             </div>
           )}
+        </div>
+
+        {/* Documents */}
+        <div className="mt-6">
+          <DocumentManager />
         </div>
 
         {/* Agent API Keys */}
