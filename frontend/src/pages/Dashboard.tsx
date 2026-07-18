@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Plus, Search, BarChart3, ChevronLeft, ChevronRight, Mail, AlertCircle } from 'lucide-react';
+import { Plus, Search, BarChart3, ChevronLeft, ChevronRight, RefreshCw, AlertCircle } from 'lucide-react';
 import { ApplicationRecord, ApplicationStatus } from '../types';
 import { supabase } from '../lib/supabase';
 import { getCompanyLogo, getCompanyDomain, extractCompanyNameFromUrl } from '../utils/companyLogo';
@@ -185,9 +185,10 @@ export function Dashboard() {
               onClick={syncGmail}
               disabled={syncing}
               className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50 transition-colors"
+              title="Reload applications from the database"
             >
-              <Mail className="h-5 w-5" />
-              <span className="text-sm font-medium">{syncing ? 'Syncing...' : 'Sync'}</span>
+              <RefreshCw className="h-5 w-5" />
+              <span className="text-sm font-medium">{syncing ? 'Refreshing…' : 'Refresh'}</span>
             </button>
 
             <button
@@ -270,6 +271,21 @@ export function Dashboard() {
                 </tbody>
               </table>
             </div>
+          ) : search || statusFilter ? (
+            <div className="p-12 text-center">
+              <p className="text-gray-600 mb-4">
+                {search ? `No matches for “${search}”` : 'No applications match this filter'}
+              </p>
+              <button
+                onClick={() => {
+                  setSearch('');
+                  if (statusFilter) navigate('/');
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#861F41] text-white rounded-md hover:bg-[#621531] transition-colors font-medium"
+              >
+                Clear {search ? 'search' : 'filter'}
+              </button>
+            </div>
           ) : (
             <div className="p-12 text-center">
               <p className="text-gray-600 mb-4">No applications found</p>
@@ -339,6 +355,8 @@ function CompanyLogo({ companyLink }: CompanyLogoProps) {
       {!imageError ? (
         <img
           className="h-10 w-10 rounded-full object-cover bg-gray-100"
+          width={40}
+          height={40}
           src={logoUrl}
           alt="Company logo"
           onError={() => setImageError(true)}
