@@ -33,4 +33,17 @@ describe('Landing', () => {
     expect(screen.getByText('Get started')).toBeInTheDocument();
     expect(screen.getByText('Log in')).toBeInTheDocument();
   });
+
+  it('does not render an unverified customer testimonial', () => {
+    renderLanding();
+    expect(screen.queryByText(/Software Engineer at Google/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Sarah Chen/i)).not.toBeInTheDocument();
+  });
+
+  it('uses the OfferPlus brand color for the primary CTA, not the Tailwind UI default', () => {
+    renderLanding();
+    const cta = screen.getByText('Get started');
+    expect(cta.className).toContain('#861F41');
+    expect(cta.className).not.toContain('indigo');
+  });
 });
