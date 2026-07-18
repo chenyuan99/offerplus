@@ -10,7 +10,7 @@ supabase
 tqdm==4.68.4
 typing_extensions>=4.15.0
 urllib3>=2.7.0
-yarl==1.17.2
+yarl==1.24.2
 
 # Development dependencies
 pytest>=9.1.1
