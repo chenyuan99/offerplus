@@ -1,5 +1,5 @@
 # Core dependencies
-certifi>=2026.6.17
+certifi>=2026.7.22
 charset-normalizer>=3.4.9
 idna>=3.18
 openai>=2.46.0
