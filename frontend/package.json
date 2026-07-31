@@ -56,7 +56,7 @@
     "eslint": "^10.5.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
-    "globals": "^17.7.0",
+    "globals": "^17.8.0",
     "happy-dom": "^20.0.11",
     "openapi-typescript": "^7.13.0",
     "postcss": "^8.5.14",
