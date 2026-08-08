@@ -26,7 +26,7 @@
     "@supabase/supabase-js": "^2.110.9",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "axios": "^1.18.1",
+    "axios": "^1.19.0",
     "globby": "^14.0.0",
     "lucide-react": "^1.23.0",
     "react": "^19.2.7",
