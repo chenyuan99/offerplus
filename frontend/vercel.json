@@ -33,8 +33,18 @@
       "dest": "/favicon.ico"
     },
     {
-      "src": "/manifest.json",
-      "dest": "/manifest.json"
+      "src": "/manifest.webmanifest",
+      "headers": { "content-type": "application/manifest+json" },
+      "dest": "/manifest.webmanifest"
+    },
+    {
+      "src": "/sw.js",
+      "headers": {
+        "content-type": "application/javascript",
+        "cache-control": "public, max-age=0, must-revalidate",
+        "service-worker-allowed": "/"
+      },
+      "dest": "/sw.js"
     },
     {
       "src": "/(.*)",
