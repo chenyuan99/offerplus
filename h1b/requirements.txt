@@ -2,4 +2,4 @@
 pandas>=3.0.5
 openpyxl>=3.1.5
 supabase>=2.31.0
-python-dotenv>=1.2.2
+python-dotenv>=1.2.3
