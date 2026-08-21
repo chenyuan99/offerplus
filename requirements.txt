@@ -1,7 +1,7 @@
 # Core dependencies
 certifi>=2026.7.22
 charset-normalizer>=3.4.9
-idna>=3.18
+idna>=3.19
 openai>=2.53.0
 pillow>=12.3.0
 python-dotenv>=1.2.2
