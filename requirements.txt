@@ -1,6 +1,6 @@
 # Core dependencies
 certifi>=2026.7.22
-charset-normalizer>=3.4.9
+charset-normalizer>=3.5.1
 idna>=3.18
 openai>=2.53.0
 pillow>=12.3.0
