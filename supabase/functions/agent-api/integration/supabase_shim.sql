@@ -4,7 +4,8 @@
 CREATE ROLE anon NOLOGIN NOINHERIT;
 CREATE ROLE authenticated NOLOGIN NOINHERIT;
 CREATE ROLE service_role NOLOGIN NOINHERIT BYPASSRLS;
-CREATE ROLE authenticator LOGIN NOINHERIT PASSWORD 'authenticator';
+-- run.sh sets a random password for this run.
+CREATE ROLE authenticator LOGIN NOINHERIT;
 GRANT anon, authenticated, service_role TO authenticator;
 
 CREATE SCHEMA auth;

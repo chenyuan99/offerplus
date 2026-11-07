@@ -76,6 +76,6 @@ export function fakePostgrest(seed: Record<string, Row[]>) {
     throw new Error(`fake_postgrest: unsupported method ${method}`)
   }
 
-  const rest: Rest = createRest('http://fake', 'service-key', fetchImpl)
+  const rest: Rest = createRest('https://fake.invalid','service-key', fetchImpl)
   return { rest, tables, requests }
 }
