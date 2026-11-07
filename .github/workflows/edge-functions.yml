@@ -1,0 +1,26 @@
+name: Edge functions
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/functions/**'
+      - 'supabase/migrations/**'
+  push:
+    branches: [develop, master]
+    paths:
+      - 'supabase/functions/**'
+      - 'supabase/migrations/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
+        with:
+          deno-version: v2.x
+      - name: Type-check and test
+        working-directory: supabase/functions
+        run: deno test
+      - name: Integration test against Postgres + PostgREST
+        run: supabase/functions/agent-api/integration/run.sh
