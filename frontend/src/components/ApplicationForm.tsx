@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
-import { Application, applicationsApi } from '../services/api';
+import { applicationsApi } from '../services/api';
+import type { ApplicationInsert, ApplicationStatus } from '../types/supabase';
 import { useNavigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 
-const STATUS_CHOICES = [
-  'APPLIED',
-  'OA',
-  'VO',
-  'OFFER',
-  'REJECTED'
-] as const;
+// Values must match the statuses the agent API and Dashboard use.
+const STATUS_CHOICES: { value: ApplicationStatus; label: string }[] = [
+  { value: 'applied', label: 'Applied' },
+  { value: 'oa', label: 'OA' },
+  { value: 'vo', label: 'VO' },
+  { value: 'offer', label: 'Offer' },
+  { value: 'rejected', label: 'Rejected' }
+];
 
-const SOURCE_CHOICES = [
-  'Manual',
-  'Gmail',
-  'LinkedIn',
-  'Indeed',
-  'Other'
-] as const;
+type ApplicationFormData = Pick<ApplicationInsert, 'company_name' | 'job_title' | 'status' | 'notes'>;
 
 interface ApplicationFormProps {
   onSuccess?: () => void;
@@ -27,35 +23,19 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Partial<Application>>({
-    company: {
-      name: '',
-      industry: '',
-      description: ''
-    },
+  const [formData, setFormData] = useState<ApplicationFormData>({
+    company_name: '',
     job_title: '',
-    status: 'APPLIED',
-    source: 'Manual',
+    status: 'applied',
     notes: ''
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (name.startsWith('company.')) {
-      const companyField = name.split('.')[1];
-      setFormData(prev => ({
-        ...prev,
-        company: {
-          ...prev.company,
-          [companyField]: value
-        }
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -64,13 +44,12 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
     setError(null);
 
     try {
-      const submitData = {
+      await applicationsApi.create({
         ...formData,
-        company_name: (formData as any).company?.name,
-      };
-      delete (submitData as any).company;
-
-      await applicationsApi.create(submitData as Application);
+        job_link: '',
+        company_link: '',
+        date_applied: new Date().toISOString()
+      });
       if (onSuccess) {
         onSuccess();
       } else {
@@ -88,29 +67,15 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid grid-cols-1 gap-6">
         <div>
-          <label htmlFor="company.name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="company_name" className="block text-sm font-medium text-gray-700 mb-1">
             Company Name *
           </label>
           <input
             type="text"
-            name="company.name"
-            id="company.name"
+            name="company_name"
+            id="company_name"
             required
-            value={formData.company?.name || ''}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="company.industry" className="block text-sm font-medium text-gray-700 mb-1">
-            Industry
-          </label>
-          <input
-            type="text"
-            name="company.industry"
-            id="company.industry"
-            value={formData.company?.industry || ''}
+            value={formData.company_name}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
           />
@@ -125,7 +90,7 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
             name="job_title"
             id="job_title"
             required
-            value={formData.job_title || ''}
+            value={formData.job_title}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
           />
@@ -139,33 +104,13 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
             name="status"
             id="status"
             required
-            value={formData.status || 'APPLIED'}
+            value={formData.status}
             onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
           >
-            {STATUS_CHOICES.map(status => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label htmlFor="source" className="block text-sm font-medium text-gray-700 mb-1">
-            Source
-          </label>
-          <select
-            name="source"
-            id="source"
-            required
-            value={formData.source || 'Manual'}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
-          >
-            {SOURCE_CHOICES.map(source => (
-              <option key={source} value={source}>
-                {source}
+            {STATUS_CHOICES.map(({ value, label }) => (
+              <option key={value} value={value}>
+                {label}
               </option>
             ))}
           </select>
