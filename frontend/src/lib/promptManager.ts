@@ -344,12 +344,14 @@ export class PromptManager {
 
   private static substituteVariables(template: string, variables: Record<string, string>): string {
     let result = template;
-    
+
     for (const [key, value] of Object.entries(variables)) {
       const placeholder = `{${key}}`;
-      result = result.replace(new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g'), value);
+      // Escape all regex metacharacters, not just braces
+      const escaped = placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      result = result.replace(new RegExp(escaped, 'g'), value);
     }
-    
+
     return result;
   }
 

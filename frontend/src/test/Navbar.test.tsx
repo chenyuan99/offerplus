@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import Navbar from '../components/Navbar';
+import { Navbar } from '../components/Navbar';
 
 describe('Navbar', () => {
   const renderNavbar = (props = {}) => {
@@ -15,14 +15,13 @@ describe('Navbar', () => {
 
   it('renders the logo', () => {
     renderNavbar();
-    expect(screen.getByText('OffersPlus')).toBeInTheDocument();
+    expect(screen.getByText('OfferPlus')).toBeInTheDocument();
   });
 
-  it('renders navigation links', () => {
+  it('renders navigation links for a signed-out user', () => {
     renderNavbar();
-    expect(screen.getByText('Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Features')).toBeInTheDocument();
-    expect(screen.getByText('Sign in')).toBeInTheDocument();
+    expect(screen.getByText('Login')).toBeInTheDocument();
+    expect(screen.getByText('Register')).toBeInTheDocument();
   });
 
   it('toggles mobile menu when button is clicked', () => {

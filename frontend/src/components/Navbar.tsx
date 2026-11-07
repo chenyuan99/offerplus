@@ -120,7 +120,7 @@ export function Navbar({
                   <div className="relative ml-3" ref={userMenuRef}>
                     <button
                       onClick={() => setShowUserMenu(!showUserMenu)}
-                      className="flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 focus:outline-none"
+                      className="flex items-center space-x-2 text-sm text-gray-700 hover:text-gray-900 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#861F41] focus-visible:ring-offset-2"
                     >
                       <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
                         {user?.email ? (

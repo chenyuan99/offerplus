@@ -1,11 +1,11 @@
 import { H1BRecord } from '../../types/h1b';
 
 // Mock the DOM methods for testing
-const mockCreateElement = jest.fn();
-const mockAppendChild = jest.fn();
-const mockRemoveChild = jest.fn();
-const mockCreateObjectURL = jest.fn();
-const mockRevokeObjectURL = jest.fn();
+const mockCreateElement = vi.fn();
+const mockAppendChild = vi.fn();
+const mockRemoveChild = vi.fn();
+const mockCreateObjectURL = vi.fn();
+const mockRevokeObjectURL = vi.fn();
 
 // Setup DOM mocks
 Object.defineProperty(document, 'createElement', {
@@ -30,15 +30,15 @@ Object.defineProperty(URL, 'revokeObjectURL', {
 
 // Mock link element
 const mockLink = {
-  setAttribute: jest.fn(),
-  click: jest.fn(),
+  setAttribute: vi.fn(),
+  click: vi.fn(),
   style: {},
   download: 'test'
 };
 
 describe('CSV Export Utility', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockCreateElement.mockReturnValue(mockLink);
     mockCreateObjectURL.mockReturnValue('blob:test-url');
   });
@@ -53,7 +53,7 @@ describe('CSV Export Utility', () => {
     const exportH1BToCSV = await importExportFunction();
     
     // Mock console.warn to avoid noise in tests
-    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation();
     
     exportH1BToCSV([]);
     

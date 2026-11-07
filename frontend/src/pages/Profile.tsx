@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { supabase, type User } from '../lib/supabase';
 import { Download, Upload } from 'lucide-react';
 import { ApiKeyManager } from '../components/ApiKeyManager';
+import { DocumentManager } from '../components/DocumentManager';
+import type { ImportedProfile } from '../types/profile';
 
 interface UserMetadata {
   first_name?: string;
@@ -24,6 +26,12 @@ interface Address {
   zip: string;
 }
 
+interface ImportedFields {
+  firstName: string;
+  lastName: string;
+  phone: string;
+}
+
 interface ResumeInfo {
   publicUrl: string;
   filePath: string;
@@ -42,11 +50,20 @@ export function Profile() {
     state: '',
     zip: '',
   });
+  const [importedFields, setImportedFields] = useState<ImportedFields>({
+    firstName: '',
+    lastName: '',
+    phone: '',
+  });
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importSuccess, setImportSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [resumeInfo, setResumeInfo] = useState<ResumeInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDownloadingMarkdown, setIsDownloadingMarkdown] = useState(false);
+  const [markdownError, setMarkdownError] = useState<string | null>(null);
 
   const getUsername = (userEmail: string | undefined) => {
     return userEmail ? userEmail.split('@')[0] : 'user';
@@ -126,6 +143,58 @@ export function Profile() {
     }
   };
 
+  const handleProfileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setImportError(null);
+    setImportSuccess(false);
+
+    try {
+      const text = await file.text();
+      const data: ImportedProfile = JSON.parse(text);
+
+      setImportedFields({
+        firstName: data.nameData?.firstName || '',
+        lastName: data.nameData?.lastName || '',
+        phone: data.contactData?.phoneNumber || '',
+      });
+
+      setAddress({
+        street1: data.addressData?.line1 || '',
+        street2: '',
+        country: data.addressData?.country || 'United States',
+        state: data.addressData?.state || '',
+        zip: data.addressData?.postalCode || '',
+      });
+
+      if (data.resumeData?.resumeBase64 && data.resumeData?.fileName) {
+        const byteString = atob(data.resumeData.resumeBase64);
+        const byteArray = new Uint8Array(byteString.length);
+        for (let i = 0; i < byteString.length; i++) {
+          byteArray[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+        const resumeFile = new File([blob], data.resumeData.fileName, { type: 'application/pdf' });
+
+        setIsUploading(true);
+        try {
+          const result = await uploadResume(resumeFile);
+          setResumeInfo(result);
+        } catch (uploadErr) {
+          setImportError(`Profile imported but resume upload failed: ${uploadErr instanceof Error ? uploadErr.message : 'Unknown error'}`);
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+      setImportSuccess(true);
+    } catch (err) {
+      setImportError(err instanceof Error ? `Failed to parse profile JSON: ${err.message}` : 'Failed to parse profile JSON');
+    } finally {
+      event.target.value = '';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -138,13 +207,47 @@ export function Profile() {
     }
   };
 
+  const handleDownloadMarkdown = async () => {
+    setMarkdownError(null);
+    setIsDownloadingMarkdown(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('profile-markdown');
+      if (error) throw error;
+
+      const blob = new Blob([data as string], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'profile.md';
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setMarkdownError(error instanceof Error ? error.message : 'Failed to generate profile.md');
+    } finally {
+      setIsDownloadingMarkdown(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 sm:py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">My Profile</h1>
-          <p className="mt-2 text-gray-600">Manage your account settings and resume</p>
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900">My Profile</h1>
+            <p className="mt-2 text-gray-600">Manage your account settings and resume</p>
+          </div>
+          <div>
+            <button
+              onClick={handleDownloadMarkdown}
+              disabled={isDownloadingMarkdown}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#861F41] bg-[#861F41]/10 rounded-md hover:bg-[#861F41]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <Download className="h-4 w-4" />
+              {isDownloadingMarkdown ? 'Generating...' : 'Download profile.md'}
+            </button>
+            {markdownError && <p className="mt-1 text-xs text-red-600">{markdownError}</p>}
+          </div>
         </div>
 
         {/* Account Information Card */}
@@ -168,7 +271,29 @@ export function Profile() {
 
         {/* Profile Details Form */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Personal Details</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Personal Details</h2>
+
+          {/* Profile JSON Import */}
+          <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+            <h4 className="text-sm font-medium text-blue-900 mb-1">Import from Profile JSON</h4>
+            <p className="text-xs text-blue-700 mb-3">
+              Upload a profile JSON file exported from a job board to auto-fill your details.
+            </p>
+            <input
+              type="file"
+              accept=".json,application/json"
+              onChange={handleProfileImport}
+              className="block text-sm text-blue-800
+                file:mr-3 file:py-1.5 file:px-3
+                file:rounded file:border-0
+                file:text-xs file:font-semibold
+                file:bg-blue-100 file:text-blue-700
+                hover:file:bg-blue-200"
+            />
+            {importError && <p className="mt-2 text-xs text-red-600">{importError}</p>}
+            {importSuccess && <p className="mt-2 text-xs text-green-600">Profile imported successfully.</p>}
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -178,7 +303,8 @@ export function Profile() {
                 <input
                   type="text"
                   id="firstName"
-                  value={first_name || ''}
+                  value={importedFields.firstName || first_name || ''}
+                  placeholder="First Name"
                   disabled
                   className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600 cursor-not-allowed"
                 />
@@ -190,11 +316,26 @@ export function Profile() {
                 <input
                   type="text"
                   id="lastName"
-                  value={last_name || ''}
+                  value={importedFields.lastName || last_name || ''}
+                  placeholder="Last Name"
                   disabled
                   className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600 cursor-not-allowed"
                 />
               </div>
+            </div>
+
+            <div>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                Phone <span className="text-gray-500">(Optional)</span>
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                value={importedFields.phone}
+                onChange={(e) => setImportedFields({ ...importedFields, phone: e.target.value })}
+                placeholder="5551234567"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+              />
             </div>
 
             <div>
@@ -254,6 +395,7 @@ export function Profile() {
                   <option value="NY">New York</option>
                   <option value="TX">Texas</option>
                   <option value="FL">Florida</option>
+                  <option value="NJ">New Jersey</option>
                 </select>
               </div>
               <div>
@@ -353,6 +495,11 @@ export function Profile() {
               <p className="text-sm text-gray-500 mt-1">Upload a file using the button above</p>
             </div>
           )}
+        </div>
+
+        {/* Documents */}
+        <div className="mt-6">
+          <DocumentManager />
         </div>
 
         {/* Agent API Keys */}

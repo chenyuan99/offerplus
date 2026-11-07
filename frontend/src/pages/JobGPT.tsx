@@ -22,6 +22,7 @@ interface ModelOption {
 export function JobGPT() {
   const [state, setState] = useState<JobGPTState>(initialState);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [resumeStatus, setResumeStatus] = useState<string | null>(null);
   const [companyName, setCompanyName] = useState('');
   const [userBackground, setUserBackground] = useState('');
   const [modelOptions, setModelOptions] = useState<ModelOption[]>([
@@ -126,15 +127,21 @@ export function JobGPT() {
     }
 
     setState({ ...state, isLoading: true, error: null });
+    setResumeStatus(null);
 
     try {
       const response = await jobgptService.uploadResume(selectedFile);
-      if (response.file_url) {
-        // Handle successful upload
+      if (response.success) {
         setState({ ...state, isLoading: false });
+        setResumeStatus(
+          `Resume processed (${response.textLength ?? 0} characters extracted${response.truncated ? ', truncated' : ''}).`
+        );
+      } else {
+        setState({ ...state, isLoading: false, error: response.error ?? 'Failed to process resume' });
       }
-    } catch (error: unknown) {
-      setState({ ...state, isLoading: false, error: error.message });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to process resume';
+      setState({ ...state, isLoading: false, error: message });
     }
   };
 
@@ -150,6 +157,40 @@ export function JobGPT() {
           <p className="mt-2 text-gray-600 max-w-3xl">
             AI-powered assistant to help you craft compelling cover letters, improve your resume, and prepare for interviews.
           </p>
+        </div>
+
+        {/* Resume Upload */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <FileText className="h-5 w-5 text-[#861F41]" />
+            <h2 className="text-lg font-semibold text-gray-900">Resume (optional)</h2>
+          </div>
+          <p className="text-sm text-gray-600 mb-4">
+            Upload your resume so JobGPT can pull real context into generated answers.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            <input
+              type="file"
+              accept=".pdf,.docx"
+              onChange={handleFileChange}
+              disabled={state.isLoading}
+              className="text-sm text-gray-600"
+            />
+            <button
+              onClick={handleFileUpload}
+              disabled={state.isLoading || !selectedFile}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+            >
+              <Upload className="h-4 w-4" />
+              Upload
+            </button>
+          </div>
+          {resumeStatus && (
+            <div className="flex items-center gap-2 mt-3 text-sm text-green-700">
+              <ThumbsUp className="h-4 w-4" />
+              {resumeStatus}
+            </div>
+          )}
         </div>
 
         {/* Mode Selection */}

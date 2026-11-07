@@ -2,39 +2,35 @@ import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { Landing } from '../components/Landing';
 
 describe('Landing', () => {
   const renderLanding = () => {
     return render(
-      <BrowserRouter>
-        <Landing />
-      </BrowserRouter>
+      <HelmetProvider>
+        <BrowserRouter>
+          <Landing />
+        </BrowserRouter>
+      </HelmetProvider>
     );
   };
 
   it('renders the hero section', () => {
     renderLanding();
-    expect(screen.getByText('Find Your Dream Job')).toBeInTheDocument();
-    expect(screen.getByText('Advance Your Career')).toBeInTheDocument();
+    expect(screen.getByText('Track Your Job Applications with Ease')).toBeInTheDocument();
   });
 
   it('renders the features section', () => {
     renderLanding();
-    expect(screen.getByText('Smart Job Matching')).toBeInTheDocument();
-    expect(screen.getByText('Salary Insights')).toBeInTheDocument();
-    expect(screen.getByText('Company Reviews')).toBeInTheDocument();
-    expect(screen.getByText('Verified Employers')).toBeInTheDocument();
+    expect(screen.getByText('Application Tracking')).toBeInTheDocument();
+    expect(screen.getByText('Resume Management')).toBeInTheDocument();
+    expect(screen.getByText('Progress Insights')).toBeInTheDocument();
   });
 
   it('renders the navigation buttons', () => {
     renderLanding();
-    expect(screen.getByText('Get Started')).toBeInTheDocument();
-    expect(screen.getByText('Learn More')).toBeInTheDocument();
-  });
-
-  it('renders the search bar', () => {
-    renderLanding();
-    expect(screen.getByPlaceholderText(/search for jobs/i)).toBeInTheDocument();
+    expect(screen.getByText('Get started')).toBeInTheDocument();
+    expect(screen.getByText('Log in')).toBeInTheDocument();
   });
 });
