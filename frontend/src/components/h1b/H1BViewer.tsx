@@ -67,9 +67,9 @@ export function H1BViewer() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-xs border border-gray-200 p-6">
           <div className="flex items-center mb-4">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <svg className="h-8 w-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
@@ -108,7 +108,7 @@ export function H1BViewer() {
             </div>
             
             {/* Data Source Indicator */}
-            <div className="flex items-center space-x-2 bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200">
+            <div className="flex items-center space-x-2 bg-white rounded-lg px-4 py-2 shadow-xs border border-gray-200">
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               <span className="text-sm font-medium text-gray-700">Supabase Database</span>
               {!loading && (
@@ -136,7 +136,7 @@ export function H1BViewer() {
         />
 
         {/* Share URL Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="bg-white rounded-lg shadow-xs border border-gray-200 p-4 mb-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -84,13 +84,13 @@ export function JobPostings() {
         {/* Error Alert */}
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
-            <AlertCircle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="h-5 w-5 text-red-600 mr-3 shrink-0 mt-0.5" />
             <p className="text-red-800">{error}</p>
           </div>
         )}
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="space-y-4">
             {/* Search Bar */}
             <div>
@@ -102,7 +102,7 @@ export function JobPostings() {
                   placeholder="Search by company or job title..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
                 />
               </div>
             </div>
@@ -155,7 +155,7 @@ export function JobPostings() {
         {filteredPostings.length > 0 ? (
           <div className="space-y-4">
             {filteredPostings.map((posting) => (
-              <div key={posting.id} className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow p-6">
+              <div key={posting.id} className="bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">

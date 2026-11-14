@@ -251,7 +251,7 @@ export function Profile() {
         </div>
 
         {/* Account Information Card */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Account Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -270,7 +270,7 @@ export function Profile() {
         </div>
 
         {/* Profile Details Form */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Personal Details</h2>
 
           {/* Profile JSON Import */}
@@ -334,7 +334,7 @@ export function Profile() {
                 value={importedFields.phone}
                 onChange={(e) => setImportedFields({ ...importedFields, phone: e.target.value })}
                 placeholder="5551234567"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
               />
             </div>
 
@@ -348,7 +348,7 @@ export function Profile() {
                 value={address.street1}
                 onChange={(e) => setAddress({ ...address, street1: e.target.value })}
                 placeholder="1234 Main St"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
               />
             </div>
 
@@ -362,7 +362,7 @@ export function Profile() {
                 value={address.street2}
                 onChange={(e) => setAddress({ ...address, street2: e.target.value })}
                 placeholder="Apartment or suite"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
               />
             </div>
 
@@ -375,7 +375,7 @@ export function Profile() {
                   id="country"
                   value={address.country}
                   onChange={(e) => setAddress({ ...address, country: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
                 >
                   <option value="United States">United States</option>
                 </select>
@@ -388,7 +388,7 @@ export function Profile() {
                   id="state"
                   value={address.state}
                   onChange={(e) => setAddress({ ...address, state: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
                 >
                   <option value="">Select State</option>
                   <option value="CA">California</option>
@@ -408,7 +408,7 @@ export function Profile() {
                   value={address.zip}
                   onChange={(e) => setAddress({ ...address, zip: e.target.value })}
                   placeholder="12345"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
                 />
               </div>
             </div>
@@ -417,7 +417,7 @@ export function Profile() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-[#861F41] text-white px-6 py-2 rounded-md font-medium hover:bg-[#621531] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#861F41] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="bg-[#861F41] text-white px-6 py-2 rounded-md font-medium hover:bg-[#621531] focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-[#861F41] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isLoading ? 'Saving...' : 'Save Changes'}
               </button>
@@ -426,7 +426,7 @@ export function Profile() {
         </div>
 
         {/* Resume Upload Card */}
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Resume</h2>
 
           <div className="mb-6">
@@ -503,7 +503,7 @@ export function Profile() {
         </div>
 
         {/* Agent API Keys */}
-        <div className="bg-white rounded-lg shadow p-6 mt-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mt-6">
           <ApiKeyManager />
         </div>
       </div>
