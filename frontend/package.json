@@ -27,7 +27,7 @@
     "@supabase/supabase-js": "^2.110.9",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "axios": "^1.19.0",
+    "axios": "^1.21.1",
     "globby": "^16.2.2",
     "lucide-react": "^1.23.0",
     "react": "^19.2.7",
@@ -40,7 +40,14 @@
     "sql.js": "^1.10.2"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "^5.1.2",
     "@eslint/js": "^10.0.1",
+    "@storybook/addon-a11y": "^10.6.7",
+    "@storybook/addon-docs": "^10.6.7",
+    "@storybook/addon-onboarding": "^10.6.7",
+    "@storybook/addon-vitest": "^10.6.7",
+    "@storybook/react-vite": "^10.6.7",
+    "@tailwindcss/postcss": "^4.3.5",
     "@testing-library/cypress": "^10.0.3",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^16.3.2",
@@ -50,36 +57,29 @@
     "@types/react-dom": "^19.2.3",
     "@types/sql.js": "^1.4.9",
     "@vitejs/plugin-react": "^6.0.3",
-    "@vitest/coverage-v8": "^4.1.8",
+    "@vitest/browser": "^4.1.12",
+    "@vitest/coverage-v8": "^4.1.12",
     "autoprefixer": "^10.4.18",
-    "csv-parse": "^7.0.1",
+    "csv-parse": "^7.0.3",
     "cypress": "^15.19.0",
     "eslint": "^10.8.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
+    "eslint-plugin-storybook": "^10.6.7",
     "globals": "^17.8.0",
-    "happy-dom": "^20.0.11",
+    "happy-dom": "^21.0.4",
     "openapi-typescript": "^7.13.0",
+    "playwright": "^1.59.1",
     "postcss": "^8.5.26",
     "prettier": "^3.9.6",
+    "storybook": "^10.6.7",
     "tailwindcss": "^4.3.5",
     "ts-node": "^10.9.2",
     "tsx": "^4.23.5",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.64.0",
     "vite": "^8.2.1",
-    "vitest": "^4.1.8",
-    "storybook": "^10.3.6",
-    "@storybook/react-vite": "^10.5.6",
-    "@chromatic-com/storybook": "^5.1.2",
-    "@storybook/addon-vitest": "^10.3.6",
-    "@storybook/addon-a11y": "^10.5.5",
-    "@storybook/addon-docs": "^10.4.6",
-    "@storybook/addon-onboarding": "^10.5.3",
-    "eslint-plugin-storybook": "^10.4.6",
-    "playwright": "^1.59.1",
-    "@vitest/browser": "^4.1.10",
-    "@tailwindcss/postcss": "^4.3.5"
+    "vitest": "^4.1.12"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -95,5 +95,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "overrides": {
+    "@joshwooding/vite-plugin-react-docgen-typescript": {
+      "glob": "^14.0.6"
+    },
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^11.0.8"
+    }
   }
 }
