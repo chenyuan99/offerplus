@@ -69,7 +69,7 @@ export const Internship: React.FC = () => {
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="p-1 mx-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-1 mx-1 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -77,7 +77,7 @@ export const Internship: React.FC = () => {
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="p-1 mx-1 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-1 mx-1 rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -105,19 +105,19 @@ export const Internship: React.FC = () => {
         <div className="flex gap-2 mb-6">
           <Link
             to="/add-application"
-            className="px-4 py-2 text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+            className="px-4 py-2 text-blue-600 border border-blue-600 rounded-sm hover:bg-blue-50"
           >
             Add New Record
           </Link>
           <Link
             to="/hardware"
-            className="px-4 py-2 text-cyan-600 border border-cyan-600 rounded hover:bg-cyan-50"
+            className="px-4 py-2 text-cyan-600 border border-cyan-600 rounded-sm hover:bg-cyan-50"
           >
             Hardware Jobs
           </Link>
           <a
             href="https://icc.fyi"
-            className="px-4 py-2 text-cyan-600 border border-cyan-600 rounded hover:bg-cyan-50"
+            className="px-4 py-2 text-cyan-600 border border-cyan-600 rounded-sm hover:bg-cyan-50"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -164,7 +164,7 @@ export const Internship: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <a
                           href={item.url}
-                          className="px-3 py-1 text-blue-600 border border-blue-600 rounded hover:bg-blue-50"
+                          className="px-3 py-1 text-blue-600 border border-blue-600 rounded-sm hover:bg-blue-50"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -173,13 +173,13 @@ export const Internship: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
-                          className="px-3 py-1 text-cyan-600 border border-cyan-600 rounded hover:bg-cyan-50 mr-2"
+                          className="px-3 py-1 text-cyan-600 border border-cyan-600 rounded-sm hover:bg-cyan-50 mr-2"
                           onClick={() => {/* TODO: Implement edit */}}
                         >
                           Edit
                         </button>
                         <button
-                          className="px-3 py-1 text-red-600 border border-red-600 rounded hover:bg-red-50"
+                          className="px-3 py-1 text-red-600 border border-red-600 rounded-sm hover:bg-red-50"
                           onClick={() => {/* TODO: Implement delete */}}
                         >
                           Delete

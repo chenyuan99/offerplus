@@ -57,10 +57,10 @@ const Login = () => {
           </p>
         </div>
         
-        <div className="mt-8 bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="mt-8 bg-white py-8 px-4 shadow-sm sm:rounded-lg sm:px-10">
           {error && (
             <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
               <p className="text-red-800 text-sm">{error}</p>
             </div>
           )}
@@ -79,7 +79,7 @@ const Login = () => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs placeholder-gray-400 focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
                   placeholder="you@example.com"
                   disabled={isLoading}
                 />
@@ -90,7 +90,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#861F41] hover:bg-[#621531] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#861F41] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-[#861F41] hover:bg-[#621531] focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-[#861F41] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 {isLoading ? 'Sending magic link...' : 'Send magic link'}
               </button>
@@ -111,7 +111,7 @@ const Login = () => {
               <div>
                 <button
                   onClick={() => authService.signInWithProvider('google')}
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-xs bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
                   <span className="sr-only">Sign in with Google</span>
                   <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
@@ -122,7 +122,7 @@ const Login = () => {
               <div>
                 <button
                   onClick={() => authService.signInWithProvider('github')}
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-xs bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                 >
                   <span className="sr-only">Sign in with GitHub</span>
                   <svg className="w-5 h-5" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">

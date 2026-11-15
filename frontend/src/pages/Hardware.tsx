@@ -27,13 +27,13 @@ export function Hardware() {
               href="https://docs.google.com/spreadsheets/d/1GiaXXATvIwexrNOyqmil6RQ96ACjrICuxPcJu3IySP4/edit#gid=0"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-xs text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Contribute to the List
             </a>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="bg-white rounded-lg shadow-xs overflow-hidden">
             <div className="aspect-w-16 aspect-h-9">
               <iframe
                 className="airtable-embed w-full h-[600px] border border-gray-200"

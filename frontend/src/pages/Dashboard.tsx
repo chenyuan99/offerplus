@@ -136,7 +136,7 @@ export function Dashboard() {
         {/* Error Alert */}
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
-            <AlertCircle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="h-5 w-5 text-red-600 mr-3 shrink-0 mt-0.5" />
             <p className="text-red-800">{error}</p>
           </div>
         )}
@@ -166,7 +166,7 @@ export function Dashboard() {
                 placeholder="Search by job title or company..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
               />
             </div>
           </div>
@@ -202,7 +202,7 @@ export function Dashboard() {
         </div>
 
         {/* Applications Table */}
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {paginatedApplications.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full divide-y divide-gray-200">
@@ -340,7 +340,7 @@ function CompanyLogo({ companyLink }: CompanyLogoProps) {
 
   if (!companyLink) {
     return (
-      <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+      <div className="shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
         <span className="text-xs font-semibold text-gray-600">CO</span>
       </div>
     );
@@ -351,7 +351,7 @@ function CompanyLogo({ companyLink }: CompanyLogoProps) {
   const logoUrl = getCompanyLogo(domain, 40);
 
   return (
-    <div className="flex-shrink-0 h-10 w-10">
+    <div className="shrink-0 h-10 w-10">
       {!imageError ? (
         <img
           className="h-10 w-10 rounded-full object-cover bg-gray-100"

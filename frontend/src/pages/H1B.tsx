@@ -46,7 +46,7 @@ export function H1B() {
                 type="button"
                 onClick={() => setViewMode('native')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'native'
-                    ? 'bg-white text-blue-600 shadow-sm'
+                    ? 'bg-white text-blue-600 shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                   }`}
               >
@@ -56,7 +56,7 @@ export function H1B() {
                 type="button"
                 onClick={() => setViewMode('tableau')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${viewMode === 'tableau'
-                    ? 'bg-white text-blue-600 shadow-sm'
+                    ? 'bg-white text-blue-600 shadow-xs'
                     : 'text-gray-600 hover:text-gray-900'
                   }`}
               >
@@ -108,7 +108,7 @@ function TableauView() {
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white rounded-lg shadow-xs overflow-hidden">
           <div className="aspect-w-16 aspect-h-9">
             <tableau-viz
               id="tableau-viz"

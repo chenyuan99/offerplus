@@ -46,7 +46,7 @@ export function H1BFiltersComponent({
   }, [searchTimeout]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div className="bg-white rounded-lg shadow-xs border border-gray-200 p-6 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {/* Search Input */}
         <div className="col-span-full">

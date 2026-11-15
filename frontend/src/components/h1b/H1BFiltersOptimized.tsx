@@ -109,7 +109,7 @@ export const H1BFiltersOptimized = React.memo(function H1BFiltersOptimized({
   }, [filters]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div className="bg-white rounded-lg shadow-xs border border-gray-200 p-6 mb-6">
       {/* Performance Metrics */}
       {performanceMetrics && (
         <div className="mb-4 p-3 bg-gray-50 rounded-md">
@@ -285,32 +285,32 @@ export const H1BFiltersOptimized = React.memo(function H1BFiltersOptimized({
               <span className="text-sm font-medium text-blue-800">Active Filters:</span>
               <div className="flex flex-wrap gap-1">
                 {filters.employer && (
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-sm">
                     Employer: {filters.employer}
                   </span>
                 )}
                 {filters.status && (
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-sm">
                     Status: {filters.status}
                   </span>
                 )}
                 {filters.jobTitle && (
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-sm">
                     Job: {filters.jobTitle}
                   </span>
                 )}
                 {filters.minSalary && (
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-sm">
                     Min: ${filters.minSalary.toLocaleString()}
                   </span>
                 )}
                 {filters.maxSalary && (
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-sm">
                     Max: ${filters.maxSalary.toLocaleString()}
                   </span>
                 )}
                 {filters.searchTerm && (
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-sm">
                     Search: "{filters.searchTerm}"
                   </span>
                 )}

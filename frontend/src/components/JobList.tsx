@@ -23,7 +23,7 @@ export function JobList({ jobs, onSelectJob }: JobListProps) {
           role="button"
           tabIndex={0}
           aria-label={`Select job: ${job.role || 'Untitled Role'} at ${job.company}`}
-          className="bg-white p-4 rounded-lg shadow mb-3 hover:shadow-md transition-shadow cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-white p-4 rounded-lg shadow-sm mb-3 hover:shadow-md transition-shadow cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-blue-500"
         >
           <div className="flex justify-between items-start">
             <div>
