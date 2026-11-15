@@ -10,7 +10,7 @@ export function AddApplication() {
           <p className="mt-2 text-gray-600">Track a new job application</p>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6 sm:p-8">
+        <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
           <ApplicationForm />
         </div>
       </div>

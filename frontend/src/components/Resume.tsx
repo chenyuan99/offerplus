@@ -71,11 +71,11 @@ export const Resume: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow">
+    <div className="max-w-md mx-auto p-4 bg-white rounded-lg shadow-sm">
       <h2 className="text-2xl font-bold mb-4">Resume Management</h2>
       
       {error && (
-        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
+        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded-sm">
           {error}
         </div>
       )}

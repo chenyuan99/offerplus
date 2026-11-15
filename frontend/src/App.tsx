@@ -74,7 +74,7 @@ function AppContent() {
         isMenuOpen={isMenuOpen} 
         setIsMenuOpen={setIsMenuOpen}
       />
-      <main className="flex-grow pt-16">
+      <main className="grow pt-16">
         <div className="container mx-auto px-4 py-8">
           <Routes>
             {/* Public routes */}

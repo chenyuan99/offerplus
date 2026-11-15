@@ -80,7 +80,7 @@ export function DocumentManager() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white rounded-lg shadow-sm p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-2">Documents</h2>
       <p className="text-sm text-gray-600 mb-6">
         Keep cover letters, transcripts, certifications, and other supporting materials alongside your resume.
@@ -96,7 +96,7 @@ export function DocumentManager() {
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value as DocumentType)}
             disabled={isUploading}
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] text-sm"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] text-sm"
           >
             {DOCUMENT_TYPES.map((type) => (
               <option key={type} value={type}>
@@ -149,7 +149,7 @@ export function DocumentManager() {
               className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <FileText className="h-5 w-5 text-gray-400 flex-shrink-0" />
+                <FileText className="h-5 w-5 text-gray-400 shrink-0" />
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">{document.name}</p>
                   <p className="text-xs text-gray-500">
@@ -160,7 +160,7 @@ export function DocumentManager() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-1 flex-shrink-0">
+              <div className="flex items-center gap-1 shrink-0">
                 <a
                   href={document.file_url}
                   target="_blank"

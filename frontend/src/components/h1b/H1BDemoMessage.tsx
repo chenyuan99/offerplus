@@ -7,7 +7,7 @@ interface H1BDemoMessageProps {
 export function H1BDemoMessage({ onRetry }: H1BDemoMessageProps) {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="max-w-2xl w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+      <div className="max-w-2xl w-full bg-white rounded-lg shadow-xs border border-gray-200 p-8">
         <div className="text-center">
           {/* Icon */}
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mb-6">
@@ -36,7 +36,7 @@ export function H1BDemoMessage({ onRetry }: H1BDemoMessageProps) {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
             <h4 className="font-medium text-blue-900 mb-2">To set up H1B data:</h4>
             <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-              <li>Create the <code className="bg-blue-100 px-1 rounded">h1b_applications</code> table in Supabase</li>
+              <li>Create the <code className="bg-blue-100 px-1 rounded-sm">h1b_applications</code> table in Supabase</li>
               <li>Import H1B data from USCIS or other sources</li>
               <li>Run the database migrations for optimal performance</li>
               <li>Configure proper indexes for fast filtering</li>

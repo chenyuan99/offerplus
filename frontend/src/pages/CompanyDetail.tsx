@@ -73,7 +73,7 @@ export function CompanyDetail() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
-            <AlertCircle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
+            <AlertCircle className="h-5 w-5 text-red-600 mr-3 shrink-0 mt-0.5" />
             <p className="text-red-800">{error}</p>
           </div>
         )}
@@ -109,7 +109,7 @@ export function CompanyDetail() {
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>

@@ -108,7 +108,7 @@ export function H1BUrlExamples() {
                 <button
                   type="button"
                   onClick={(e) => copyExampleUrl(example.filters, e)}
-                  className="ml-2 px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  className="ml-2 px-2 py-1 text-xs bg-blue-600 text-white rounded-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
                   Copy
                 </button>
@@ -119,12 +119,12 @@ export function H1BUrlExamples() {
           <div className="mt-4 p-3 bg-gray-50 rounded-md">
             <h4 className="text-sm font-medium text-gray-900 mb-2">Supported URL Parameters:</h4>
             <div className="text-xs text-gray-600 space-y-1">
-              <div><code className="bg-gray-200 px-1 rounded">?employer=Google</code> - Filter by employer name</div>
-              <div><code className="bg-gray-200 px-1 rounded">?status=CERTIFIED</code> - Filter by case status</div>
-              <div><code className="bg-gray-200 px-1 rounded">?jobTitle=Software Engineer</code> - Filter by job title</div>
-              <div><code className="bg-gray-200 px-1 rounded">?search=engineer</code> - Text search across fields</div>
-              <div><code className="bg-gray-200 px-1 rounded">?minSalary=120000</code> - Minimum salary filter</div>
-              <div><code className="bg-gray-200 px-1 rounded">?maxSalary=200000</code> - Maximum salary filter</div>
+              <div><code className="bg-gray-200 px-1 rounded-sm">?employer=Google</code> - Filter by employer name</div>
+              <div><code className="bg-gray-200 px-1 rounded-sm">?status=CERTIFIED</code> - Filter by case status</div>
+              <div><code className="bg-gray-200 px-1 rounded-sm">?jobTitle=Software Engineer</code> - Filter by job title</div>
+              <div><code className="bg-gray-200 px-1 rounded-sm">?search=engineer</code> - Text search across fields</div>
+              <div><code className="bg-gray-200 px-1 rounded-sm">?minSalary=120000</code> - Minimum salary filter</div>
+              <div><code className="bg-gray-200 px-1 rounded-sm">?maxSalary=200000</code> - Maximum salary filter</div>
             </div>
             <p className="text-xs text-gray-500 mt-2">
               Combine multiple parameters with &amp; (e.g., <code>?employer=Google&minSalary=150000</code>)

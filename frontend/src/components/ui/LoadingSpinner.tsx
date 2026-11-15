@@ -84,9 +84,9 @@ export function BouncingDots({ className = '' }: { className?: string }) {
 export function SkeletonLoader({ className = '' }: { className?: string }) {
   return (
     <div className={`animate-pulse ${className}`}>
-      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-      <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+      <div className="h-4 bg-gray-200 rounded-sm w-3/4 mb-2"></div>
+      <div className="h-4 bg-gray-200 rounded-sm w-1/2 mb-2"></div>
+      <div className="h-4 bg-gray-200 rounded-sm w-5/6"></div>
     </div>
   );
 }

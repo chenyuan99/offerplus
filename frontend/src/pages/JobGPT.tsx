@@ -160,7 +160,7 @@ export function JobGPT() {
         </div>
 
         {/* Resume Upload */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <FileText className="h-5 w-5 text-[#861F41]" />
             <h2 className="text-lg font-semibold text-gray-900">Resume (optional)</h2>
@@ -194,7 +194,7 @@ export function JobGPT() {
         </div>
 
         {/* Mode Selection */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Select Mode</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
             {[
@@ -224,7 +224,7 @@ export function JobGPT() {
             </label>
             <select
               id="model"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
               value={state.model}
               onChange={(e) => handleModelChange(e.target.value as AIModel)}
             >
@@ -246,7 +246,7 @@ export function JobGPT() {
                 <input
                   id="company"
                   type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41]"
                   placeholder="e.g., Google, Stripe, Microsoft"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
@@ -258,7 +258,7 @@ export function JobGPT() {
                 </label>
                 <textarea
                   id="background"
-                  className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] resize-none"
+                  className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] resize-none"
                   placeholder="Your skills, experience, and what excites you about this type of work..."
                   value={userBackground}
                   onChange={(e) => setUserBackground(e.target.value)}
@@ -272,7 +272,7 @@ export function JobGPT() {
               </label>
               <textarea
                 id="input"
-                className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] resize-none"
+                className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] resize-none"
                 placeholder={getPlaceholder(state.mode)}
                 value={state.input}
                 onChange={handleInputChange}
@@ -283,7 +283,7 @@ export function JobGPT() {
           {/* Error Alert */}
           {state.error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
               <p className="text-red-800 text-sm">{state.error}</p>
             </div>
           )}
@@ -293,7 +293,7 @@ export function JobGPT() {
             <button
               onClick={handleSubmit}
               disabled={state.isLoading}
-              className="inline-flex items-center gap-2 px-6 py-2 bg-[#861F41] text-white rounded-md hover:bg-[#621531] focus:outline-none focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+              className="inline-flex items-center gap-2 px-6 py-2 bg-[#861F41] text-white rounded-md hover:bg-[#621531] focus:outline-hidden focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             >
               {state.isLoading ? (
                 <>
@@ -317,7 +317,7 @@ export function JobGPT() {
 
         {/* Output Section */}
         {state.output && (
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow-sm p-6">
             {/* Prompts Section */}
             {(state.lastResponse?.systemPrompt || state.lastResponse?.userPrompt) && (
               <div className="mb-6 border-b border-gray-200 pb-4">
@@ -335,7 +335,7 @@ export function JobGPT() {
                     {state.lastResponse?.systemPrompt && (
                       <div>
                         <h4 className="text-xs font-semibold text-gray-600 mb-2">System Prompt</h4>
-                        <div className="bg-gray-50 rounded p-3 text-sm text-gray-700 whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-200">
+                        <div className="bg-gray-50 rounded-sm p-3 text-sm text-gray-700 whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-200">
                           {state.lastResponse.systemPrompt}
                         </div>
                       </div>
@@ -343,7 +343,7 @@ export function JobGPT() {
                     {state.lastResponse?.userPrompt && (
                       <div>
                         <h4 className="text-xs font-semibold text-gray-600 mb-2">User Prompt</h4>
-                        <div className="bg-gray-50 rounded p-3 text-sm text-gray-700 whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-200">
+                        <div className="bg-gray-50 rounded-sm p-3 text-sm text-gray-700 whitespace-pre-wrap max-h-40 overflow-y-auto border border-gray-200">
                           {state.lastResponse.userPrompt}
                         </div>
                       </div>
@@ -376,7 +376,7 @@ export function JobGPT() {
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded p-4 mb-4">
+            <div className="bg-gray-50 rounded-sm p-4 mb-4">
               <p className="text-gray-900 whitespace-pre-wrap leading-relaxed">{state.output}</p>
             </div>
 

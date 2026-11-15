@@ -108,7 +108,7 @@ export function EditApplication() {
       {error && (
         <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
           <div className="flex">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
@@ -120,7 +120,7 @@ export function EditApplication() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white shadow rounded-lg p-6">
+      <form onSubmit={handleSubmit} className="bg-white shadow-sm rounded-lg p-6">
         <div className="grid grid-cols-1 gap-6">
           <div>
             <label htmlFor="job_title" className="block text-sm font-medium text-gray-700 mb-1">
@@ -133,7 +133,7 @@ export function EditApplication() {
               required
               value={formData.job_title}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
             />
           </div>
 
@@ -147,7 +147,7 @@ export function EditApplication() {
               name="company_name"
               value={formData.company_name}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
             />
           </div>
 
@@ -161,7 +161,7 @@ export function EditApplication() {
               name="job_link"
               value={formData.job_link}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
             />
           </div>
 
@@ -175,7 +175,7 @@ export function EditApplication() {
               name="company_link"
               value={formData.company_link}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
             />
           </div>
 
@@ -189,7 +189,7 @@ export function EditApplication() {
               required
               value={formData.status}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
             >
               <option value="applied">Applied</option>
               <option value="in_progress">In Progress</option>
@@ -211,7 +211,7 @@ export function EditApplication() {
               required
               value={formData.date_applied}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
             />
           </div>
 
@@ -225,7 +225,7 @@ export function EditApplication() {
               rows={4}
               value={formData.notes}
               onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
             />
           </div>
         </div>
@@ -234,14 +234,14 @@ export function EditApplication() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 transition-colors"
+            className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-xs hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex justify-center rounded-md border border-transparent bg-[#861F41] py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-[#621531] focus:outline-none focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex justify-center rounded-md border border-transparent bg-[#861F41] py-2 px-4 text-sm font-medium text-white shadow-xs hover:bg-[#621531] focus:outline-hidden focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>

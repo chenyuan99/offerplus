@@ -35,7 +35,7 @@ export function Rice() {
                 href="https://docs.google.com/spreadsheets/d/1PEebPo6zZqsy-P2gdw6aOZYlPOZOui8Yz89yRNi7pDw/edit?gid=0#gid=0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-xs text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
                 Contribute to the List
             </a>
@@ -43,7 +43,7 @@ export function Rice() {
                 href="https://docs.google.com/spreadsheets/d/1PEebPo6zZqsy-P2gdw6aOZYlPOZOui8Yz89yRNi7pDw/edit?gid=0#gid=0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-xs text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
                 微信群二维码
             </a>
@@ -51,7 +51,7 @@ export function Rice() {
                 href="https://docs.google.com/spreadsheets/d/1PEebPo6zZqsy-P2gdw6aOZYlPOZOui8Yz89yRNi7pDw/edit?gid=0#gid=0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-xs text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
                 职场圆桌会
             </a>
@@ -60,14 +60,14 @@ export function Rice() {
                 href="https://docs.google.com/spreadsheets/d/1PEebPo6zZqsy-P2gdw6aOZYlPOZOui8Yz89yRNi7pDw/edit?gid=0#gid=0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-xs text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
                 求职分享会
             </a>
         </div>
 
         <div className="max-w-4xl mx-auto w-full px-4 mb-8">
-          <div className="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-6 border border-indigo-200">
+          <div className="bg-linear-to-r from-indigo-50 to-blue-50 rounded-lg p-6 border border-indigo-200">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">群公告 Group Announcements</h2>
 
             <div className="space-y-4">

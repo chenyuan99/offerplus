@@ -1,6 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* Keep the existing JavaScript configuration active during the v4 migration. */
+@config '../tailwind.config.js';
 
 html {
   scroll-behavior: smooth;

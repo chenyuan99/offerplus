@@ -77,7 +77,7 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
             required
             value={formData.company_name}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
           />
         </div>
 
@@ -92,7 +92,7 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
             required
             value={formData.job_title}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
           />
         </div>
 
@@ -106,7 +106,7 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
             required
             value={formData.status}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
           >
             {STATUS_CHOICES.map(({ value, label }) => (
               <option key={value} value={value}>
@@ -126,14 +126,14 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
             rows={3}
             value={formData.notes || ''}
             onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-hidden focus:ring-1 focus:ring-[#861F41] focus:border-[#861F41] sm:text-sm"
           />
         </div>
       </div>
 
       {error && (
         <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
-          <AlertCircle className="h-5 w-5 text-red-600 mr-3 flex-shrink-0 mt-0.5" />
+          <AlertCircle className="h-5 w-5 text-red-600 mr-3 shrink-0 mt-0.5" />
           <p className="text-red-800">{error}</p>
         </div>
       )}
@@ -142,14 +142,14 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
         <button
           type="button"
           onClick={() => window.history.back()}
-          className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 transition-colors"
+          className="rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-xs hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 transition-colors"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex justify-center rounded-md border border-transparent bg-[#861F41] py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-[#621531] focus:outline-none focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex justify-center rounded-md border border-transparent bg-[#861F41] py-2 px-4 text-sm font-medium text-white shadow-xs hover:bg-[#621531] focus:outline-hidden focus:ring-2 focus:ring-[#861F41] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {loading ? 'Creating...' : 'Create Application'}
         </button>
