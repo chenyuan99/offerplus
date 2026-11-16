@@ -47,6 +47,16 @@
       "dest": "/sw.js"
     },
     {
+      "src": "/robots.txt",
+      "headers": { "content-type": "text/plain; charset=utf-8" },
+      "dest": "/robots.txt"
+    },
+    {
+      "src": "/sitemap.xml",
+      "headers": { "content-type": "application/xml; charset=utf-8" },
+      "dest": "/sitemap.xml"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }

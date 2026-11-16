@@ -1,148 +1,141 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://offersplus.io/AddApplication</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/AddApplication</loc>
+    <lastmod>2026-11-16T20:55:07.774Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Companies</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/Companies</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/CompanyDetail</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/CompanyDetail</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Dashboard</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/Dashboard</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/EditApplication</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/EditApplication</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/H1B</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/H1B</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Hardware</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/Hardware</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Internship</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/Internship</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/JobGPT</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/JobGPT</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Login</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/JobPostings</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/LoginPage</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/LoginPage</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Pages.stories</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/Pages.stories</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Privacy</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/Privacy</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Profile</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/Profile</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Register</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/RegisterPage</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/RegisterPage</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/Rice</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Rice</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/Terms</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/Terms</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/auth/Callback</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/auth/Callback</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/auth/CheckEmail</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://offersplus.io/auth/CheckEmail</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://offersplus.io/auth/Login</loc>
-    <lastmod>2026-05-09T22:41:20.844Z</lastmod>
+    <loc>https://www.offerplus.io/auth/Login</loc>
+    <lastmod>2026-11-16T20:55:07.776Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>

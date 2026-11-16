@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Sitemaps
-Sitemap: https://offersplus.io/sitemap.xml
+Sitemap: https://www.offerplus.io/sitemap.xml
 
 # Disallow admin and private routes
 Disallow: /admin/
