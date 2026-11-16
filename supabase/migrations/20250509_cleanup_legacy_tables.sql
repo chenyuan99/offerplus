@@ -8,7 +8,8 @@ DROP TABLE IF EXISTS tracks_emailmessage CASCADE;
 DROP TABLE IF EXISTS tracks_emailthread CASCADE;
 DROP TABLE IF EXISTS tracks_job CASCADE;
 DROP TABLE IF EXISTS tracks_job_applicants CASCADE;
-DROP TABLE IF EXISTS h1b_applications CASCADE;
+-- h1b_applications is intentionally NOT dropped: the H1B pages
+-- (useH1BData, h1bStatisticsService) still read from it.
 
 -- Remove any remaining Django tables
 DROP TABLE IF EXISTS auth_group CASCADE;

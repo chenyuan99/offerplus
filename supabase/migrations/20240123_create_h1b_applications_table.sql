@@ -7,10 +7,9 @@
 -- against a new project) failed with "relation h1b_applications does not
 -- exist" once it reached the first CREATE INDEX statement.
 --
--- Schema matches h1b/upload_to_supabase.py exactly. Note this table is
--- later dropped by 20250509_cleanup_legacy_tables.sql, so this migration
--- only affects whether the migration chain completes -- it does not
--- change the final schema state.
+-- Schema matches h1b/upload_to_supabase.py exactly. If an older ad hoc
+-- table already exists, this is a no-op; 20240125 (updated) adds any
+-- missing columns.
 
 CREATE TABLE IF NOT EXISTS h1b_applications (
     id BIGSERIAL PRIMARY KEY,

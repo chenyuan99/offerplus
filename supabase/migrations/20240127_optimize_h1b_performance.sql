@@ -12,34 +12,36 @@ DROP INDEX IF EXISTS idx_h1b_applications_job_title;
 DROP INDEX IF EXISTS idx_h1b_applications_salary;
 
 -- Create optimized B-tree indexes
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_h1b_employer_name_optimized 
+-- (not CONCURRENTLY: Supabase runs each migration in a transaction, where
+-- CREATE INDEX CONCURRENTLY is not allowed)
+CREATE INDEX IF NOT EXISTS idx_h1b_employer_name_optimized
 ON h1b_applications (employer_name) 
 WHERE employer_name IS NOT NULL AND employer_name != '';
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_h1b_case_status_optimized 
+CREATE INDEX IF NOT EXISTS idx_h1b_case_status_optimized 
 ON h1b_applications (case_status) 
 WHERE case_status IS NOT NULL AND case_status != '';
 
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_h1b_job_title_optimized 
+CREATE INDEX IF NOT EXISTS idx_h1b_job_title_optimized 
 ON h1b_applications (job_title) 
 WHERE job_title IS NOT NULL AND job_title != '';
 
 -- Salary range index for efficient range queries
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_h1b_salary_range_optimized 
+CREATE INDEX IF NOT EXISTS idx_h1b_salary_range_optimized 
 ON h1b_applications (wage_rate_of_pay_from) 
 WHERE wage_rate_of_pay_from IS NOT NULL AND wage_rate_of_pay_from > 0;
 
 -- Composite index for common filter combinations
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_h1b_composite_filters 
+CREATE INDEX IF NOT EXISTS idx_h1b_composite_filters 
 ON h1b_applications (case_status, employer_name, wage_rate_of_pay_from) 
 WHERE case_status IS NOT NULL AND employer_name IS NOT NULL;
 
 -- Index for ordering (most common sort)
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_h1b_id_desc 
+CREATE INDEX IF NOT EXISTS idx_h1b_id_desc 
 ON h1b_applications (id DESC);
 
 -- Partial index for certified applications (most queried)
-CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_h1b_certified_apps 
+CREATE INDEX IF NOT EXISTS idx_h1b_certified_apps 
 ON h1b_applications (employer_name, wage_rate_of_pay_from, received_date) 
 WHERE case_status IN ('CERTIFIED', 'CERTIFIED-WITHDRAWN');
 

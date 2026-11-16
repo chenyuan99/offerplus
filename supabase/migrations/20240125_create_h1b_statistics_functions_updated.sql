@@ -322,6 +322,35 @@ BEGIN
 END;
 $$;
 
+-- Databases that predate 20240123 may already have an ad hoc h1b_applications
+-- table missing some columns, in which case that migration's CREATE TABLE IF
+-- NOT EXISTS is a no-op. Add any missing columns (additive only) so the
+-- indexes below and in 20240126/20240127 can be created.
+ALTER TABLE h1b_applications
+    ADD COLUMN IF NOT EXISTS case_status TEXT,
+    ADD COLUMN IF NOT EXISTS received_date TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS decision_date TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS visa_class TEXT,
+    ADD COLUMN IF NOT EXISTS job_title TEXT,
+    ADD COLUMN IF NOT EXISTS soc_code TEXT,
+    ADD COLUMN IF NOT EXISTS soc_title TEXT,
+    ADD COLUMN IF NOT EXISTS full_time_position TEXT,
+    ADD COLUMN IF NOT EXISTS begin_date TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS end_date TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS employer_name TEXT,
+    ADD COLUMN IF NOT EXISTS employer_city TEXT,
+    ADD COLUMN IF NOT EXISTS employer_state TEXT,
+    ADD COLUMN IF NOT EXISTS employer_postal_code TEXT,
+    ADD COLUMN IF NOT EXISTS worksite_city TEXT,
+    ADD COLUMN IF NOT EXISTS worksite_state TEXT,
+    ADD COLUMN IF NOT EXISTS worksite_postal_code TEXT,
+    ADD COLUMN IF NOT EXISTS wage_rate_of_pay_from NUMERIC,
+    ADD COLUMN IF NOT EXISTS wage_rate_of_pay_to NUMERIC,
+    ADD COLUMN IF NOT EXISTS wage_unit_of_pay TEXT,
+    ADD COLUMN IF NOT EXISTS prevailing_wage NUMERIC,
+    ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT NOW(),
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_h1b_applications_employer_name ON h1b_applications(employer_name);
 CREATE INDEX IF NOT EXISTS idx_h1b_applications_case_status ON h1b_applications(case_status);
