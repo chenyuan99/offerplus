@@ -10,7 +10,7 @@ To complete the deployment, set the following environment variables in Vercel Da
 | NEXT_PUBLIC_SUPABASE_ANON_KEY | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx3ZXhoYmltdHhwbmRoc2lkb2dsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5MjIzMTEsImV4cCI6MjA5MzQ5ODMxMX0.Bc-Kw8qdmUrSGijhnhIJfdJUS86uK2SW2lOBrRjn3DU |
 | NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | sb_publishable_26L3XvWKdAd7VrZceHcrTg_RIcOGJbp |
 | NEXT_PUBLIC_LOGO_DEV_TOKEN | pk_aWso2iQjSW25SO13OEAtNA |
-| NEXT_PUBLIC_SITE_URL | https://offersplus.io |
+| NEXT_PUBLIC_SITE_URL | https://www.offerplus.io |
 
 ## Steps to Configure
 
