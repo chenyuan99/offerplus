@@ -23,7 +23,9 @@ async function main() {
   await createServer(authenticatedClient).connect(new StdioServerTransport());
 }
 
-main().catch((error) => {
+try {
+  await main();
+} catch (error) {
   console.error(error.message);
   process.exitCode = 1;
-});
+}

@@ -27,5 +27,5 @@ jobs:
           node-version-file: mcp/.nvmrc
           cache: npm
           cache-dependency-path: mcp/package-lock.json
-      - run: npm ci
+      - run: npm ci --ignore-scripts
       - run: npm test
