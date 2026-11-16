@@ -34,6 +34,9 @@ export interface H1BStateStats {
 }
 
 export class H1BStatisticsService {
+  // In-memory cache keyed by serialized filters; avoids persisting results in localStorage
+  private static statsCache = new Map<string, { data: H1BStatistics; timestamp: number }>();
+
   /**
    * Get unique employers for dropdown population
    */
@@ -426,35 +429,29 @@ export class H1BStatisticsService {
    * Get cached statistics (with 5-minute cache)
    */
   static async getCachedStatistics(filters?: Partial<H1BFilters>): Promise<H1BStatistics> {
-    const cacheKey = `h1b_stats_${JSON.stringify(filters || {})}`;
+    const cacheKey = JSON.stringify(filters || {});
     const cacheExpiry = 5 * 60 * 1000; // 5 minutes
 
     try {
       // Check if we have cached data
-      const cachedData = localStorage.getItem(cacheKey);
-      const cacheTimestamp = localStorage.getItem(`${cacheKey}_timestamp`);
-
-      if (cachedData && cacheTimestamp) {
-        const age = Date.now() - parseInt(cacheTimestamp);
-        if (age < cacheExpiry) {
-          return JSON.parse(cachedData);
-        }
+      const cached = this.statsCache.get(cacheKey);
+      if (cached && Date.now() - cached.timestamp < cacheExpiry) {
+        return cached.data;
       }
 
       // Fetch fresh data
       const freshData = await this.getStatistics(filters);
 
       // Cache the data
-      localStorage.setItem(cacheKey, JSON.stringify(freshData));
-      localStorage.setItem(`${cacheKey}_timestamp`, Date.now().toString());
+      this.statsCache.set(cacheKey, { data: freshData, timestamp: Date.now() });
 
       return freshData;
     } catch (error) {
       // If fresh fetch fails, try to return cached data even if expired
-      const cachedData = localStorage.getItem(cacheKey);
-      if (cachedData) {
+      const cached = this.statsCache.get(cacheKey);
+      if (cached) {
         console.warn('Using expired cached data due to fetch error:', error);
-        return JSON.parse(cachedData);
+        return cached.data;
       }
       throw error;
     }
@@ -464,12 +461,7 @@ export class H1BStatisticsService {
    * Clear statistics cache
    */
   static clearCache(): void {
-    const keys = Object.keys(localStorage);
-    keys.forEach(key => {
-      if (key.startsWith('h1b_stats_')) {
-        localStorage.removeItem(key);
-      }
-    });
+    this.statsCache.clear();
   }
 
   /**

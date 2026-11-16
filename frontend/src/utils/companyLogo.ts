@@ -10,6 +10,10 @@ export const getCompanyDomain = (hostname: string): string => {
   return hostname.replace('www.', '').split('.').slice(-2).join('.');
 };
 
+// Exact host or subdomain match; substring checks would accept e.g. linkedin.com.evil.example
+const isHostOrSubdomain = (hostname: string, domain: string): boolean =>
+  hostname === domain || hostname.endsWith(`.${domain}`);
+
 const toTitleCase = (slug: string): string =>
   slug.replace(/[-_.]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()).trim();
 
@@ -20,7 +24,7 @@ export const extractCompanyNameFromUrl = (companyLink: string): string => {
     const pathname = url.pathname;
 
     // LinkedIn company pages: /company/<slug>
-    if (hostname.includes('linkedin.com')) {
+    if (isHostOrSubdomain(hostname, 'linkedin.com')) {
       const match = pathname.match(/\/company\/([^/]+)/);
       if (match) return toTitleCase(match[1]);
     }
@@ -38,12 +42,12 @@ export const extractCompanyNameFromUrl = (companyLink: string): string => {
     }
 
     // Workday: <company>.wd5.myworkdayjobs.com
-    if (hostname.includes('myworkdayjobs.com')) {
+    if (hostname.endsWith('.myworkdayjobs.com')) {
       return toTitleCase(hostname.split('.')[0]);
     }
 
     // Eightfold: <company>.eightfold.ai
-    if (hostname.includes('eightfold.ai') && hostname !== 'eightfold.ai') {
+    if (hostname.endsWith('.eightfold.ai')) {
       return toTitleCase(hostname.split('.')[0]);
     }
 
