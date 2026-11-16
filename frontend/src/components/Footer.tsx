@@ -124,6 +124,11 @@ export function Footer() {
                   Terms
                 </Link>
               </li>
+              <li>
+                <Link to="/docs/mcp" className="text-base text-gray-500 hover:text-gray-900">
+                  MCP Server
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

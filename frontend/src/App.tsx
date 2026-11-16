@@ -15,6 +15,7 @@ import { AddApplication } from './pages/AddApplication';
 import EditApplication from './pages/EditApplication';
 import { Privacy } from './pages/Privacy';
 import { Terms } from './pages/Terms';
+import { McpDocs } from './pages/McpDocs';
 import { H1B } from './pages/H1B';
 import { Rice } from './pages/Rice';
 import { Hardware } from './pages/Hardware';
@@ -105,6 +106,7 @@ function AppContent() {
             } />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/docs/mcp" element={<McpDocs />} />
             <Route path="/h1b" element={<H1B />} />
               <Route path="/Rice" element={<Rice />} />
             <Route path="/hardware" element={<Hardware />} />

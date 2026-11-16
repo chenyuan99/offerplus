@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Copy, Plus, Trash2, Check } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 
@@ -155,6 +156,10 @@ export function ApiKeyManager() {
         </code>
         <code className="block text-xs">Authorization: Bearer op_...</code>
         <code className="block text-xs">{`{ "status": "interview" }`}</code>
+        <p className="pt-1">
+          Using Claude or another MCP assistant on your computer?{' '}
+          <Link to="/docs/mcp" className="text-[#861F41] hover:underline">Set up the MCP server</Link> instead.
+        </p>
       </div>
     </div>
   )
