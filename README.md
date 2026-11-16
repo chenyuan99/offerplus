@@ -47,6 +47,7 @@ offerplus/
 ├── backend/                 # Backend services
 ├── frontend/               # React frontend application
 ├── h1b/                    # H1B data processing
+├── mcp/                    # Local MCP server for managing applications (see mcp/README.md)
 ├── supabase/              # Supabase configuration and scripts
 │   ├── migrations/        # Database migrations
 │   ├── scripts/           # Utility scripts

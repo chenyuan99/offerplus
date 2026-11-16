@@ -30,6 +30,20 @@ updates:
     reviewers:
       - "chenyuan99"
 
+  - package-ecosystem: "npm"
+    directory: "/mcp"
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    labels:
+      - "dependencies"
+      - "javascript"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    reviewers:
+      - "chenyuan99"
+
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
