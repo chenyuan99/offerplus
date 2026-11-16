@@ -74,8 +74,6 @@ frontend/
 
 ## Available Scripts
 
-An independent local MCP server for managing job applications is available in [mcp/README.md](mcp/README.md).
-
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview production build

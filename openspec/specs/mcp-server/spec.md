@@ -1,7 +1,7 @@
 # mcp-server Specification
 
 ## Purpose
-The Offers+ MCP server (`frontend/mcp`) is a local stdio Model Context Protocol server that
+The Offers+ MCP server (`mcp/`) is a local stdio Model Context Protocol server that
 lets an MCP client (such as Claude Code) list, read, create, update and delete the signed-in
 user's job applications in the Supabase `applications` table, acting only as that user.
 

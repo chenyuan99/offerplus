@@ -24,8 +24,8 @@ Example configuration for an MCP client supporting `mcpServers` (replace the abs
     "offersplus": {
       "command": "node",
       "args": [
-        "--env-file=/absolute/path/frontend/mcp/.env",
-        "/absolute/path/frontend/mcp/src/index.js"
+        "--env-file=/absolute/path/mcp/.env",
+        "/absolute/path/mcp/src/index.js"
       ]
     }
   }
