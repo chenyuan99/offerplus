@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 import postcss from 'postcss';
 import config from '../postcss.config.js';
 
@@ -9,7 +10,7 @@ test('PostCSS compiles the application stylesheet and migrated utilities', async
     const { default: plugin } = await import(name);
     return plugin(options);
   }));
-  const from = new URL('../src/index.css', import.meta.url).pathname;
+  const from = fileURLToPath(new URL('../src/index.css', import.meta.url));
   const source = await readFile(from, 'utf8');
   const { css } = await postcss(plugins).process(source, { from });
   assert.doesNotMatch(css, /@(?:import ['"]tailwindcss|tailwind)\b/);
